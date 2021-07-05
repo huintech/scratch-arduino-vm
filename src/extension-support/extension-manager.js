@@ -31,7 +31,6 @@ const builtinExtensions = {
 
 const builtinDevices = {
     arduinoUno: () => require('../devices/arduinoUno'),
-    arduinoUnoUltra: () => require('../devices/arduinoUnoUltra'), // Add A6, A7 pins some customized board
     arduinoNano: () => require('../devices/arduinoNano'),
 };
 
