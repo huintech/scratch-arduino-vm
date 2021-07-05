@@ -98,12 +98,12 @@ const DataType = {
 };
 
 /**
- * Manage communication with a Arduino Nano peripheral over a OpenBlock Link client socket.
+ * Manage communication with a Arduino Nano peripheral over a Scratch Arduino Link client socket.
  */
 class ArduinoNano extends ArduinoPeripheral{
     /**
      * Construct a Arduino communication object.
-     * @param {Runtime} runtime - the OpenBlock runtime
+     * @param {Runtime} runtime - the Scratch Arduino runtime
      * @param {string} deviceId - the id of the extension
      * @param {string} originalDeviceId - the original id of the peripheral, like xxx_arduinoUno
      */
@@ -113,9 +113,9 @@ class ArduinoNano extends ArduinoPeripheral{
 }
 
 /**
- * OpenBlock blocks to interact with a Arduino Nano peripheral.
+ * Scratch Arduino blocks to interact with a Arduino Nano peripheral.
  */
-class OpenBlockArduinoNanoDevice {
+class ScratchArduinoNanoDevice {
     /**
      * @return {string} - the ID of this extension.
      */
@@ -508,18 +508,18 @@ class OpenBlockArduinoNanoDevice {
 
     /**
      * Construct a set of Arduino blocks.
-     * @param {Runtime} runtime - the OpenBlock runtime.
+     * @param {Runtime} runtime - the Scratch Arduino runtime.
      * @param {string} originalDeviceId - the original id of the peripheral, like xxx_arduinoUno
      */
     constructor (runtime, originalDeviceId) {
         /**
-         * The OpenBlock runtime.
+         * The Scratch Arduino runtime.
          * @type {Runtime}
          */
         this.runtime = runtime;
 
         // Create a new Arduino nano peripheral instance
-        this._peripheral = new ArduinoNano(this.runtime, OpenBlockArduinoNanoDevice.DEVICE_ID, originalDeviceId);
+        this._peripheral = new ArduinoNano(this.runtime, ScratchArduinoNanoDevice.DEVICE_ID, originalDeviceId);
     }
 
     /**
@@ -768,7 +768,7 @@ class OpenBlockArduinoNanoDevice {
                         arguments: {
                             VALUE: {
                                 type: ArgumentType.STRING,
-                                defaultValue: 'Hello OpenBlock'
+                                defaultValue: 'Hello Scratch Arduino'
                             },
                             EOL: {
                                 type: ArgumentType.STRING,
@@ -1000,4 +1000,4 @@ class OpenBlockArduinoNanoDevice {
     }
 }
 
-module.exports = OpenBlockArduinoNanoDevice;
+module.exports = ScratchArduinoNanoDevice;

@@ -39,13 +39,13 @@ const Mode = {
 };
 
 /**
- * Manage communication with a Arduino peripheral over a OpenBlock Link client socket.
+ * Manage communication with a Arduino peripheral over a Scratch Arduino Link client socket.
  */
 class ArduinoPeripheral{
 
     /**
      * Construct a Arduino communication object.
-     * @param {Runtime} runtime - the OpenBlock runtime
+     * @param {Runtime} runtime - the Scratch Arduino runtime
      * @param {string} deviceId - the id of the peripheral
      * @param {string} originalDeviceId - the original id of the peripheral, like xxx_arduinoUno
      * @param {object} pnpidList - the pnp id of the peripheral
@@ -54,7 +54,7 @@ class ArduinoPeripheral{
      */
     constructor (runtime, deviceId, originalDeviceId, pnpidList, serialConfig, diveceOpt) {
         /**
-         * The OpenBlock runtime used to trigger the green flag button.
+         * The Scratch Arduino runtime used to trigger the green flag button.
          * @type {Runtime}
          * @private
          */
