@@ -27,28 +27,12 @@ const builtinExtensions = {
     text2speech: () => require('../extensions/scratch3_text2speech'),
     translate: () => require('../extensions/scratch3_translate'),
     videoSensing: () => require('../extensions/scratch3_video_sensing'),
-    makeymakey: () => require('../extensions/scratch3_makeymakey')
 };
 
 const builtinDevices = {
     arduinoUno: () => require('../devices/arduinoUno'),
     arduinoUnoUltra: () => require('../devices/arduinoUnoUltra'), // Add A6, A7 pins some customized board
     arduinoNano: () => require('../devices/arduinoNano'),
-    arduinoMini: () => require('../devices/arduinoMini'),
-    arduinoLeonardo: () => require('../devices/arduinoLeonardo'),
-    arduinoMega2560: () => require('../devices/arduinoMega2560'),
-    arduinoEsp32: () => require('../devices/arduinoEsp32'),
-    arduinoEsp8266: () => require('../devices/arduinoEsp8266'),
-    microbit: () => require('../devices/microbit'),
-    makeyMakey: () => require('../devices/makeymakey'),
-    microbitV2: () => require('../devices/microbitV2')
-
-    // todo transform these to device extension
-    // wedo2: () => require('../extensions/scratch3_wedo2'),
-    // ev3: () => require('../extensions/scratch3_ev3'),
-    // boost: () => require('../extensions/scratch3_boost'),
-    // gdxfor: () => require('../extensions/scratch3_gdx_for'),
-    // makeymakey: () => require('../extensions/scratch3_makeymakey')
 };
 
 /**
