@@ -1855,6 +1855,7 @@ class Runtime extends EventEmitter {
 
     /**
      * Returns whether the extension has a currently connected peripheral.
+     * @param {string} deviceId - the id of the device.* 
      * @return {boolean} - whether the extension has a connected peripheral.
      */
     getPeripheralIsConnected (deviceId) {
