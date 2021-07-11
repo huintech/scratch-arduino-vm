@@ -2,7 +2,6 @@ const JSONRPC = require('../util/jsonrpc');
 const Buffer = require('buffer').Buffer;
 
 class Serialport extends JSONRPC {
-
     /**
      * A serialport peripheral socket object.  It handles connecting, over web sockets, to
      * serialport peripherals, and reading and writing data to them.
@@ -180,48 +179,48 @@ class Serialport extends JSONRPC {
      */
     didReceiveCall (method, params) {
         switch (method) {
-        case 'didDiscoverPeripheral':
-            this._availablePeripherals[params.peripheralId] = params;
-            this._runtime.emit(
-                this._runtime.constructor.PERIPHERAL_LIST_UPDATE,
-                this._availablePeripherals
-            );
-            if (this._discoverTimeoutID) {
-                window.clearTimeout(this._discoverTimeoutID);
-            }
-            break;
-        case 'peripheralUnplug':
-            this.handleDisconnectError();
-            break;
-        case 'onMessage':
-            if (this._runtime.getCurrentIsRealtimeMode()){
-                if (this._onMessage) {
-                    this._onMessage(params.message);
-                }
-            } else {
-                const data = Buffer.from(params.message, params.encoding);
+            case 'didDiscoverPeripheral':
+                this._availablePeripherals[params.peripheralId] = params;
                 this._runtime.emit(
-                    this._runtime.constructor.PERIPHERAL_RECIVE_DATA, data);
-            }
-            break;
-        case 'uploadStdout':
-            this._runtime.emit(
-                this._runtime.constructor.PERIPHERAL_UPLOAD_STDOUT, {
-                    message: params.message
-                });
-            break;
-        case 'uploadError':
-            this._runtime.emit(
-                this._runtime.constructor.PERIPHERAL_UPLOAD_ERROR, {
-                    message: params.message
-                });
-            break;
-        case 'uploadSuccess':
-            this._runtime.emit(
-                this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS);
-            break;
-        case 'ping':
-            return 42;
+                    this._runtime.constructor.PERIPHERAL_LIST_UPDATE,
+                    this._availablePeripherals
+                );
+                if (this._discoverTimeoutID) {
+                    window.clearTimeout(this._discoverTimeoutID);
+                }
+                break;
+            case 'peripheralUnplug':
+                this.handleDisconnectError();
+                break;
+            case 'onMessage':
+                if (this._runtime.getCurrentIsRealtimeMode()){
+                    if (this._onMessage) {
+                        this._onMessage(params.message);
+                    }
+                } else {
+                    const data = Buffer.from(params.message, params.encoding);
+                    this._runtime.emit(
+                        this._runtime.constructor.PERIPHERAL_RECIVE_DATA, data);
+                }
+                break;
+            case 'uploadStdout':
+                this._runtime.emit(
+                    this._runtime.constructor.PERIPHERAL_UPLOAD_STDOUT, {
+                        message: params.message
+                    });
+                break;
+            case 'uploadError':
+                this._runtime.emit(
+                    this._runtime.constructor.PERIPHERAL_UPLOAD_ERROR, {
+                        message: params.message
+                    });
+                break;
+            case 'uploadSuccess':
+                this._runtime.emit(
+                    this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS);
+                break;
+            case 'ping':
+                return 42;
         }
     }
 
