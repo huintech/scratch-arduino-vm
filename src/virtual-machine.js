@@ -5,6 +5,7 @@ if (typeof TextEncoder === 'undefined') {
     /* global TextEncoder */
     _TextEncoder = TextEncoder;
 }
+
 const EventEmitter = require('events');
 const JSZip = require('jszip');
 
@@ -24,6 +25,8 @@ const {loadCostume} = require('./import/load-costume.js');
 const {loadSound} = require('./import/load-sound.js');
 const {serializeSounds, serializeCostumes} = require('./serialization/serialize-assets');
 require('canvas-toBlob');
+
+const Link = require('./io/link');
 
 const RESERVED_NAMES = ['_mouse_', '_stage_', '_edge_', '_myself_', '_random_'];
 
@@ -190,8 +193,17 @@ class VirtualMachine extends EventEmitter {
         this.runtime.on(Runtime.HAS_CLOUD_DATA_UPDATE, hasCloudData => {
             this.emit(Runtime.HAS_CLOUD_DATA_UPDATE, hasCloudData);
         });
+        this.runtime.on(Runtime.LINK_CONNECTED, () =>
+            this.emit(Runtime.LINK_CONNECTED)
+        );
+        this.runtime.on(Runtime.LINK_DISCONNECTED, () =>
+            this.emit(Runtime.LINK_DISCONNECTED)
+        );
 
         this.extensionManager = new ExtensionManager(this.runtime);
+
+        // Check link status
+        this.link = new Link(this.runtime);
 
         // Load core extensions
         for (const id of CORE_EXTENSIONS) {

@@ -886,6 +886,24 @@ class Runtime extends EventEmitter {
         return 300;
     }
 
+    /**
+     * Event name for reporting that a link is connected.
+     * This causes the status button in the blocks menu to indicate 'link connected'.
+     * @const {string}
+     */
+    static get LINK_CONNECTED () {
+        return 'LINK_CONNECTED';
+    }
+
+    /**
+     * Event name for reporting that a link is disconnected.
+     * This causes the status button in the blocks menu to indicate 'link disconnected'.
+     * @const {string}
+     */
+    static get LINK_DISCONNECTED () {
+        return 'LINK_DISCONNECTED';
+    }
+
     // -----------------------------------------------------------------------------
     // -----------------------------------------------------------------------------
 
@@ -1837,7 +1855,6 @@ class Runtime extends EventEmitter {
 
     /**
      * Returns whether the extension has a currently connected peripheral.
-     * @param {string} deviceId - the id of the device.
      * @return {boolean} - whether the extension has a connected peripheral.
      */
     getPeripheralIsConnected (deviceId) {
@@ -2207,7 +2224,6 @@ class Runtime extends EventEmitter {
         });
         return newThreads;
     }
-
 
     /**
      * Dispose all targets. Return to clean state.

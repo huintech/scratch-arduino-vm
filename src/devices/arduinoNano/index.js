@@ -4,7 +4,7 @@ const ArgumentType = require('../../extension-support/argument-type');
 const BlockType = require('../../extension-support/block-type');
 const ProgramModeType = require('../../extension-support/program-mode-type');
 
-const ArduinoPeripheral = require('../arduinoCommen/arduino-peripheral');
+const ArduinoPeripheral = require('../arduinoCommon/arduino-peripheral');
 
 /**
  * The list of USB device filters.
@@ -31,7 +31,7 @@ const SERIAL_CONFIG = {
  */
 const DIVECE_OPT = {
     type: 'arduino',
-    fqbn: 'arduino:avr:nano:cpu=atmega168',
+    fqbn: 'arduino:avr:nano:cpu=atmega328',
     firmware: 'arduinoUno.standardFirmata.ino.hex'
 };
 

@@ -11,12 +11,7 @@ const ArduinoPeripheral = require('../arduinoCommon/arduino-peripheral');
  * @readonly
  */
 const PNPID_LIST = [
-    // https://github.com/arduino/Arduino/blob/1.8.0/hardware/arduino/avr/boards.txt#L51-L58
-    'USB\\VID_2341&PID_0043',
-    'USB\\VID_2341&PID_0001',
-    'USB\\VID_2A03&PID_0043',
-    'USB\\VID_2341&PID_0243',
-    // For chinese clones that use CH340
+    // CH340
     'USB\\VID_1A86&PID_7523'
 ];
 
@@ -36,7 +31,7 @@ const SERIAL_CONFIG = {
  */
 const DIVECE_OPT = {
     type: 'arduino',
-    fqbn: 'arduino:avr:uno',
+    fqbn: 'arduino:avr:nano:cpu=atmega328',
     firmware: 'arduinoUno.standardFirmata.ino.hex'
 };
 
@@ -103,9 +98,9 @@ const DataType = {
 };
 
 /**
- * Manage communication with a Arduino Uno peripheral over a Scratch Arduino Link client socket.
+ * Manage communication with a Arduino Nano peripheral over a Scratch Arduino Link client socket.
  */
-class ArduinoUno extends ArduinoPeripheral{
+class ArduinoNano extends ArduinoPeripheral{
     /**
      * Construct a Arduino communication object.
      * @param {Runtime} runtime - the Scratch Arduino runtime
@@ -118,14 +113,14 @@ class ArduinoUno extends ArduinoPeripheral{
 }
 
 /**
- * Scratch Arduino blocks to interact with a Arduino Uno peripheral.
+ * Scratch Arduino blocks to interact with a Arduino Nano peripheral.
  */
-class ScratchArduinoUnoDevice {
+class ScratchArduinoNanoDevice {
     /**
      * @return {string} - the ID of this extension.
      */
     static get DEVICE_ID () {
-        return 'arduinoUno';
+        return 'ottoBasic';
     }
 
     get PINS_MENU () {
@@ -523,8 +518,8 @@ class ScratchArduinoUnoDevice {
          */
         this.runtime = runtime;
 
-        // Create a new Arduino uno peripheral instance
-        this._peripheral = new ArduinoUno(this.runtime, ScratchArduinoUnoDevice.DEVICE_ID, originalDeviceId);
+        // Create a new Arduino nano peripheral instance
+        this._peripheral = new ArduinoNano(this.runtime, ScratchArduinoNanoDevice.DEVICE_ID, originalDeviceId);
     }
 
     /**
@@ -1005,4 +1000,4 @@ class ScratchArduinoUnoDevice {
     }
 }
 
-module.exports = ScratchArduinoUnoDevice;
+module.exports = ScratchArduinoNanoDevice;

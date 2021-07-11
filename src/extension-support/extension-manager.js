@@ -29,7 +29,11 @@ const builtinExtensions = {
     videoSensing: () => require('../extensions/scratch3_video_sensing'),
 };
 
+// These deviceId need to be mached
+// GUI: src/libraries/devices/index.jsx -> deviceId
+// VM: src/ottoBasic/index.js -> class ScratchArduinoNanoDevice
 const builtinDevices = {
+    ottoBasic: () => require('../devices/ottoBasic'),
     arduinoUno: () => require('../devices/arduinoUno'),
     arduinoNano: () => require('../devices/arduinoNano'),
 };
