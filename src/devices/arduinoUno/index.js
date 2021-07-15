@@ -31,7 +31,7 @@ const SERIAL_CONFIG = {
 };
 
 /**
- * Configuration for arduino-cli.
+ * Configuration for arduino-cli firmata firmware.
  * @readonly
  */
 const DIVECE_OPT = {
