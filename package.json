@@ -1,6 +1,6 @@
 {
   "name": "scratch-arduino-vm",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Virtual Machine for Scratch Arduino",
   "author": "Massachusetts Institute of Technology",
   "license": "BSD-3-Clause",
@@ -17,7 +17,7 @@
     "deploy": "touch playground/.nojekyll",
     "docs": "jsdoc -c .jsdoc.json",
     "i18n:src": "mkdirp translations/core && format-message extract --out-file translations/core/en.json src/extensions/**/**.js src/devices/**/**.js",
-    "i18n:push": "tx-push-src openblock-editor extensions translations/core/en.json",
+    "i18n:push": "tx-push-src scratch-arduino-editor extensions translations/core/en.json",
     "lint": "eslint . && format-message lint src/**/*.js",
     "prepublish": "in-publish && npm run build || not-in-publish",
     "start": "webpack-dev-server",
