@@ -1,8 +1,5 @@
 # scratch-arduino-vm
-![](https://img.shields.io/travis/com/ottawastem/scratch-arduino-vm) ![](https://img.shields.io/github/license/ottawastem/scratch-arduino-vm)
+[![](https://github.com/OttawaSTEM/scratch-arduino-vm/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/OttawaSTEM/scratch-arduino-vm/actions/workflows/release.yml)
+![](https://img.shields.io/github/license/ottawastem/scratch-arduino-gui)
 
-## Getting Start
-
-Visit the wiki: [https://ottawastem.github.io/wiki/main](https://ottawastem.github.io/wiki/main)
-
-Visit the wiki on gitee (mirror): [https://ottawastem.gitee.io/wiki/main](https://ottawastem.gitee.io/wiki/main)
+Scratch Arduino VM is a library for representing, running, and maintaining the state of computer programs written using [Scratch Arduino Blocks](https://github.com/OttawaSTEM/scratch-arduino-blocks).
