@@ -26,13 +26,14 @@ const SERIAL_CONFIG = {
 };
 
 /**
- * Configuration for arduino-cli.
+ * Configuration for arduino-cli firmata firmware.
  * @readonly
  */
 const DIVECE_OPT = {
     type: 'arduino',
-    fqbn: 'arduino:avr:nano:cpu=atmega328',
-    firmware: 'arduinoUno.standardFirmata.ino.hex'
+    fqbn: 'arduino:avr:nano:cpu=atmega328old',
+    // fqbn: 'arduino:avr:nano:cpu=atmega328',
+    firmware: 'arduinoNano.standardFirmata.ino.hex'
 };
 
 const Pins = {
