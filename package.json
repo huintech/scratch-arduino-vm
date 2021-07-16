@@ -1,6 +1,6 @@
 {
   "name": "scratch-arduino-vm",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Virtual Machine for Scratch Arduino",
   "author": "Massachusetts Institute of Technology",
   "license": "BSD-3-Clause",
