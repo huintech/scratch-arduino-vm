@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 
-[openblock-editor.extensions]
+[scratch-arduino-editor.extensions]
 file_filter = translations/core/<lang>.json
 source_file = translations/core/en.json
 source_lang = en
