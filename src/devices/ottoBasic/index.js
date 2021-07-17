@@ -543,9 +543,9 @@ class ScratchArduinoNanoDevice {
                     {
                         opcode: 'setPinMode',
                         text: formatMessage({
-                            id: 'arduinoUno.pins.setPinMode',
+                            id: 'arduino.pins.setPinMode',
                             default: 'set pin [PIN] mode [MODE]',
-                            description: 'arduinoUno set pin mode'
+                            description: 'arduino set pin mode'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -564,9 +564,9 @@ class ScratchArduinoNanoDevice {
                     {
                         opcode: 'setDigitalOutput',
                         text: formatMessage({
-                            id: 'arduinoUno.pins.setDigitalOutput',
+                            id: 'arduino.pins.setDigitalOutput',
                             default: 'set digital pin [PIN] out [LEVEL]',
-                            description: 'arduinoUno set digital pin out'
+                            description: 'arduino set digital pin out'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -586,9 +586,9 @@ class ScratchArduinoNanoDevice {
 
                         opcode: 'setPwmOutput',
                         text: formatMessage({
-                            id: 'arduinoUno.pins.setPwmOutput',
+                            id: 'arduino.pins.setPwmOutput',
                             default: 'set pwm pin [PIN] out [OUT]',
-                            description: 'arduinoUno set pwm pin out'
+                            description: 'arduino set pwm pin out'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -607,7 +607,7 @@ class ScratchArduinoNanoDevice {
                     {
                         opcode: 'readDigitalPin',
                         text: formatMessage({
-                            id: 'arduinoUno.pins.readDigitalPin',
+                            id: 'arduino.pins.readDigitalPin',
                             default: 'read digital pin [PIN]',
                             description: 'arduinoUno read digital pin'
                         }),
@@ -623,7 +623,7 @@ class ScratchArduinoNanoDevice {
                     {
                         opcode: 'readAnalogPin',
                         text: formatMessage({
-                            id: 'arduinoUno.pins.readAnalogPin',
+                            id: 'arduino.pins.readAnalogPin',
                             default: 'read analog pin [PIN]',
                             description: 'arduinoUno read analog pin'
                         }),
@@ -641,9 +641,9 @@ class ScratchArduinoNanoDevice {
 
                         opcode: 'setServoOutput',
                         text: formatMessage({
-                            id: 'arduinoUno.pins.setServoOutput',
+                            id: 'arduino.pins.setServoOutput',
                             default: 'set servo pin [PIN] out [OUT]',
-                            description: 'arduinoUno set servo pin out'
+                            description: 'arduino set servo pin out'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -663,7 +663,7 @@ class ScratchArduinoNanoDevice {
 
                         opcode: 'attachInterrupt',
                         text: formatMessage({
-                            id: 'arduinoUno.pins.attachInterrupt',
+                            id: 'arduino.pins.attachInterrupt',
                             default: 'attach interrupt pin [PIN] mode [MODE] executes',
                             description: 'arduinoUno attach interrupt'
                         }),
@@ -686,7 +686,7 @@ class ScratchArduinoNanoDevice {
 
                         opcode: 'detachInterrupt',
                         text: formatMessage({
-                            id: 'arduinoUno.pins.detachInterrupt',
+                            id: 'arduino.pins.detachInterrupt',
                             default: 'detach interrupt pin [PIN]',
                             description: 'arduinoUno detach interrupt'
                         }),
