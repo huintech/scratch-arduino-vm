@@ -25,7 +25,7 @@ const PNPID_LIST = [
  * @readonly
  */
 const SERIAL_CONFIG = {
-    baudRate: 57600,
+    baudRate: 115200,
     dataBits: 8,
     stopBits: 1
 };
