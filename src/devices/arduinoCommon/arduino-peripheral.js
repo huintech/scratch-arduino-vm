@@ -246,10 +246,9 @@ class ArduinoPeripheral{
     _startHeartbeat () {
         if (this._runtime.getCurrentIsRealtimeMode()) {
             this._isFirmataConnected = false;
-
             this._firmataIntervelID = window.setInterval(() => {
                 if (this._runtime.getCurrentIsRealtimeMode()) {
-                // Send reportVersion request as heartbeat.
+                    // Send reportVersion request as heartbeat.
                     this._firmata.reportVersion(() => { });
                 }
             }, FrimataHeartbeatInterval);

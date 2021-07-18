@@ -217,7 +217,7 @@ class ScratchArduinoUnoDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'arduinoUno.modeMenu.input',
+                    id: 'arduino.modeMenu.input',
                     default: 'input',
                     description: 'label for input pin mode'
                 }),
@@ -225,7 +225,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduinoUno.modeMenu.output',
+                    id: 'arduino.modeMenu.output',
                     default: 'output',
                     description: 'label for output pin mode'
                 }),
@@ -233,7 +233,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduinoUno.modeMenu.inputPullup',
+                    id: 'arduino.modeMenu.inputPullup',
                     default: 'input-pullup',
                     description: 'label for input-pullup pin mode'
                 }),
@@ -336,7 +336,7 @@ class ScratchArduinoUnoDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'arduinoUno.levelMenu.high',
+                    id: 'arduino.levelMenu.high',
                     default: 'high',
                     description: 'label for high level'
                 }),
@@ -344,7 +344,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduinoUno.levelMenu.low',
+                    id: 'arduino.levelMenu.low',
                     default: 'low',
                     description: 'label for low level'
                 }),
@@ -399,7 +399,7 @@ class ScratchArduinoUnoDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'arduinoUno.InterrupModeMenu.risingEdge',
+                    id: 'arduino.InterrupModeMenu.risingEdge',
                     default: 'rising edge',
                     description: 'label for rising edge interrup'
                 }),
@@ -407,7 +407,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduinoUno.InterrupModeMenu.fallingEdge',
+                    id: 'arduino.InterrupModeMenu.fallingEdge',
                     default: 'falling edge',
                     description: 'label for falling edge interrup'
                 }),
@@ -415,7 +415,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduinoUno.InterrupModeMenu.changeEdge',
+                    id: 'arduino.InterrupModeMenu.changeEdge',
                     default: 'change edge',
                     description: 'label for change edge interrup'
                 }),
@@ -423,7 +423,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduinoUno.InterrupModeMenu.low',
+                    id: 'arduino.InterrupModeMenu.low',
                     default: 'low',
                     description: 'label for low interrup'
                 }),
@@ -465,7 +465,7 @@ class ScratchArduinoUnoDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'arduinoUno.eolMenu.warp',
+                    id: 'arduino.eolMenu.warp',
                     default: 'warp',
                     description: 'label for warp print'
                 }),
@@ -473,7 +473,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduinoUno.eolMenu.noWarp',
+                    id: 'arduino.eolMenu.noWarp',
                     default: 'no-warp',
                     description: 'label for no warp print'
                 }),
@@ -486,7 +486,7 @@ class ScratchArduinoUnoDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'arduinoUno.dataTypeMenu.wholeNumber',
+                    id: 'arduino.dataTypeMenu.wholeNumber',
                     default: 'whole number',
                     description: 'label for whole number'
                 }),
@@ -494,7 +494,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduinoUno.dataTypeMenu.decimal',
+                    id: 'arduino.dataTypeMenu.decimal',
                     default: 'decimal',
                     description: 'label for decimal number'
                 }),
@@ -502,7 +502,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduinoUno.dataTypeMenu.string',
+                    id: 'arduino.dataTypeMenu.string',
                     default: 'string',
                     description: 'label for string'
                 }),
@@ -535,9 +535,9 @@ class ScratchArduinoUnoDevice {
             {
                 id: 'pin',
                 name: formatMessage({
-                    id: 'arduinoUno.category.pins',
+                    id: 'arduino.category.pins',
                     default: 'Pins',
-                    description: 'The name of the arduino uno device pin category'
+                    description: 'The name of the arduino device pin category'
                 }),
                 color1: '#4C97FF',
                 color2: '#3373CC',
@@ -613,7 +613,7 @@ class ScratchArduinoUnoDevice {
                         text: formatMessage({
                             id: 'arduino.pins.readDigitalPin',
                             default: 'read digital pin [PIN]',
-                            description: 'arduinoUno read digital pin'
+                            description: 'arduino read digital pin'
                         }),
                         blockType: BlockType.BOOLEAN,
                         arguments: {
@@ -629,7 +629,7 @@ class ScratchArduinoUnoDevice {
                         text: formatMessage({
                             id: 'arduino.pins.readAnalogPin',
                             default: 'read analog pin [PIN]',
-                            description: 'arduinoUno read analog pin'
+                            description: 'arduino read analog pin'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -669,7 +669,7 @@ class ScratchArduinoUnoDevice {
                         text: formatMessage({
                             id: 'arduino.pins.attachInterrupt',
                             default: 'attach interrupt pin [PIN] mode [MODE] executes',
-                            description: 'arduinoUno attach interrupt'
+                            description: 'arduino attach interrupt'
                         }),
                         blockType: BlockType.CONDITIONAL,
                         arguments: {
@@ -692,7 +692,7 @@ class ScratchArduinoUnoDevice {
                         text: formatMessage({
                             id: 'arduino.pins.detachInterrupt',
                             default: 'detach interrupt pin [PIN]',
-                            description: 'arduinoUno detach interrupt'
+                            description: 'arduino attach interrupt'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -736,9 +736,9 @@ class ScratchArduinoUnoDevice {
             {
                 id: 'serial',
                 name: formatMessage({
-                    id: 'arduinoUno.category.serial',
+                    id: 'arduino.category.serial',
                     default: 'Serial',
-                    description: 'The name of the arduino uno device serial category'
+                    description: 'The name of the arduino device serial category'
                 }),
                 color1: '#9966FF',
                 color2: '#774DCB',
@@ -748,9 +748,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'serialBegin',
                         text: formatMessage({
-                            id: 'arduinoUno.serial.serialBegin',
+                            id: 'arduino.serial.serialBegin',
                             default: 'serial begin baudrate [VALUE]',
-                            description: 'arduinoUno serial begin'
+                            description: 'arduino serial begin'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -765,9 +765,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'serialPrint',
                         text: formatMessage({
-                            id: 'arduinoUno.serial.serialPrint',
+                            id: 'arduino.serial.serialPrint',
                             default: 'serial print [VALUE] [EOL]',
-                            description: 'arduinoUno serial print'
+                            description: 'arduino serial print'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -786,9 +786,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'serialAvailable',
                         text: formatMessage({
-                            id: 'arduinoUno.serial.serialAvailable',
+                            id: 'arduino.serial.serialAvailable',
                             default: 'serial available data length',
-                            description: 'arduinoUno serial available data length'
+                            description: 'arduino serial available data length'
                         }),
                         blockType: BlockType.REPORTER,
                         disableMonitor: true,
@@ -797,9 +797,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'serialReadData',
                         text: formatMessage({
-                            id: 'arduinoUno.serial.serialReadData',
+                            id: 'arduino.serial.serialReadData',
                             default: 'serial read data',
-                            description: 'arduinoUno serial read data'
+                            description: 'arduino serial read data'
                         }),
                         blockType: BlockType.REPORTER,
                         disableMonitor: true,
@@ -818,9 +818,9 @@ class ScratchArduinoUnoDevice {
             {
                 id: 'data',
                 name: formatMessage({
-                    id: 'arduinoUno.category.data',
+                    id: 'arduino.category.data',
                     default: 'Data',
-                    description: 'The name of the arduino uno device data category'
+                    description: 'The name of the arduino device data category'
                 }),
                 color1: '#CF63CF',
                 color2: '#C94FC9',
@@ -829,9 +829,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'dataMap',
                         text: formatMessage({
-                            id: 'arduinoUno.data.dataMap',
+                            id: 'arduino.data.dataMap',
                             default: 'map [DATA] from ([ARG0], [ARG1]) to ([ARG2], [ARG3])',
-                            description: 'arduinoUno data map'
+                            description: 'arduino data map'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -862,9 +862,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'dataConstrain',
                         text: formatMessage({
-                            id: 'arduinoUno.data.dataConstrain',
+                            id: 'arduino.data.dataConstrain',
                             default: 'constrain [DATA] between ([ARG0], [ARG1])',
-                            description: 'arduinoUno data constrain'
+                            description: 'arduino data constrain'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -886,9 +886,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'dataConvert',
                         text: formatMessage({
-                            id: 'arduinoUno.data.dataConvert',
+                            id: 'arduino.data.dataConvert',
                             default: 'convert [DATA] to [TYPE]',
-                            description: 'arduinoUno data convert'
+                            description: 'arduino data convert'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -907,9 +907,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'dataConvertASCIICharacter',
                         text: formatMessage({
-                            id: 'arduinoUno.data.dataConvertASCIICharacter',
+                            id: 'arduino.data.dataConvertASCIICharacter',
                             default: 'convert [DATA] to ASCII character',
-                            description: 'arduinoUno data convert to ASCII character'
+                            description: 'arduino data convert to ASCII character'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -923,9 +923,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'dataConvertASCIINumber',
                         text: formatMessage({
-                            id: 'arduinoUno.data.dataConvertASCIINumber',
+                            id: 'arduino.data.dataConvertASCIINumber',
                             default: 'convert [DATA] to ASCII nubmer',
-                            description: 'arduinoUno data convert to ASCII nubmer'
+                            description: 'arduino data convert to ASCII nubmer'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
