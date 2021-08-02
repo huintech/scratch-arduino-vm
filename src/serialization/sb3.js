@@ -572,7 +572,10 @@ const serialize = function (runtime, targetId) {
     const meta = Object.create(null);
     meta.semver = '3.0.0';
     meta.vm = vmPackage.version;
-
+    if (runtime.origin) {
+        meta.origin = runtime.origin;
+    }
+    
     // Attach full user agent string to metadata if available
     meta.agent = 'none';
     if (typeof navigator !== 'undefined') meta.agent = navigator.userAgent;

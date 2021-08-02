@@ -2,6 +2,7 @@ const JSONRPC = require('../util/jsonrpc');
 const Buffer = require('buffer').Buffer;
 
 class Serialport extends JSONRPC {
+    
     /**
      * A serialport peripheral socket object.  It handles connecting, over web sockets, to
      * serialport peripherals, and reading and writing data to them.

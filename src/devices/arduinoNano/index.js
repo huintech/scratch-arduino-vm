@@ -31,8 +31,9 @@ const SERIAL_CONFIG = {
  */
 const DIVECE_OPT = {
     type: 'arduino',
-    fqbn: 'arduino:avr:nano:cpu=atmega328old',
+    fqbn: 'arduino:avr:nano:cpu=atmega328',
     // fqbn: 'arduino:avr:nano:cpu=atmega328',
+    // fqbn: 'arduino:avr:nano:cpu=atmega168',
     firmware: 'arduinoNano.standardFirmata.ino.hex'
 };
 
@@ -71,6 +72,7 @@ const Buadrate = {
     B19200: '19200',
     B38400: '38400',
     B57600: '57600',
+    B76800: '76800',    
     B115200: '115200'
 };
 
@@ -450,6 +452,10 @@ class ScratchArduinoNanoDevice {
                 text: '57600',
                 value: Buadrate.B57600
             },
+            {
+                text: '76800',
+                value: Buadrate.B76800
+            },            
             {
                 text: '115200',
                 value: Buadrate.B115200
