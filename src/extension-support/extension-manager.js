@@ -286,28 +286,28 @@ class ExtensionManager {
     }
 
     /**
-     * Get device extensions list from local server.
+     * Openblock - Get device extensions list from local server.
      * @returns {Promise} resolved extension list has been fetched or failure
      */
     getDeviceExtensionsList () {
-        return new Promise(resolve => {
-            fetch(localDeviceExtensionsUrl)
-                .then(response => response.json())
-                .then(extensions => {
-                    extensions = extensions.map(extension => {
-                        extension.iconURL = localDeviceExtensionsUrl + extension.iconURL;
-                        if (this.isDeviceExtensionLoaded(extension.extensionId)) {
-                            extension.isLoaded = true;
-                        }
-                        return extension;
-                    });
-                    this._deviceExtensions = extensions;
-                    return resolve(this._deviceExtensions);
-                }, err => {
-                    log.warn(`Can not fetch data from local extension server: ${err}`);
-                    return resolve();
-                });
-        });
+        // return new Promise(resolve => {
+        //     fetch(localDeviceExtensionsUrl)
+        //         .then(response => response.json())
+        //         .then(extensions => {
+        //             extensions = extensions.map(extension => {
+        //                 extension.iconURL = localDeviceExtensionsUrl + extension.iconURL;
+        //                 if (this.isDeviceExtensionLoaded(extension.extensionId)) {
+        //                     extension.isLoaded = true;
+        //                 }
+        //                 return extension;
+        //             });
+        //             this._deviceExtensions = extensions;
+        //             return resolve(this._deviceExtensions);
+        //         }, err => {
+        //             log.warn(`Can not fetch data from local extension server: ${err}`);
+        //             return resolve();
+        //         });
+        // });
     }
 
     /**

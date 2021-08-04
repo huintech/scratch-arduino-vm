@@ -5,7 +5,6 @@ if (typeof TextEncoder === 'undefined') {
     /* global TextEncoder */
     _TextEncoder = TextEncoder;
 }
-
 const EventEmitter = require('events');
 const JSZip = require('jszip');
 
@@ -151,6 +150,9 @@ class VirtualMachine extends EventEmitter {
         this.runtime.on(Runtime.PERIPHERAL_LIST_UPDATE, info => {
             this.emit(Runtime.PERIPHERAL_LIST_UPDATE, info);
         });
+        this.runtime.on(Runtime.USER_PICKED_PERIPHERAL, info => {
+            this.emit(Runtime.USER_PICKED_PERIPHERAL, info);
+        });        
         this.runtime.on(Runtime.PERIPHERAL_CONNECTED, () =>
             this.emit(Runtime.PERIPHERAL_CONNECTED)
         );
@@ -589,15 +591,15 @@ class VirtualMachine extends EventEmitter {
      * Sync install device extensions.
      */
     installDeviceExtensionsSync () {
-        if (this.runtime._pendingDeviceExtensions) {
-            if (this.runtime._pendingDeviceExtensions.length === 0) {
-                this.emit('installDeviceExtensionsSync.success');
-                return;
-            }
-            this.extensionManager.loadDeviceExtension(this.runtime._pendingDeviceExtensions.shift())
-                .then(() => this.installDeviceExtensionsSync())
-                .catch(e => this.emit('installDeviceExtensionsSync.error', e));
-        }
+        // if (this.runtime._pendingDeviceExtensions) {
+        //     if (this.runtime._pendingDeviceExtensions.length === 0) {
+        //         this.emit('installDeviceExtensionsSync.success');
+        //         return;
+        //     }
+        //     this.extensionManager.loadDeviceExtension(this.runtime._pendingDeviceExtensions.shift())
+        //         .then(() => this.installDeviceExtensionsSync())
+        //         .catch(e => this.emit('installDeviceExtensionsSync.error', e));
+        // }
     }
 
     /**
@@ -606,19 +608,19 @@ class VirtualMachine extends EventEmitter {
      * @returns {Promise} Promise that resolves after the device extensions has loaded
      */
     installDeviceExtensions (deviceExtensions) {
-        return new Promise((resolve, reject) => {
-            this.runtime._pendingDeviceExtensions = deviceExtensions;
+        // return new Promise((resolve, reject) => {
+        //     this.runtime._pendingDeviceExtensions = deviceExtensions;
 
-            this.extensionManager.getDeviceExtensionsList().then(() => {
-                this.installDeviceExtensionsSync();
-            });
-            this.on('installDeviceExtensionsSync.success', () => {
-                resolve();
-            });
-            this.on('installDeviceExtensionsSync.error', err => {
-                reject(err);
-            });
-        });
+        //     this.extensionManager.getDeviceExtensionsList().then(() => {
+        //         this.installDeviceExtensionsSync();
+        //     });
+        //     this.on('installDeviceExtensionsSync.success', () => {
+        //         resolve();
+        //     });
+        //     this.on('installDeviceExtensionsSync.error', err => {
+        //         reject(err);
+        //     });
+        // });
     }
 
     /**
@@ -660,10 +662,6 @@ class VirtualMachine extends EventEmitter {
             }
         }
 
-        if (deviceExtensions) {
-            allPromises.push(this.installDeviceExtensions(deviceExtensions));
-        }
-
         targets = targets.filter(target => !!target);
 
         return Promise.all(allPromises).then(() => {
@@ -690,6 +688,18 @@ class VirtualMachine extends EventEmitter {
             if (!wholeProject) {
                 this.editingTarget.fixUpVariableReferences();
             }
+
+            // if (deviceExtensions) {
+            //     return this.installDeviceExtensions(deviceExtensions)
+            //         .then(() => {
+            //             this.emitTargetsUpdate(false /* Don't emit project change */);
+            //             this.emitWorkspaceUpdate();
+            //             this.runtime.setEditingTarget(this.editingTarget);
+            //             this.runtime.ioDevices.cloud.setStage(this.runtime.getTargetForStage());
+            //             this.runtime.setRealtimeMode(programMode === 'realtime');
+            //         })
+            //         .catch(err => Promise.reject(err));
+            // }
 
             // Update the VM user's knowledge of targets and blocks on the workspace.
             this.emitTargetsUpdate(false /* Don't emit project change */);
@@ -1242,12 +1252,8 @@ class VirtualMachine extends EventEmitter {
         return this.runtime && this.runtime.renderer;
     }
 
-    /**
-     * Set the svg adapter for the VM/runtime, which converts scratch 2 svgs to scratch 3 svgs
-     * @param {!SvgRenderer} svgAdapter The adapter to attach
-     */
-    attachV2SVGAdapter (svgAdapter) {
-        this.runtime.attachV2SVGAdapter(svgAdapter);
+    // @deprecated
+    attachV2SVGAdapter () {
     }
 
     /**

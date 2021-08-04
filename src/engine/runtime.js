@@ -460,6 +460,13 @@ class Runtime extends EventEmitter {
          * @type {function}
          */
         this.removeCloudVariable = this._initializeRemoveCloudVariable(newCloudDataManager);
+
+        /**
+         * A string representing the origin of the current project from outside of the
+         * Scratch community, such as CSFirst.
+         * @type {?string}
+         */
+         this.origin = null;        
     }
 
     /**
@@ -719,6 +726,16 @@ class Runtime extends EventEmitter {
     }
 
     /**
+     * Event name for when the user picks a bluetooth device to connect to
+     * via Companion Device Manager (CDM)
+     * @const {string}
+     */
+     static get USER_PICKED_PERIPHERAL () {
+        return 'USER_PICKED_PERIPHERAL';
+    }
+
+
+    /**
      * Event name for reporting that a peripheral has connected.
      * This causes the status button in the blocks menu to indicate 'connected'.
      * @const {string}
@@ -974,24 +991,32 @@ class Runtime extends EventEmitter {
     /**
      * Clear all blocks in monitor.
      */
-    clearMonitor () {
+     clearMonitor () {
         // uncheck all checkbox.
-        this.monitorBlocks.getAllIds().forEach(block => {
-            this.monitorBlocks.changeBlock({
-                id: block,
-                element: 'checkbox',
-                value: false
-            }, this.runtime);
-        });
+        this.monitorBlocks.getAllIds()
+            .filter(blockId => this.monitorBlocks.getBlock(blockId).isMonitored)
+            .forEach(id => {
+                this.monitorBlocks.changeBlock({
+                    id: id,
+                    element: 'checkbox',
+                    value: false
+                }, this.runtime);
+            });
 
         // delet current monitors
         this.targets.forEach(target => {
             if (target.isOriginal) target.deleteMonitors();
         });
         this._monitorState = OrderedMap({});
+        this.monitorBlockInfo = {};
+
+        this._pushMonitors();
 
         // Update gui
-        this.emit(Runtime.MONITORS_UPDATE, this._monitorState);
+        if (!this._prevMonitorState.equals(this._monitorState)) {
+            this.emit(Runtime.MONITORS_UPDATE, this._monitorState);
+            this._prevMonitorState = this._monitorState;
+        }
     }
 
     /**
@@ -1806,6 +1831,7 @@ class Runtime extends EventEmitter {
      * @param {string} deviceId - the id of the device.
      * @param {number} peripheralId - the id of the peripheral.
      * @param {number} baudrate - the baudrate.
+     * @param {number} boardType - Arduino Nano, 1: ATmega168, 2: ATmega328 (Old Bootloader), 3: ATmega328.
      */
     connectPeripheral (deviceId, peripheralId, baudrate) {
         deviceId = this.analysisRealDeviceId(deviceId);
@@ -1945,14 +1971,6 @@ class Runtime extends EventEmitter {
     attachRenderer (renderer) {
         this.renderer = renderer;
         this.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
-    }
-
-    /**
-     * Set the svg adapter, which converts scratch 2 svgs to scratch 3 svgs
-     * @param {!SvgRenderer} svgAdapter The adapter to attach
-     */
-    attachV2SVGAdapter (svgAdapter) {
-        this.v2SvgAdapter = svgAdapter;
     }
 
     /**
@@ -2226,6 +2244,7 @@ class Runtime extends EventEmitter {
         return newThreads;
     }
 
+    
     /**
      * Dispose all targets. Return to clean state.
      */
@@ -2671,11 +2690,13 @@ class Runtime extends EventEmitter {
      * @param {string} sta state of current program mode to set.
      */
     setRealtimeMode (sta) {
-        this._isRealtimeMode = sta;
-        if (sta && this.getPeripheralIsConnected(this._device)) {
-            this.setPeripheralBaudrate(this._device, this._realtimeBaudrate);
+        if (this._isRealtimeMode !== sta){
+            this._isRealtimeMode = sta;
+            if (sta && this.getPeripheralIsConnected(this._device)) {
+                this.setPeripheralBaudrate(this._device, this._realtimeBaudrate);
+            }
+            this.emit(Runtime.PROGRAM_MODE_UPDATE, {isRealtimeMode: this._isRealtimeMode});
         }
-        this.emit(Runtime.PROGRAM_MODE_UPDATE, {isRealtimeMode: this._isRealtimeMode});
     }
 
     /**

@@ -4,20 +4,17 @@ const ArgumentType = require('../../extension-support/argument-type');
 const BlockType = require('../../extension-support/block-type');
 const ProgramModeType = require('../../extension-support/program-mode-type');
 
-const ArduinoPeripheral = require('../arduinoCommon/arduino-peripheral');
+const EspPeripheral = require('../arduinoCommen/esp-peripheral');
 
 /**
  * The list of USB device filters.
  * @readonly
  */
 const PNPID_LIST = [
-    // https://github.com/arduino/Arduino/blob/1.8.0/hardware/arduino/avr/boards.txt#L51-L58
-    'USB\\VID_2341&PID_0043',
-    'USB\\VID_2341&PID_0001',
-    'USB\\VID_2A03&PID_0043',
-    'USB\\VID_2341&PID_0243',
-    // For chinese clones that use CH340
-    'USB\\VID_1A86&PID_7523'
+    // CH340
+    'USB\\VID_1A86&PID_7523',
+    // CP2102
+    'USB\\VID_10C4&PID_EA60'
 ];
 
 /**
@@ -31,42 +28,39 @@ const SERIAL_CONFIG = {
 };
 
 /**
- * Configuration for arduino-cli firmata firmware.
+ * Configuration of build and flash. Used by arduino_debug and avrdude.
  * @readonly
  */
 const DIVECE_OPT = {
     type: 'arduino',
-    fqbn: 'arduino:avr:uno',
-    firmware: 'arduinoUno.standardFirmata.ino.hex'
+    fqbn: 'esp8266:esp8266:generic:baud=921600'
 };
 
 const Pins = {
-    D0: '0',
-    D1: '1',
-    D2: '2',
-    D3: '3',
-    D4: '4',
-    D5: '5',
-    D6: '6',
-    D7: '7',
-    D8: '8',
-    D9: '9',
-    D10: '10',
-    D11: '11',
-    D12: '12',
-    D13: '13',
-    A0: 'A0',
-    A1: 'A1',
-    A2: 'A2',
-    A3: 'A3',
-    A4: 'A4',
-    A5: 'A5'
+    GPIO0: '0',
+    GPIO1: '1',
+    GPIO2: '2',
+    GPIO3: '3',
+    GPIO4: '4',
+    GPIO5: '5',
+    GPIO6: '6',
+    GPIO7: '7',
+    GPIO8: '8',
+    GPIO9: '9',
+    GPIO10: '10',
+    GPIO11: '11',
+    GPIO12: '12',
+    GPIO13: '13',
+    GPIO14: '14',
+    GPIO15: '15',
+    GPIO16: '16',
+    A0: 'A0'
 };
 
 
 const Level = {
-    High: 'HIGH',
-    Low: 'LOW'
+    High: '1',
+    Low: '0'
 };
 
 const Buadrate = {
@@ -75,7 +69,7 @@ const Buadrate = {
     B19200: '19200',
     B38400: '38400',
     B57600: '57600',
-    B76800: '76800',    
+    B76800: '76800',
     B115200: '115200'
 };
 
@@ -93,8 +87,7 @@ const Mode = {
 const InterrupMode = {
     Rising: 'RISING',
     Falling: 'FALLING',
-    Change: 'CHANGE',
-    Low: 'LOW'
+    Change: 'CHANGE'
 };
 
 const DataType = {
@@ -104,12 +97,12 @@ const DataType = {
 };
 
 /**
- * Manage communication with a Arduino Uno peripheral over a Scratch Arduino Link client socket.
+ * Manage communication with a Arduino Esp8266 peripheral over a OpenBlock Link client socket.
  */
-class ArduinoUno extends ArduinoPeripheral{
+class arduinoEsp8266 extends EspPeripheral{
     /**
      * Construct a Arduino communication object.
-     * @param {Runtime} runtime - the Scratch Arduino runtime
+     * @param {Runtime} runtime - the OpenBlock runtime
      * @param {string} deviceId - the id of the extension
      * @param {string} originalDeviceId - the original id of the peripheral, like xxx_arduinoUno
      */
@@ -119,97 +112,89 @@ class ArduinoUno extends ArduinoPeripheral{
 }
 
 /**
- * Scratch Arduino blocks to interact with a Arduino Uno peripheral.
+ * OpenBlock blocks to interact with a Arduino Esp8266 peripheral.
  */
-class ScratchArduinoUnoDevice {
+class OpenBlockArduinoEsp8266Device {
     /**
      * @return {string} - the ID of this extension.
      */
     static get DEVICE_ID () {
-        return 'arduinoUno';
+        return 'arduinoEsp8266';
     }
 
     get PINS_MENU () {
         return [
             {
-                text: '0',
-                value: Pins.D0
+                text: 'GPIO0',
+                value: Pins.GPIO0
             },
             {
-                text: '1',
-                value: Pins.D1
+                text: 'GPIO1',
+                value: Pins.GPIO1
             },
             {
-                text: '2',
-                value: Pins.D2
+                text: 'GPIO2',
+                value: Pins.GPIO2
             },
             {
-                text: '3',
-                value: Pins.D3
+                text: 'GPIO3',
+                value: Pins.GPIO3
             },
             {
-                text: '4',
-                value: Pins.D4
+                text: 'GPIO4',
+                value: Pins.GPIO4
             },
             {
-                text: '5',
-                value: Pins.D5
+                text: 'GPIO5',
+                value: Pins.GPIO5
             },
             {
-                text: '6',
-                value: Pins.D6
+                text: 'GPIO6',
+                value: Pins.GPIO6
             },
             {
-                text: '7',
-                value: Pins.D7
+                text: 'GPIO7',
+                value: Pins.GPIO7
             },
             {
-                text: '8',
-                value: Pins.D8
+                text: 'GPIO8',
+                value: Pins.GPIO8
             },
             {
-                text: '9',
-                value: Pins.D9
+                text: 'GPIO9',
+                value: Pins.GPIO9
             },
             {
-                text: '10',
-                value: Pins.D10
+                text: 'GPIO10',
+                value: Pins.GPIO10
             },
             {
-                text: '11',
-                value: Pins.D11
+                text: 'GPIO11',
+                value: Pins.GPIO11
             },
             {
-                text: '12',
-                value: Pins.D12
+                text: 'GPIO12',
+                value: Pins.GPIO12
             },
             {
-                text: '13',
-                value: Pins.D13
+                text: 'GPIO13',
+                value: Pins.GPIO13
+            },
+            {
+                text: 'GPIO14',
+                value: Pins.GPIO14
+            },
+            {
+                text: 'GPIO15',
+                value: Pins.GPIO15
+            },
+            {
+                text: 'GPIO16',
+                value: Pins.GPIO16
             },
             {
                 text: 'A0',
                 value: Pins.A0
-            },
-            {
-                text: 'A1',
-                value: Pins.A1
-            },
-            {
-                text: 'A2',
-                value: Pins.A2
-            },
-            {
-                text: 'A3',
-                value: Pins.A3
-            },
-            {
-                text: 'A4',
-                value: Pins.A4
-            },
-            {
-                text: 'A5',
-                value: Pins.A5
             }
         ];
     }
@@ -218,7 +203,7 @@ class ScratchArduinoUnoDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'arduino.modeMenu.input',
+                    id: 'arduinoUno.modeMenu.input',
                     default: 'input',
                     description: 'label for input pin mode'
                 }),
@@ -226,7 +211,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduino.modeMenu.output',
+                    id: 'arduinoUno.modeMenu.output',
                     default: 'output',
                     description: 'label for output pin mode'
                 }),
@@ -234,7 +219,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduino.modeMenu.inputPullup',
+                    id: 'arduinoUno.modeMenu.inputPullup',
                     default: 'input-pullup',
                     description: 'label for input-pullup pin mode'
                 }),
@@ -246,60 +231,72 @@ class ScratchArduinoUnoDevice {
     get DIGITAL_PINS_MENU () {
         return [
             {
-                text: '0',
-                value: Pins.D0
+                text: 'GPIO0',
+                value: Pins.GPIO0
             },
             {
-                text: '1',
-                value: Pins.D1
+                text: 'GPIO1',
+                value: Pins.GPIO1
             },
             {
-                text: '2',
-                value: Pins.D2
+                text: 'GPIO2',
+                value: Pins.GPIO2
             },
             {
-                text: '3',
-                value: Pins.D3
+                text: 'GPIO3',
+                value: Pins.GPIO3
             },
             {
-                text: '4',
-                value: Pins.D4
+                text: 'GPIO4',
+                value: Pins.GPIO4
             },
             {
-                text: '5',
-                value: Pins.D5
+                text: 'GPIO5',
+                value: Pins.GPIO5
             },
             {
-                text: '6',
-                value: Pins.D6
+                text: 'GPIO6',
+                value: Pins.GPIO6
             },
             {
-                text: '7',
-                value: Pins.D7
+                text: 'GPIO7',
+                value: Pins.GPIO7
             },
             {
-                text: '8',
-                value: Pins.D8
+                text: 'GPIO8',
+                value: Pins.GPIO8
             },
             {
-                text: '9',
-                value: Pins.D9
+                text: 'GPIO9',
+                value: Pins.GPIO9
             },
             {
-                text: '10',
-                value: Pins.D10
+                text: 'GPIO10',
+                value: Pins.GPIO10
             },
             {
-                text: '11',
-                value: Pins.D11
+                text: 'GPIO11',
+                value: Pins.GPIO11
             },
             {
-                text: '12',
-                value: Pins.D12
+                text: 'GPIO12',
+                value: Pins.GPIO12
             },
             {
-                text: '13',
-                value: Pins.D13
+                text: 'GPIO13',
+                value: Pins.GPIO13
+            },
+            {
+                text: 'GPIO14',
+                value: Pins.GPIO14
+            },
+            {
+                text: 'GPIO15',
+                value: Pins.GPIO15
+            },
+            {
+                text: 'GPIO16',
+                value: Pins.GPIO16
             }
         ];
     }
@@ -309,26 +306,79 @@ class ScratchArduinoUnoDevice {
             {
                 text: 'A0',
                 value: Pins.A0
+            }
+        ];
+    }
+
+    get PWM_PINS_MENU () {
+        return [
+            {
+                text: 'GPIO0',
+                value: Pins.GPIO0
             },
             {
-                text: 'A1',
-                value: Pins.A1
+                text: 'GPIO1',
+                value: Pins.GPIO1
             },
             {
-                text: 'A2',
-                value: Pins.A2
+                text: 'GPIO2',
+                value: Pins.GPIO2
             },
             {
-                text: 'A3',
-                value: Pins.A3
+                text: 'GPIO3',
+                value: Pins.GPIO3
             },
             {
-                text: 'A4',
-                value: Pins.A4
+                text: 'GPIO4',
+                value: Pins.GPIO4
             },
             {
-                text: 'A5',
-                value: Pins.A5
+                text: 'GPIO5',
+                value: Pins.GPIO5
+            },
+            {
+                text: 'GPIO6',
+                value: Pins.GPIO6
+            },
+            {
+                text: 'GPIO7',
+                value: Pins.GPIO7
+            },
+            {
+                text: 'GPIO8',
+                value: Pins.GPIO8
+            },
+            {
+                text: 'GPIO9',
+                value: Pins.GPIO9
+            },
+            {
+                text: 'GPIO10',
+                value: Pins.GPIO10
+            },
+            {
+                text: 'GPIO11',
+                value: Pins.GPIO11
+            },
+            {
+                text: 'GPIO12',
+                value: Pins.GPIO12
+            },
+            {
+                text: 'GPIO13',
+                value: Pins.GPIO13
+            },
+            {
+                text: 'GPIO14',
+                value: Pins.GPIO14
+            },
+            {
+                text: 'GPIO15',
+                value: Pins.GPIO15
+            },
+            {
+                text: 'GPIO16',
+                value: Pins.GPIO16
             }
         ];
     }
@@ -337,7 +387,7 @@ class ScratchArduinoUnoDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'arduino.levelMenu.high',
+                    id: 'arduinoUno.levelMenu.high',
                     default: 'high',
                     description: 'label for high level'
                 }),
@@ -345,7 +395,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduino.levelMenu.low',
+                    id: 'arduinoUno.levelMenu.low',
                     default: 'low',
                     description: 'label for low level'
                 }),
@@ -354,44 +404,71 @@ class ScratchArduinoUnoDevice {
         ];
     }
 
-    get PWM_PINS_MENU () {
-        return [
-            {
-                text: '3',
-                value: Pins.D3
-            },
-            {
-                text: '5',
-                value: Pins.D5
-            },
-            {
-                text: '6',
-                value: Pins.D6
-            },
-            {
-                text: '9',
-                value: Pins.D9
-            },
-            {
-                text: '10',
-                value: Pins.D10
-            },
-            {
-                text: '11',
-                value: Pins.D11
-            }
-        ];
-    }
-
     get INTERRUPT_PINS_MENU () {
         return [
             {
-                text: '2',
-                value: Pins.D2
+                text: 'GPIO0',
+                value: Pins.GPIO0
             },
             {
-                text: '3',
-                value: Pins.D3
+                text: 'GPIO1',
+                value: Pins.GPIO1
+            },
+            {
+                text: 'GPIO2',
+                value: Pins.GPIO2
+            },
+            {
+                text: 'GPIO3',
+                value: Pins.GPIO3
+            },
+            {
+                text: 'GPIO4',
+                value: Pins.GPIO4
+            },
+            {
+                text: 'GPIO5',
+                value: Pins.GPIO5
+            },
+            {
+                text: 'GPIO6',
+                value: Pins.GPIO6
+            },
+            {
+                text: 'GPIO7',
+                value: Pins.GPIO7
+            },
+            {
+                text: 'GPIO8',
+                value: Pins.GPIO8
+            },
+            {
+                text: 'GPIO9',
+                value: Pins.GPIO9
+            },
+            {
+                text: 'GPIO10',
+                value: Pins.GPIO10
+            },
+            {
+                text: 'GPIO11',
+                value: Pins.GPIO11
+            },
+            {
+                text: 'GPIO12',
+                value: Pins.GPIO12
+            },
+            {
+                text: 'GPIO13',
+                value: Pins.GPIO13
+            },
+            {
+                text: 'GPIO14',
+                value: Pins.GPIO14
+            },
+            {
+                text: 'GPIO15',
+                value: Pins.GPIO15
             }
         ];
     }
@@ -399,36 +476,16 @@ class ScratchArduinoUnoDevice {
     get INTERRUP_MODE_MENU () {
         return [
             {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.risingEdge',
-                    default: 'rising edge',
-                    description: 'label for rising edge interrup'
-                }),
+                text: 'rising edge',
                 value: InterrupMode.Rising
             },
             {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.fallingEdge',
-                    default: 'falling edge',
-                    description: 'label for falling edge interrup'
-                }),
+                text: 'falling edge',
                 value: InterrupMode.Falling
             },
             {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.changeEdge',
-                    default: 'change edge',
-                    description: 'label for change edge interrup'
-                }),
+                text: 'change edge',
                 value: InterrupMode.Change
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.low',
-                    default: 'low',
-                    description: 'label for low interrup'
-                }),
-                value: InterrupMode.Low
             }
         ];
     }
@@ -458,7 +515,7 @@ class ScratchArduinoUnoDevice {
             {
                 text: '76800',
                 value: Buadrate.B76800
-            },            
+            },
             {
                 text: '115200',
                 value: Buadrate.B115200
@@ -470,7 +527,7 @@ class ScratchArduinoUnoDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'arduino.eolMenu.warp',
+                    id: 'arduinoUno.eolMenu.warp',
                     default: 'warp',
                     description: 'label for warp print'
                 }),
@@ -478,7 +535,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduino.eolMenu.noWarp',
+                    id: 'arduinoUno.eolMenu.noWarp',
                     default: 'no-warp',
                     description: 'label for no warp print'
                 }),
@@ -491,7 +548,7 @@ class ScratchArduinoUnoDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'arduino.dataTypeMenu.wholeNumber',
+                    id: 'arduinoUno.dataTypeMenu.wholeNumber',
                     default: 'whole number',
                     description: 'label for whole number'
                 }),
@@ -499,7 +556,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduino.dataTypeMenu.decimal',
+                    id: 'arduinoUno.dataTypeMenu.decimal',
                     default: 'decimal',
                     description: 'label for decimal number'
                 }),
@@ -507,7 +564,7 @@ class ScratchArduinoUnoDevice {
             },
             {
                 text: formatMessage({
-                    id: 'arduino.dataTypeMenu.string',
+                    id: 'arduinoUno.dataTypeMenu.string',
                     default: 'string',
                     description: 'label for string'
                 }),
@@ -518,18 +575,19 @@ class ScratchArduinoUnoDevice {
 
     /**
      * Construct a set of Arduino blocks.
-     * @param {Runtime} runtime - the Scratch Arduino runtime.
+     * @param {Runtime} runtime - the OpenBlock runtime.
      * @param {string} originalDeviceId - the original id of the peripheral, like xxx_arduinoUno
      */
     constructor (runtime, originalDeviceId) {
         /**
-         * The Scratch Arduino runtime.
+         * The OpenBlock runtime.
          * @type {Runtime}
          */
         this.runtime = runtime;
 
-        // Create a new Arduino uno peripheral instance
-        this._peripheral = new ArduinoUno(this.runtime, ScratchArduinoUnoDevice.DEVICE_ID, originalDeviceId);
+        // Create a new Arduino esp8266 peripheral instance
+        this._peripheral = new arduinoEsp8266(this.runtime,
+            OpenBlockArduinoEsp8266Device.DEVICE_ID, originalDeviceId);
     }
 
     /**
@@ -540,9 +598,9 @@ class ScratchArduinoUnoDevice {
             {
                 id: 'pin',
                 name: formatMessage({
-                    id: 'arduino.category.pins',
+                    id: 'arduinoUno.category.pins',
                     default: 'Pins',
-                    description: 'The name of the arduino device pin category'
+                    description: 'The name of the arduino Esp8266 device pin category'
                 }),
                 color1: '#4C97FF',
                 color2: '#3373CC',
@@ -552,16 +610,16 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'setPinMode',
                         text: formatMessage({
-                            id: 'arduino.pins.setPinMode',
+                            id: 'arduinoUno.pins.setPinMode',
                             default: 'set pin [PIN] mode [MODE]',
-                            description: 'arduino set pin mode'
+                            description: 'arduinoEsp8266 set pin mode'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
                                 menu: 'pins',
-                                defaultValue: Pins.D0
+                                defaultValue: Pins.GPIO0
                             },
                             MODE: {
                                 type: ArgumentType.STRING,
@@ -573,16 +631,16 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'setDigitalOutput',
                         text: formatMessage({
-                            id: 'arduino.pins.setDigitalOutput',
+                            id: 'arduinoUno.pins.setDigitalOutput',
                             default: 'set digital pin [PIN] out [LEVEL]',
-                            description: 'arduino set digital pin out'
+                            description: 'arduinoEsp8266 set digital pin out'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: Pins.D0
+                                menu: 'digitalPins',
+                                defaultValue: Pins.GPIO0
                             },
                             LEVEL: {
                                 type: ArgumentType.STRING,
@@ -595,16 +653,16 @@ class ScratchArduinoUnoDevice {
 
                         opcode: 'setPwmOutput',
                         text: formatMessage({
-                            id: 'arduino.pins.setPwmOutput',
+                            id: 'arduinoUno.pins.setPwmOutput',
                             default: 'set pwm pin [PIN] out [OUT]',
-                            description: 'arduino set pwm pin out'
+                            description: 'arduinoUno set pwm pin out'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
                                 menu: 'pwmPins',
-                                defaultValue: Pins.D3
+                                defaultValue: Pins.GPIO0
                             },
                             OUT: {
                                 type: ArgumentType.UINT8_NUMBER,
@@ -616,25 +674,25 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'readDigitalPin',
                         text: formatMessage({
-                            id: 'arduino.pins.readDigitalPin',
+                            id: 'arduinoUno.pins.readDigitalPin',
                             default: 'read digital pin [PIN]',
-                            description: 'arduino read digital pin'
+                            description: 'arduinoEsp8266 read digital pin'
                         }),
                         blockType: BlockType.BOOLEAN,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
                                 menu: 'digitalPins',
-                                defaultValue: Pins.D0
+                                defaultValue: Pins.GPIO0
                             }
                         }
                     },
                     {
                         opcode: 'readAnalogPin',
                         text: formatMessage({
-                            id: 'arduino.pins.readAnalogPin',
+                            id: 'arduinoUno.pins.readAnalogPin',
                             default: 'read analog pin [PIN]',
-                            description: 'arduino read analog pin'
+                            description: 'arduinoEsp8266 read analog pin'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -648,40 +706,18 @@ class ScratchArduinoUnoDevice {
                     '---',
                     {
 
-                        opcode: 'setServoOutput',
-                        text: formatMessage({
-                            id: 'arduino.pins.setServoOutput',
-                            default: 'set servo pin [PIN] out [OUT]',
-                            description: 'arduino set servo pin out'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pwmPins',
-                                defaultValue: Pins.D3
-                            },
-                            OUT: {
-                                type: ArgumentType.ANGLE,
-                                defaultValue: '90'
-                            }
-                        }
-                    },
-                    '---',
-                    {
-
                         opcode: 'attachInterrupt',
                         text: formatMessage({
-                            id: 'arduino.pins.attachInterrupt',
+                            id: 'arduinoUno.pins.attachInterrupt',
                             default: 'attach interrupt pin [PIN] mode [MODE] executes',
-                            description: 'arduino attach interrupt'
+                            description: 'arduinoEsp8266 attach interrupt'
                         }),
                         blockType: BlockType.CONDITIONAL,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
                                 menu: 'interruptPins',
-                                defaultValue: Pins.D3
+                                defaultValue: Pins.GPIO0
                             },
                             MODE: {
                                 type: ArgumentType.STRING,
@@ -695,16 +731,16 @@ class ScratchArduinoUnoDevice {
 
                         opcode: 'detachInterrupt',
                         text: formatMessage({
-                            id: 'arduino.pins.detachInterrupt',
+                            id: 'arduinoUno.pins.detachInterrupt',
                             default: 'detach interrupt pin [PIN]',
-                            description: 'arduino attach interrupt'
+                            description: 'arduinoEsp8266 detach interrupt'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
                                 menu: 'interruptPins',
-                                defaultValue: Pins.D3
+                                defaultValue: Pins.GPIO0
                             }
                         },
                         programMode: [ProgramModeType.UPLOAD]
@@ -741,9 +777,9 @@ class ScratchArduinoUnoDevice {
             {
                 id: 'serial',
                 name: formatMessage({
-                    id: 'arduino.category.serial',
+                    id: 'arduinoUno.category.serial',
                     default: 'Serial',
-                    description: 'The name of the arduino device serial category'
+                    description: 'The name of the arduino Esp8266 device serial category'
                 }),
                 color1: '#9966FF',
                 color2: '#774DCB',
@@ -753,16 +789,16 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'serialBegin',
                         text: formatMessage({
-                            id: 'arduino.serial.serialBegin',
+                            id: 'arduinoUno.serial.serialBegin',
                             default: 'serial begin baudrate [VALUE]',
-                            description: 'arduino serial begin'
+                            description: 'arduinoEsp8266 serial begin'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             VALUE: {
                                 type: ArgumentType.STRING,
                                 menu: 'baudrate',
-                                defaultValue: Buadrate.B9600
+                                defaultValue: Buadrate.B76800
                             }
                         },
                         programMode: [ProgramModeType.UPLOAD]
@@ -770,15 +806,15 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'serialPrint',
                         text: formatMessage({
-                            id: 'arduino.serial.serialPrint',
+                            id: 'arduinoUno.serial.serialPrint',
                             default: 'serial print [VALUE] [EOL]',
-                            description: 'arduino serial print'
+                            description: 'arduinoEsp8266 serial print'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
                             VALUE: {
                                 type: ArgumentType.STRING,
-                                defaultValue: 'Hello Scratch Arduino'
+                                defaultValue: 'Hello OpenBlock'
                             },
                             EOL: {
                                 type: ArgumentType.STRING,
@@ -791,23 +827,21 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'serialAvailable',
                         text: formatMessage({
-                            id: 'arduino.serial.serialAvailable',
+                            id: 'arduinoUno.serial.serialAvailable',
                             default: 'serial available data length',
-                            description: 'arduino serial available data length'
+                            description: 'arduinoEsp8266 serial available data length'
                         }),
                         blockType: BlockType.REPORTER,
-                        disableMonitor: true,
                         programMode: [ProgramModeType.UPLOAD]
                     },
                     {
                         opcode: 'serialReadData',
                         text: formatMessage({
-                            id: 'arduino.serial.serialReadData',
+                            id: 'arduinoUno.serial.serialReadData',
                             default: 'serial read data',
-                            description: 'arduino serial read data'
+                            description: 'arduinoEsp8266 serial read data'
                         }),
                         blockType: BlockType.REPORTER,
-                        disableMonitor: true,
                         programMode: [ProgramModeType.UPLOAD]
                     }
                 ],
@@ -823,9 +857,9 @@ class ScratchArduinoUnoDevice {
             {
                 id: 'data',
                 name: formatMessage({
-                    id: 'arduino.category.data',
+                    id: 'arduinoUno.category.data',
                     default: 'Data',
-                    description: 'The name of the arduino device data category'
+                    description: 'The name of the arduino uno device data category'
                 }),
                 color1: '#CF63CF',
                 color2: '#C94FC9',
@@ -834,9 +868,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'dataMap',
                         text: formatMessage({
-                            id: 'arduino.data.dataMap',
+                            id: 'arduinoUno.data.dataMap',
                             default: 'map [DATA] from ([ARG0], [ARG1]) to ([ARG2], [ARG3])',
-                            description: 'arduino data map'
+                            description: 'arduinoEsp8266 data map'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -867,9 +901,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'dataConstrain',
                         text: formatMessage({
-                            id: 'arduino.data.dataConstrain',
+                            id: 'arduinoUno.data.dataConstrain',
                             default: 'constrain [DATA] between ([ARG0], [ARG1])',
-                            description: 'arduino data constrain'
+                            description: 'arduinoEsp8266 data constrain'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -891,9 +925,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'dataConvert',
                         text: formatMessage({
-                            id: 'arduino.data.dataConvert',
+                            id: 'arduinoUno.data.dataConvert',
                             default: 'convert [DATA] to [TYPE]',
-                            description: 'arduino data convert'
+                            description: 'arduinoEsp8266 data convert'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -912,9 +946,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'dataConvertASCIICharacter',
                         text: formatMessage({
-                            id: 'arduino.data.dataConvertASCIICharacter',
+                            id: 'arduinoUno.data.dataConvertASCIICharacter',
                             default: 'convert [DATA] to ASCII character',
-                            description: 'arduino data convert to ASCII character'
+                            description: 'arduinoEsp8266 data convert to ASCII character'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -928,9 +962,9 @@ class ScratchArduinoUnoDevice {
                     {
                         opcode: 'dataConvertASCIINumber',
                         text: formatMessage({
-                            id: 'arduino.data.dataConvertASCIINumber',
+                            id: 'arduinoUno.data.dataConvertASCIINumber',
                             default: 'convert [DATA] to ASCII nubmer',
-                            description: 'arduino data convert to ASCII nubmer'
+                            description: 'arduinoEsp8266 data convert to ASCII nubmer'
                         }),
                         blockType: BlockType.REPORTER,
                         arguments: {
@@ -972,16 +1006,6 @@ class ScratchArduinoUnoDevice {
     }
 
     /**
-     * Set pin pwm out value.
-     * @param {object} args - the block's arguments.
-     * @return {Promise} - a Promise that resolves after the set pin pwm out value is done.
-     */
-    setPwmOutput (args) {
-        this._peripheral.setPwmOutput(args.PIN, args.OUT);
-        return Promise.resolve();
-    }
-
-    /**
      * Read pin digital level.
      * @param {object} args - the block's arguments.
      * @return {boolean} - true if read high level, false if read low level.
@@ -998,16 +1022,6 @@ class ScratchArduinoUnoDevice {
     readAnalogPin (args) {
         return this._peripheral.readAnalogPin(args.PIN);
     }
-
-    /**
-     * Set servo out put.
-     * @param {object} args - the block's arguments.
-     * @return {Promise} - a Promise that resolves after the set servo out value is done.
-     */
-    setServoOutput (args) {
-        this._peripheral.setServoOutput(args.PIN, args.OUT);
-        return Promise.resolve();
-    }
 }
 
-module.exports = ScratchArduinoUnoDevice;
+module.exports = OpenBlockArduinoEsp8266Device;
