@@ -2690,11 +2690,13 @@ class Runtime extends EventEmitter {
      * @param {string} sta state of current program mode to set.
      */
     setRealtimeMode (sta) {
-        this._isRealtimeMode = sta;
-        if (sta && this.getPeripheralIsConnected(this._device)) {
-            this.setPeripheralBaudrate(this._device, this._realtimeBaudrate);
+        if (this._isRealtimeMode !== sta){
+            this._isRealtimeMode = sta;
+            if (sta && this.getPeripheralIsConnected(this._device)) {
+                this.setPeripheralBaudrate(this._device, this._realtimeBaudrate);
+            }
+            this.emit(Runtime.PROGRAM_MODE_UPDATE, {isRealtimeMode: this._isRealtimeMode});
         }
-        this.emit(Runtime.PROGRAM_MODE_UPDATE, {isRealtimeMode: this._isRealtimeMode});
     }
 
     /**
