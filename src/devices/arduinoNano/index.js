@@ -16,11 +16,11 @@ const PNPID_LIST = [
 ];
 
 /**
- * Configuration of serialport
+ * Configuration of serialport for Firmata
  * @readonly
  */
 const SERIAL_CONFIG = {
-    baudRate: 115200,
+    baudRate: 57600,
     dataBits: 8,
     stopBits: 1
 };
