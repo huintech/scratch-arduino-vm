@@ -18,7 +18,7 @@ const PNPID_LIST = [
 ];
 
 /**
- * Configuration of serialport
+ * Configuration of serialport for Firmata
  * @readonly
  */
 const SERIAL_CONFIG = {
