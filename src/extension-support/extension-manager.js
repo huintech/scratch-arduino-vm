@@ -36,6 +36,8 @@ const builtinDevices = {
     ottoBasic: () => require('../devices/ottoBasic'),
     arduinoUno: () => require('../devices/arduinoUno'),
     arduinoNano: () => require('../devices/arduinoNano'),
+    arduinoEsp32: () => require('../devices/arduinoEsp32'),
+    arduinoEsp8266: () => require('../devices/arduinoEsp8266')
 };
 
 /**
