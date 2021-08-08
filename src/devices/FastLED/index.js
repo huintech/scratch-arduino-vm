@@ -301,35 +301,6 @@ class ScratchArduinoNanoDevice {
         ];
     }
 
-    get ANALOG_PINS_MENU () {
-        return [
-            {
-                text: 'A0',
-                value: Pins.A0
-            },
-            {
-                text: 'A1',
-                value: Pins.A1
-            },
-            {
-                text: 'A2',
-                value: Pins.A2
-            },
-            {
-                text: 'A3',
-                value: Pins.A3
-            },
-            {
-                text: 'A4',
-                value: Pins.A4
-            },
-            {
-                text: 'A5',
-                value: Pins.A5
-            }
-        ];
-    }
-
     get LEVEL_MENU () {
         return [
             {
@@ -347,168 +318,6 @@ class ScratchArduinoNanoDevice {
                     description: 'label for low level'
                 }),
                 value: Level.Low
-            }
-        ];
-    }
-
-    get PWM_PINS_MENU () {
-        return [
-            {
-                text: '3',
-                value: Pins.D3
-            },
-            {
-                text: '5',
-                value: Pins.D5
-            },
-            {
-                text: '6',
-                value: Pins.D6
-            },
-            {
-                text: '9',
-                value: Pins.D9
-            },
-            {
-                text: '10',
-                value: Pins.D10
-            },
-            {
-                text: '11',
-                value: Pins.D11
-            }
-        ];
-    }
-
-    get INTERRUPT_PINS_MENU () {
-        return [
-            {
-                text: '2',
-                value: Pins.D2
-            },
-            {
-                text: '3',
-                value: Pins.D3
-            }
-        ];
-    }
-
-    get INTERRUP_MODE_MENU () {
-        return [
-            {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.risingEdge',
-                    default: 'rising edge',
-                    description: 'label for rising edge interrup'
-                }),
-                value: InterrupMode.Rising
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.fallingEdge',
-                    default: 'falling edge',
-                    description: 'label for falling edge interrup'
-                }),
-                value: InterrupMode.Falling
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.changeEdge',
-                    default: 'change edge',
-                    description: 'label for change edge interrup'
-                }),
-                value: InterrupMode.Change
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.low',
-                    default: 'low',
-                    description: 'label for low interrup'
-                }),
-                value: InterrupMode.Low
-            }
-        ];
-    }
-
-    get BAUDTATE_MENU () {
-        return [
-            {
-                text: '4800',
-                value: Buadrate.B4800
-            },
-            {
-                text: '9600',
-                value: Buadrate.B9600
-            },
-            {
-                text: '19200',
-                value: Buadrate.B19200
-            },
-            {
-                text: '38400',
-                value: Buadrate.B38400
-            },
-            {
-                text: '57600',
-                value: Buadrate.B57600
-            },
-            {
-                text: '76800',
-                value: Buadrate.B76800
-            },            
-            {
-                text: '115200',
-                value: Buadrate.B115200
-            }
-        ];
-    }
-
-    get EOL_MENU () {
-        return [
-            {
-                text: formatMessage({
-                    id: 'arduino.eolMenu.warp',
-                    default: 'warp',
-                    description: 'label for warp print'
-                }),
-                value: Eol.Warp
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.eolMenu.noWarp',
-                    default: 'no-warp',
-                    description: 'label for no warp print'
-                }),
-                value: Eol.NoWarp
-            }
-        ];
-    }
-
-    get DATA_TYPE_MENU () {
-        return [
-            {
-                text: formatMessage({
-                    id: 'arduino.dataTypeMenu.wholeNumber',
-                    default: 'whole number',
-                    description: 'label for whole number'
-                }),
-                value: DataType.WholeNumber
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.dataTypeMenu.decimal',
-                    default: 'decimal',
-                    description: 'label for decimal number'
-                }),
-                value: DataType.Decimal
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.dataTypeMenu.string',
-                    default: 'string',
-                    description: 'label for string'
-                }),
-                value: DataType.String
             }
         ];
     }
@@ -587,103 +396,6 @@ class ScratchArduinoNanoDevice {
                                 defaultValue: Level.High
                             }
                         }
-                    },
-                    '---',
-                    {
-                        opcode: 'readDigitalPin',
-                        text: formatMessage({
-                            id: 'arduino.pins.readDigitalPin',
-                            default: 'read digital pin [PIN]',
-                            description: 'arduino read digital pin'
-                        }),
-                        blockType: BlockType.BOOLEAN,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'digitalPins',
-                                defaultValue: Pins.D0
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'readAnalogPin',
-                        text: formatMessage({
-                            id: 'arduino.pins.readAnalogPin',
-                            default: 'read analog pin [PIN]',
-                            description: 'arduino read analog pin'
-                        }),
-                        blockType: BlockType.REPORTER,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'analogPins',
-                                defaultValue: Pins.A0
-                            }
-                        }
-                    },
-                    '---',
-                    {
-
-                        opcode: 'setServoOutput',
-                        text: formatMessage({
-                            id: 'arduino.pins.setServoOutput',
-                            default: 'set servo pin [PIN] out [OUT]',
-                            description: 'arduino set servo pin out'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pwmPins',
-                                defaultValue: Pins.D3
-                            },
-                            OUT: {
-                                type: ArgumentType.ANGLE,
-                                defaultValue: '90'
-                            }
-                        }
-                    },
-                    '---',
-                    {
-
-                        opcode: 'attachInterrupt',
-                        text: formatMessage({
-                            id: 'arduino.pins.attachInterrupt',
-                            default: 'attach interrupt pin [PIN] mode [MODE] executes',
-                            description: 'arduino attach interrupt'
-                        }),
-                        blockType: BlockType.CONDITIONAL,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'interruptPins',
-                                defaultValue: Pins.D3
-                            },
-                            MODE: {
-                                type: ArgumentType.STRING,
-                                menu: 'interruptMode',
-                                defaultValue: InterrupMode.Rising
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    },
-                    {
-
-                        opcode: 'detachInterrupt',
-                        text: formatMessage({
-                            id: 'arduino.pins.detachInterrupt',
-                            default: 'detach interrupt pin [PIN]',
-                            description: 'arduino attach interrupt'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'interruptPins',
-                                defaultValue: Pins.D3
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
                     }
                 ],
                 menus: {
@@ -696,21 +408,9 @@ class ScratchArduinoNanoDevice {
                     digitalPins: {
                         items: this.DIGITAL_PINS_MENU
                     },
-                    analogPins: {
-                        items: this.ANALOG_PINS_MENU
-                    },
                     level: {
                         acceptReporters: true,
                         items: this.LEVEL_MENU
-                    },
-                    pwmPins: {
-                        items: this.PWM_PINS_MENU
-                    },
-                    interruptPins: {
-                        items: this.INTERRUPT_PINS_MENU
-                    },
-                    interruptMode: {
-                        items: this.INTERRUP_MODE_MENU
                     }
                 }
             }
@@ -737,43 +437,6 @@ class ScratchArduinoNanoDevice {
         return Promise.resolve();
     }
 
-    /**
-     * Set pin pwm out value.
-     * @param {object} args - the block's arguments.
-     * @return {Promise} - a Promise that resolves after the set pin pwm out value is done.
-     */
-    setPwmOutput (args) {
-        this._peripheral.setPwmOutput(args.PIN, args.OUT);
-        return Promise.resolve();
-    }
-
-    /**
-     * Read pin digital level.
-     * @param {object} args - the block's arguments.
-     * @return {boolean} - true if read high level, false if read low level.
-     */
-    readDigitalPin (args) {
-        return this._peripheral.readDigitalPin(args.PIN);
-    }
-
-    /**
-     * Read analog pin.
-     * @param {object} args - the block's arguments.
-     * @return {number} - analog value fo the pin.
-     */
-    readAnalogPin (args) {
-        return this._peripheral.readAnalogPin(args.PIN);
-    }
-
-    /**
-     * Set servo out put.
-     * @param {object} args - the block's arguments.
-     * @return {Promise} - a Promise that resolves after the set servo out value is done.
-     */
-    setServoOutput (args) {
-        this._peripheral.setServoOutput(args.PIN, args.OUT);
-        return Promise.resolve();
-    }
 }
 
 module.exports = ScratchArduinoNanoDevice;

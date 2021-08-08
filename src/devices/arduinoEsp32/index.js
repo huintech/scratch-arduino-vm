@@ -139,12 +139,12 @@ const DataType = {
 };
 
 /**
- * Manage communication with a Arduino esp32 peripheral over a OpenBlock Link client socket.
+ * Manage communication with a Arduino esp32 peripheral over a Scratch Arduino Link client socket.
  */
 class ArduinoEsp32 extends EspPeripheral{
     /**
      * Construct a Arduino communication object.
-     * @param {Runtime} runtime - the OpenBlock runtime
+     * @param {Runtime} runtime - the Scratch Arduino runtime
      * @param {string} deviceId - the id of the extension
      * @param {string} originalDeviceId - the original id of the peripheral, like xxx_arduinoUno
      */
@@ -154,7 +154,7 @@ class ArduinoEsp32 extends EspPeripheral{
 }
 
 /**
- * OpenBlock blocks to interact with a Arduino esp32 peripheral.
+ * Scratch Arduino blocks to interact with a Arduino esp32 peripheral.
  */
 class OpenBlockArduinoEsp32Device {
     /**
@@ -807,12 +807,12 @@ class OpenBlockArduinoEsp32Device {
 
     /**
      * Construct a set of Arduino blocks.
-     * @param {Runtime} runtime - the OpenBlock runtime.
+     * @param {Runtime} runtime - the Scratch Arduino runtime.
      * @param {string} originalDeviceId - the original id of the peripheral, like xxx_arduinoUno
      */
     constructor (runtime, originalDeviceId) {
         /**
-         * The OpenBlock runtime.
+         * The Scratch Arduino runtime.
          * @type {Runtime}
          */
         this.runtime = runtime;
@@ -1127,7 +1127,7 @@ class OpenBlockArduinoEsp32Device {
                             },
                             VALUE: {
                                 type: ArgumentType.STRING,
-                                defaultValue: 'Hello OpenBlock'
+                                defaultValue: 'Hello Scratch Arduino'
                             },
                             EOL: {
                                 type: ArgumentType.STRING,
