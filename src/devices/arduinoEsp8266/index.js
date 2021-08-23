@@ -4,7 +4,7 @@ const ArgumentType = require('../../extension-support/argument-type');
 const BlockType = require('../../extension-support/block-type');
 const ProgramModeType = require('../../extension-support/program-mode-type');
 
-const EspPeripheral = require('../arduinoCommen/esp-peripheral');
+const EspPeripheral = require('../arduinoCommon/esp-peripheral');
 
 /**
  * The list of USB device filters.
@@ -97,12 +97,12 @@ const DataType = {
 };
 
 /**
- * Manage communication with a Arduino Esp8266 peripheral over a OpenBlock Link client socket.
+ * Manage communication with a Arduino Esp8266 peripheral over a Scratch Arduino Link client socket.
  */
 class arduinoEsp8266 extends EspPeripheral{
     /**
      * Construct a Arduino communication object.
-     * @param {Runtime} runtime - the OpenBlock runtime
+     * @param {Runtime} runtime - the Scratch Arduino runtime
      * @param {string} deviceId - the id of the extension
      * @param {string} originalDeviceId - the original id of the peripheral, like xxx_arduinoUno
      */
@@ -112,7 +112,7 @@ class arduinoEsp8266 extends EspPeripheral{
 }
 
 /**
- * OpenBlock blocks to interact with a Arduino Esp8266 peripheral.
+ * Scratch Arduino blocks to interact with a Arduino Esp8266 peripheral.
  */
 class OpenBlockArduinoEsp8266Device {
     /**
@@ -575,12 +575,12 @@ class OpenBlockArduinoEsp8266Device {
 
     /**
      * Construct a set of Arduino blocks.
-     * @param {Runtime} runtime - the OpenBlock runtime.
+     * @param {Runtime} runtime - the Scratch Arduino runtime.
      * @param {string} originalDeviceId - the original id of the peripheral, like xxx_arduinoUno
      */
     constructor (runtime, originalDeviceId) {
         /**
-         * The OpenBlock runtime.
+         * The Scratch Arduino runtime.
          * @type {Runtime}
          */
         this.runtime = runtime;
@@ -814,7 +814,7 @@ class OpenBlockArduinoEsp8266Device {
                         arguments: {
                             VALUE: {
                                 type: ArgumentType.STRING,
-                                defaultValue: 'Hello OpenBlock'
+                                defaultValue: 'Hello Scratch Arduino'
                             },
                             EOL: {
                                 type: ArgumentType.STRING,

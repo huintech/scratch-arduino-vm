@@ -34,8 +34,11 @@ const builtinExtensions = {
 // VM: src/ottoBasic/index.js -> class ScratchArduinoNanoDevice
 const builtinDevices = {
     ottoBasic: () => require('../devices/ottoBasic'),
+    FastLED: () => require('../devices/FastLED'),
     arduinoUno: () => require('../devices/arduinoUno'),
     arduinoNano: () => require('../devices/arduinoNano'),
+    arduinoEsp32: () => require('../devices/arduinoEsp32'),
+    arduinoEsp8266: () => require('../devices/arduinoEsp8266')
 };
 
 /**
