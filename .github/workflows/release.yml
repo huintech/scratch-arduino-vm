@@ -34,6 +34,6 @@ jobs:
         uses: mvasigh/dispatch-action@main
         with:
           owner: ottawastem
-          repo: scratch-arduino-gui
+          repo: scratch-arduino
           event_type: release_scratch_arduino_vm
           token: ${{ secrets.TOKEN_GITHUB_SECRET }}
