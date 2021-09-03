@@ -590,38 +590,38 @@ class VirtualMachine extends EventEmitter {
     /**
      * Sync install device extensions.
      */
-    installDeviceExtensionsSync () {
-        // if (this.runtime._pendingDeviceExtensions) {
-        //     if (this.runtime._pendingDeviceExtensions.length === 0) {
-        //         this.emit('installDeviceExtensionsSync.success');
-        //         return;
-        //     }
-        //     this.extensionManager.loadDeviceExtension(this.runtime._pendingDeviceExtensions.shift())
-        //         .then(() => this.installDeviceExtensionsSync())
-        //         .catch(e => this.emit('installDeviceExtensionsSync.error', e));
-        // }
-    }
+    // installDeviceExtensionsSync () {
+    //     if (this.runtime._pendingDeviceExtensions) {
+    //         if (this.runtime._pendingDeviceExtensions.length === 0) {
+    //             this.emit('installDeviceExtensionsSync.success');
+    //             return;
+    //         }
+    //         this.extensionManager.loadDeviceExtension(this.runtime._pendingDeviceExtensions.shift())
+    //             .then(() => this.installDeviceExtensionsSync())
+    //             .catch(e => this.emit('installDeviceExtensionsSync.error', e));
+    //     }
+    // }
 
     /**
      * Install `deserialize` results: deviceExtensions.
      * @param {Array.<DeviceExtension>} deviceExtensions - the deivce extensions to be installed
      * @returns {Promise} Promise that resolves after the device extensions has loaded
      */
-    installDeviceExtensions (deviceExtensions) {
-        // return new Promise((resolve, reject) => {
-        //     this.runtime._pendingDeviceExtensions = deviceExtensions;
+    // installDeviceExtensions (deviceExtensions) {
+    //     return new Promise((resolve, reject) => {
+    //         this.runtime._pendingDeviceExtensions = deviceExtensions;
 
-        //     this.extensionManager.getDeviceExtensionsList().then(() => {
-        //         this.installDeviceExtensionsSync();
-        //     });
-        //     this.on('installDeviceExtensionsSync.success', () => {
-        //         resolve();
-        //     });
-        //     this.on('installDeviceExtensionsSync.error', err => {
-        //         reject(err);
-        //     });
-        // });
-    }
+    //         this.extensionManager.getDeviceExtensionsList().then(() => {
+    //             this.installDeviceExtensionsSync();
+    //         });
+    //         this.on('installDeviceExtensionsSync.success', () => {
+    //             resolve();
+    //         });
+    //         this.on('installDeviceExtensionsSync.error', err => {
+    //             reject(err);
+    //         });
+    //     });
+    // }
 
     /**
      * Install `deserialize` results: zero or more targets after the extensions (if any) used by those targets.

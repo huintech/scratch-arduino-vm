@@ -32,8 +32,6 @@ const SERIAL_CONFIG = {
 const DIVECE_OPT = {
     type: 'arduino',
     fqbn: 'arduino:avr:nano:cpu=atmega328',
-    // fqbn: 'arduino:avr:nano:cpu=atmega328',
-    // fqbn: 'arduino:avr:nano:cpu=atmega168',
     firmware: 'arduinoNano.standardFirmata.ino.hex'
 };
 

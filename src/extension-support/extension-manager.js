@@ -8,10 +8,10 @@ const maybeFormatMessage = require('../util/maybe-format-message');
 const BlockType = require('./block-type');
 
 // Local device server address
-const localDevicesUrl = 'http://127.0.0.1:20122/';
+// const localDevicesUrl = 'http://127.0.0.1:20122/';
 
 // Local device extension server address
-const localDeviceExtensionsUrl = 'http://127.0.0.1:20120/';
+// const localDeviceExtensionsUrl = 'http://127.0.0.1:20120/';
 
 // These extensions are currently built into the VM repository but should not be loaded at startup.
 // TODO: move these out into a separate repository?
@@ -209,24 +209,24 @@ class ExtensionManager {
      * Get unbuild-in devices list from local server.
      * @returns {Promise} resolved devices list has been fetched or failure
      */
-    getDeviceList () {
-        return new Promise(resolve => {
-            fetch(localDevicesUrl)
-                .then(response => response.json())
-                .then(devices => {
-                    devices = devices.map(dev => {
-                        dev.iconURL = localDevicesUrl + dev.iconURL;
-                        dev.connectionIconURL = localDevicesUrl + dev.connectionIconURL;
-                        dev.connectionSmallIconURL = localDevicesUrl + dev.connectionSmallIconURL;
-                        return dev;
-                    });
-                    return resolve(devices);
-                }, err => {
-                    log.warn(`Can not fetch data from local device server: ${err}`);
-                    return resolve();
-                });
-        });
-    }
+    // getDeviceList () {
+    //     return new Promise(resolve => {
+    //         fetch(localDevicesUrl)
+    //             .then(response => response.json())
+    //             .then(devices => {
+    //                 devices = devices.map(dev => {
+    //                     dev.iconURL = localDevicesUrl + dev.iconURL;
+    //                     dev.connectionIconURL = localDevicesUrl + dev.connectionIconURL;
+    //                     dev.connectionSmallIconURL = localDevicesUrl + dev.connectionSmallIconURL;
+    //                     return dev;
+    //                 });
+    //                 return resolve(devices);
+    //             }, err => {
+    //                 log.warn(`Can not fetch data from local device server: ${err}`);
+    //                 return resolve();
+    //             });
+    //     });
+    // }
 
 
     /**
@@ -292,26 +292,26 @@ class ExtensionManager {
      * Openblock - Get device extensions list from local server.
      * @returns {Promise} resolved extension list has been fetched or failure
      */
-    getDeviceExtensionsList () {
-        // return new Promise(resolve => {
-        //     fetch(localDeviceExtensionsUrl)
-        //         .then(response => response.json())
-        //         .then(extensions => {
-        //             extensions = extensions.map(extension => {
-        //                 extension.iconURL = localDeviceExtensionsUrl + extension.iconURL;
-        //                 if (this.isDeviceExtensionLoaded(extension.extensionId)) {
-        //                     extension.isLoaded = true;
-        //                 }
-        //                 return extension;
-        //             });
-        //             this._deviceExtensions = extensions;
-        //             return resolve(this._deviceExtensions);
-        //         }, err => {
-        //             log.warn(`Can not fetch data from local extension server: ${err}`);
-        //             return resolve();
-        //         });
-        // });
-    }
+    // getDeviceExtensionsList () {
+    //     return new Promise(resolve => {
+    //         fetch(localDeviceExtensionsUrl)
+    //             .then(response => response.json())
+    //             .then(extensions => {
+    //                 extensions = extensions.map(extension => {
+    //                     extension.iconURL = localDeviceExtensionsUrl + extension.iconURL;
+    //                     if (this.isDeviceExtensionLoaded(extension.extensionId)) {
+    //                         extension.isLoaded = true;
+    //                     }
+    //                     return extension;
+    //                 });
+    //                 this._deviceExtensions = extensions;
+    //                 return resolve(this._deviceExtensions);
+    //             }, err => {
+    //                 log.warn(`Can not fetch data from local extension server: ${err}`);
+    //                 return resolve();
+    //             });
+    //     });
+    // }
 
     /**
      * Check whether an device extension is loaded.
@@ -327,34 +327,34 @@ class ExtensionManager {
      * @param {string} deviceExtensionId - the ID of an device extension
      * @returns {Promise} resolved once the device extension is loaded or rejected on failure
      */
-    loadDeviceExtension (deviceExtensionId) {
-        return new Promise((resolve, reject) => {
-            const deviceExtension = this._deviceExtensions.find(ext => ext.extensionId === deviceExtensionId);
-            if (typeof deviceExtension === 'undefined') {
-                return reject(`Error while loadDeviceExtension device extension ` +
-                    `can not find device extension: ${deviceExtensionId}`);
-            }
+    // loadDeviceExtension (deviceExtensionId) {
+    //     return new Promise((resolve, reject) => {
+    //         const deviceExtension = this._deviceExtensions.find(ext => ext.extensionId === deviceExtensionId);
+    //         if (typeof deviceExtension === 'undefined') {
+    //             return reject(`Error while loadDeviceExtension device extension ` +
+    //                 `can not find device extension: ${deviceExtensionId}`);
+    //         }
 
-            const url = localDeviceExtensionsUrl;
-            const toolboxUrl = url + deviceExtension.toolbox;
-            const blockUrl = url + deviceExtension.blocks;
-            const generatorUrl = url + deviceExtension.generator;
-            const msgUrl = url + deviceExtension.msg;
+    //         const url = localDeviceExtensionsUrl;
+    //         const toolboxUrl = url + deviceExtension.toolbox;
+    //         const blockUrl = url + deviceExtension.blocks;
+    //         const generatorUrl = url + deviceExtension.generator;
+    //         const msgUrl = url + deviceExtension.msg;
 
-            loadjs([toolboxUrl, blockUrl, generatorUrl, msgUrl], {returnPromise: true})
-                .then(() => {
-                    const toolboxXML = addToolbox(); // eslint-disable-line no-undef
-                    this.runtime.addDeviceExtension(deviceExtensionId, toolboxXML, deviceExtension.library);
+    //         loadjs([toolboxUrl, blockUrl, generatorUrl, msgUrl], {returnPromise: true})
+    //             .then(() => {
+    //                 const toolboxXML = addToolbox(); // eslint-disable-line no-undef
+    //                 this.runtime.addDeviceExtension(deviceExtensionId, toolboxXML, deviceExtension.library);
 
-                    const addExts = {addBlocks, addGenerator, addMsg};// eslint-disable-line no-undef
+    //                 const addExts = {addBlocks, addGenerator, addMsg};// eslint-disable-line no-undef
 
-                    this.runtime.emit(this.runtime.constructor.DEVICE_EXTENSION_ADDED, addExts);
-                    return resolve();
-                })
-                .catch(err => reject(`Error while load device extension ` +
-                    `${deviceExtension.extensionId}'s js file: ${err}`));
-        });
-    }
+    //                 this.runtime.emit(this.runtime.constructor.DEVICE_EXTENSION_ADDED, addExts);
+    //                 return resolve();
+    //             })
+    //             .catch(err => reject(`Error while load device extension ` +
+    //                 `${deviceExtension.extensionId}'s js file: ${err}`));
+    //     });
+    // }
 
     /**
      * Unload an device extension by device extension ID
