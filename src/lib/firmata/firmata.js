@@ -562,11 +562,15 @@ class Firmata extends Emitter {
     constructor (transportWrite, options) {
         super();
 
+        if (typeof options === 'function' || typeof options === 'undefined') {
+            options = {};
+        }
+
         this.transportWrite = transportWrite;
 
         const board = this;
         const defaults = {
-            reportVersionTimeout: 2000,
+            reportVersionTimeout: 5000,
             samplingInterval: 19
         };
 
@@ -698,8 +702,8 @@ class Firmata extends Emitter {
             this.once('queryfirmware', () => {
                 // Only preemptively set the sampling interval if `samplingInterval`
                 // property was _explicitly_ set as a constructor option.
-                if (settings.samplingInterval !== null) {
-                    this.setSamplingInterval(settings.samplingInterval);
+                if (typeof options.samplingInterval !== 'undefined') {
+                    this.setSamplingInterval(options.samplingInterval);
                 }
                 if (settings.skipCapabilities) {
                     this.analogPins = settings.analogPins || this.analogPins;
@@ -867,7 +871,8 @@ class Firmata extends Emitter {
 
     analogRead (pin, callback) {
         this.reportAnalogPin(pin, 1);
-        this.addListener(`analog-read-${pin}`, callback);
+        this.removeAllListeners(`analog-read-${pin}`);
+        this.once(`analog-read-${pin}`, callback);
     }
 
     /**
@@ -1077,7 +1082,8 @@ class Firmata extends Emitter {
 
     digitalRead (pin, callback) {
         this.reportDigitalPin(pin, 1);
-        this.addListener(`digital-read-${pin}`, callback);
+        this.removeAllListeners(`digital-read-${pin}`);
+        this.once(`digital-read-${pin}`, callback);
     }
 
     /**

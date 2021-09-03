@@ -1256,6 +1256,13 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
         runtime.origin = null;
     }
 
+    // Store the origin field (e.g. project originated at CSFirst) so that we can save it again.
+    if (json.meta && json.meta.origin) {
+        runtime.origin = json.meta.origin;
+    } else {
+        runtime.origin = null;
+    }
+
     // First keep track of the current target order in the json,
     // then sort by the layer order property before parsing the targets
     // so that their corresponding render drawables can be created in

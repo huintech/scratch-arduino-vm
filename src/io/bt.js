@@ -145,7 +145,7 @@ class BT extends JSONRPC {
             if (this._discoverTimeoutID) {
                 window.clearTimeout(this._discoverTimeoutID);
             }
-            break;            
+            break;
         case 'didReceiveMessage':
             this._messageCallback(params); // TODO: refine?
             break;
