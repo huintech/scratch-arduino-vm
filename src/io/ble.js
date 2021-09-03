@@ -197,7 +197,7 @@ class BLE extends JSONRPC {
             if (this._discoverTimeoutID) {
                 window.clearTimeout(this._discoverTimeoutID);
             }
-            break;            
+            break;
         case 'characteristicDidChange':
             if (this._characteristicDidChangeCallback) {
                 this._characteristicDidChangeCallback(params.message);

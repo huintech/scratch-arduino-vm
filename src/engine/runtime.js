@@ -466,7 +466,7 @@ class Runtime extends EventEmitter {
          * Scratch community, such as CSFirst.
          * @type {?string}
          */
-         this.origin = null;        
+        this.origin = null;
     }
 
     /**
@@ -730,10 +730,9 @@ class Runtime extends EventEmitter {
      * via Companion Device Manager (CDM)
      * @const {string}
      */
-     static get USER_PICKED_PERIPHERAL () {
+    static get USER_PICKED_PERIPHERAL () {
         return 'USER_PICKED_PERIPHERAL';
     }
-
 
     /**
      * Event name for reporting that a peripheral has connected.

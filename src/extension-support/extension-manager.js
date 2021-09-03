@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const loadjs = require('loadjs');
+const formatMessage = require('format-message');
 
 const dispatch = require('../dispatch/central-dispatch');
 const log = require('../util/log');
@@ -239,6 +240,9 @@ class ExtensionManager {
     loadDeviceURL (deviceId, deviceType, pnpidList) {
         const realDeviceId = this.runtime.analysisRealDeviceId(deviceId);
 
+        // Try to disconnect the old device before change device.
+        this.runtime.disconnectPeripheral(this.runtime.getCurrentDevice());
+
         if (builtinDevices.hasOwnProperty(realDeviceId)) {
             if (this.isDeviceLoaded(deviceId)) {
                 const message = `Rejecting attempt to load a device twice with ID ${deviceId}`;
@@ -269,8 +273,6 @@ class ExtensionManager {
             this.runtime.setPnpIdList([]);
             this.runtime.clearMonitor();
             this._loadedDevice.clear();
-
-            this._loadedDevice.set(deviceId, null);
 
             // Clear current extentions.
             this.runtime.clearCurrentExtension();

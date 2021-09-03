@@ -152,7 +152,7 @@ class VirtualMachine extends EventEmitter {
         });
         this.runtime.on(Runtime.USER_PICKED_PERIPHERAL, info => {
             this.emit(Runtime.USER_PICKED_PERIPHERAL, info);
-        });        
+        });
         this.runtime.on(Runtime.PERIPHERAL_CONNECTED, () =>
             this.emit(Runtime.PERIPHERAL_CONNECTED)
         );
@@ -610,16 +610,11 @@ class VirtualMachine extends EventEmitter {
     // installDeviceExtensions (deviceExtensions) {
     //     return new Promise((resolve, reject) => {
     //         this.runtime._pendingDeviceExtensions = deviceExtensions;
-
     //         this.extensionManager.getDeviceExtensionsList().then(() => {
     //             this.installDeviceExtensionsSync();
     //         });
-    //         this.on('installDeviceExtensionsSync.success', () => {
-    //             resolve();
-    //         });
-    //         this.on('installDeviceExtensionsSync.error', err => {
-    //             reject(err);
-    //         });
+    //         this.on('installDeviceExtensionsSync.success', () => resolve());
+    //         this.on('installDeviceExtensionsSync.error', err => reject(err));
     //     });
     // }
 
@@ -641,6 +636,8 @@ class VirtualMachine extends EventEmitter {
 
         if (device) {
             allPromises.push(this.extensionManager.loadDeviceURL(device, deviceType, pnpIdList));
+        } else {
+            allPromises.push(this.extensionManager.loadDeviceURL('unselectDevice'));
         }
 
         if (extensions) {
@@ -701,7 +698,6 @@ class VirtualMachine extends EventEmitter {
             //         .catch(err => Promise.reject(err));
             // }
 
-            // Update the VM user's knowledge of targets and blocks on the workspace.
             this.emitTargetsUpdate(false /* Don't emit project change */);
             this.emitWorkspaceUpdate();
             this.runtime.setEditingTarget(this.editingTarget);

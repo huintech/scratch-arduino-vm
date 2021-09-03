@@ -5,7 +5,7 @@
  * @param {number} timeout The amount of time before the request is canceled, in milliseconds
  * @returns {Promise<Response>} The response from the server.
  */
- const fetchWithTimeout = (resource, init, timeout) => {
+const fetchWithTimeout = (resource, init, timeout) => {
     let timeoutID = null;
     // Not supported in Safari <11
     const controller = window.AbortController ? new window.AbortController() : null;
