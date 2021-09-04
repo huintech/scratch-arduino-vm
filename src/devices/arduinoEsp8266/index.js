@@ -58,7 +58,6 @@ const Pins = {
     A0: 'A0'
 };
 
-
 const Level = {
     High: '1',
     Low: '0'
@@ -115,7 +114,7 @@ class arduinoEsp8266 extends EspPeripheral{
 /**
  * Scratch Arduino blocks to interact with a Arduino Esp8266 peripheral.
  */
-class OpenBlockArduinoEsp8266Device {
+class ArduinoEsp8266Device {
     /**
      * @return {string} - the ID of this extension.
      */
@@ -588,7 +587,7 @@ class OpenBlockArduinoEsp8266Device {
 
         // Create a new Arduino esp8266 peripheral instance
         this._peripheral = new arduinoEsp8266(this.runtime,
-            OpenBlockArduinoEsp8266Device.DEVICE_ID, originalDeviceId);
+            ArduinoEsp8266Device.DEVICE_ID, originalDeviceId);
     }
 
     /**
@@ -606,7 +605,6 @@ class OpenBlockArduinoEsp8266Device {
                 color1: '#4C97FF',
                 color2: '#3373CC',
                 color3: '#3373CC',
-
                 blocks: [
                     {
                         opcode: 'setPinMode',
@@ -651,7 +649,6 @@ class OpenBlockArduinoEsp8266Device {
                         }
                     },
                     {
-
                         opcode: 'setPwmOutput',
                         text: formatMessage({
                             id: 'arduinoUno.pins.setPwmOutput',
@@ -706,7 +703,6 @@ class OpenBlockArduinoEsp8266Device {
                     },
                     '---',
                     {
-
                         opcode: 'attachInterrupt',
                         text: formatMessage({
                             id: 'arduinoUno.pins.attachInterrupt',
@@ -729,7 +725,6 @@ class OpenBlockArduinoEsp8266Device {
                         programMode: [ProgramModeType.UPLOAD]
                     },
                     {
-
                         opcode: 'detachInterrupt',
                         text: formatMessage({
                             id: 'arduinoUno.pins.detachInterrupt',
@@ -785,7 +780,6 @@ class OpenBlockArduinoEsp8266Device {
                 color1: '#9966FF',
                 color2: '#774DCB',
                 color3: '#774DCB',
-
                 blocks: [
                     {
                         opcode: 'serialBegin',
@@ -1025,4 +1019,4 @@ class OpenBlockArduinoEsp8266Device {
     }
 }
 
-module.exports = OpenBlockArduinoEsp8266Device;
+module.exports = ArduinoEsp8266Device;

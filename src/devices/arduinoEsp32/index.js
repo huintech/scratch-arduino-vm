@@ -157,7 +157,7 @@ class ArduinoEsp32 extends EspPeripheral{
 /**
  * Scratch Arduino blocks to interact with a Arduino esp32 peripheral.
  */
-class OpenBlockArduinoEsp32Device {
+class ArduinoEsp32Device {
     /**
      * @return {string} - the ID of this extension.
      */
@@ -712,10 +712,10 @@ class OpenBlockArduinoEsp32Device {
                 text: '0',
                 value: SerialNo.Serial0
             },
-            // {
-            //     text: '1',
-            //     value: SerialNo.Serial1
-            // },
+            {
+                text: '1',
+                value: SerialNo.Serial1
+            },
             {
                 text: '2',
                 value: SerialNo.Serial2
@@ -820,7 +820,7 @@ class OpenBlockArduinoEsp32Device {
 
         // Create a new Arduino esp32 peripheral instance
         this._peripheral = new ArduinoEsp32(this.runtime,
-            OpenBlockArduinoEsp32Device.DEVICE_ID, originalDeviceId);
+            ArduinoEsp32Device.DEVICE_ID, originalDeviceId);
     }
 
     /**
@@ -838,7 +838,6 @@ class OpenBlockArduinoEsp32Device {
                 color1: '#4C97FF',
                 color2: '#3373CC',
                 color3: '#3373CC',
-
                 blocks: [
                     {
                         opcode: 'setPinMode',
@@ -908,7 +907,6 @@ class OpenBlockArduinoEsp32Device {
                         }
                     },
                     {
-
                         opcode: 'esp32SetDACOutput',
                         text: formatMessage({
                             id: 'esp32Arduino.pins.esp32SetDACOutput',
@@ -979,7 +977,6 @@ class OpenBlockArduinoEsp32Device {
                     },
                     '---',
                     {
-
                         opcode: 'esp32SetServoOutput',
                         text: formatMessage({
                             id: 'arduinoEsp32.pins.setServoOutput',
@@ -1006,7 +1003,6 @@ class OpenBlockArduinoEsp32Device {
                     },
                     '---',
                     {
-
                         opcode: 'attachInterrupt',
                         text: formatMessage({
                             id: 'arduinoEsp32.pins.attachInterrupt',
@@ -1088,7 +1084,6 @@ class OpenBlockArduinoEsp32Device {
                 color1: '#9966FF',
                 color2: '#774DCB',
                 color3: '#774DCB',
-
                 blocks: [
                     {
                         opcode: 'multiSerialBegin',
@@ -1195,7 +1190,6 @@ class OpenBlockArduinoEsp32Device {
                 color1: '#4CBFE6',
                 color2: '#2E8EB8',
                 color3: '#2E8EB8',
-
                 blocks: [
                     {
                         opcode: 'esp32ReadHallSensor',
@@ -1230,7 +1224,6 @@ class OpenBlockArduinoEsp32Device {
                 color1: '#CF63CF',
                 color2: '#C94FC9',
                 color3: '#BD42BD',
-
                 blocks: [
                     {
                         opcode: 'dataMap',
@@ -1411,4 +1404,4 @@ class OpenBlockArduinoEsp32Device {
     }
 }
 
-module.exports = OpenBlockArduinoEsp32Device;
+module.exports = ArduinoEsp32Device;
