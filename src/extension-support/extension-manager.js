@@ -291,7 +291,7 @@ class ExtensionManager {
     }
 
     /**
-     * Openblock - Get device extensions list from local server.
+     * Scratch Arduino - Get device extensions list from local server.
      * @returns {Promise} resolved extension list has been fetched or failure
      */
     // getDeviceExtensionsList () {
