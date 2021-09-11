@@ -835,9 +835,9 @@ class ArduinoEsp32Device {
                     default: 'Pins',
                     description: 'The name of the esp32 arduino device pin category'
                 }),
-                color1: '#4C97FF',
-                color2: '#3373CC',
-                color3: '#3373CC',
+                color1: '#009297',
+                color2: '#004B4C',
+                color3: '#004B4C',
                 blocks: [
                     {
                         opcode: 'setPinMode',
