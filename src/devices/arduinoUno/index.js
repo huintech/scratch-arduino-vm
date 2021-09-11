@@ -63,7 +63,6 @@ const Pins = {
     A5: 'A5'
 };
 
-
 const Level = {
     High: 'HIGH',
     Low: 'LOW'
@@ -121,7 +120,7 @@ class ArduinoUno extends ArduinoPeripheral{
 /**
  * Scratch Arduino blocks to interact with a Arduino Uno peripheral.
  */
-class ScratchArduinoUnoDevice {
+class ArduinoUnoDevice {
     /**
      * @return {string} - the ID of this extension.
      */
@@ -239,6 +238,67 @@ class ScratchArduinoUnoDevice {
                     description: 'label for input-pullup pin mode'
                 }),
                 value: Mode.InputPullup
+            }
+        ];
+    }
+
+    get DIGITAL_PINS_MENU () {
+        return [
+            {
+                text: '0',
+                value: Pins.D0
+            },
+            {
+                text: '1',
+                value: Pins.D1
+            },
+            {
+                text: '2',
+                value: Pins.D2
+            },
+            {
+                text: '3',
+                value: Pins.D3
+            },
+            {
+                text: '4',
+                value: Pins.D4
+            },
+            {
+                text: '5',
+                value: Pins.D5
+            },
+            {
+                text: '6',
+                value: Pins.D6
+            },
+            {
+                text: '7',
+                value: Pins.D7
+            },
+            {
+                text: '8',
+                value: Pins.D8
+            },
+            {
+                text: '9',
+                value: Pins.D9
+            },
+            {
+                text: '10',
+                value: Pins.D10
+            },
+            {
+                text: '11',
+                value: Pins.D11
+            },
+            {
+                text: '12',
+                value: Pins.D12
+            },
+            {
+                text: '13',
+                value: Pins.D13
             }
         ];
     }
@@ -468,7 +528,7 @@ class ScratchArduinoUnoDevice {
         this.runtime = runtime;
 
         // Create a new Arduino uno peripheral instance
-        this._peripheral = new ArduinoUno(this.runtime, ScratchArduinoUnoDevice.DEVICE_ID, originalDeviceId);
+        this._peripheral = new ArduinoUno(this.runtime, ArduinoUnoDevice.DEVICE_ID, originalDeviceId);
     }
 
     /**
@@ -483,10 +543,9 @@ class ScratchArduinoUnoDevice {
                     default: 'Pins',
                     description: 'The name of the arduino device pin category'
                 }),
-                color1: '#4C97FF',
-                color2: '#3373CC',
-                color3: '#3373CC',
-
+                color1: '#009297',
+                color2: '#004B4C',
+                color3: '#004B4C',
                 blocks: [
                     {
                         opcode: 'setPinMode',
@@ -531,7 +590,6 @@ class ScratchArduinoUnoDevice {
                         }
                     },
                     {
-
                         opcode: 'setPwmOutput',
                         text: formatMessage({
                             id: 'arduino.pins.setPwmOutput',
@@ -563,7 +621,7 @@ class ScratchArduinoUnoDevice {
                         arguments: {
                             PIN: {
                                 type: ArgumentType.STRING,
-                                menu: 'pins',
+                                menu: 'digitalPins',
                                 defaultValue: Pins.D0
                             }
                         }
@@ -586,7 +644,6 @@ class ScratchArduinoUnoDevice {
                     },
                     '---',
                     {
-
                         opcode: 'setServoOutput',
                         text: formatMessage({
                             id: 'arduino.pins.setServoOutput',
@@ -608,7 +665,6 @@ class ScratchArduinoUnoDevice {
                     },
                     '---',
                     {
-
                         opcode: 'attachInterrupt',
                         text: formatMessage({
                             id: 'arduino.pins.attachInterrupt',
@@ -631,7 +687,6 @@ class ScratchArduinoUnoDevice {
                         programMode: [ProgramModeType.UPLOAD]
                     },
                     {
-
                         opcode: 'detachInterrupt',
                         text: formatMessage({
                             id: 'arduino.pins.detachInterrupt',
@@ -655,6 +710,9 @@ class ScratchArduinoUnoDevice {
                     },
                     mode: {
                         items: this.MODE_MENU
+                    },
+                    digitalPins: {
+                        items: this.DIGITAL_PINS_MENU
                     },
                     analogPins: {
                         items: this.ANALOG_PINS_MENU
@@ -684,7 +742,6 @@ class ScratchArduinoUnoDevice {
                 color1: '#9966FF',
                 color2: '#774DCB',
                 color3: '#774DCB',
-
                 blocks: [
                     {
                         opcode: 'serialBegin',
@@ -946,4 +1003,4 @@ class ScratchArduinoUnoDevice {
     }
 }
 
-module.exports = ScratchArduinoUnoDevice;
+module.exports = ArduinoUnoDevice;
