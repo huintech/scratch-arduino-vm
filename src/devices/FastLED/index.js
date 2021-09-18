@@ -35,6 +35,151 @@ const DIVECE_OPT = {
     firmware: 'arduinoNano.standardFirmata.ino.hex'
 };
 
+const Colors = {
+    AliceBlue: 'AliceBlue',
+    Amethyst: 'Amethyst',        
+    AntiqueWhite: 'AntiqueWhite',
+    Aqua: 'Aqua',
+    Aquamarine: 'Aquamarine',
+    Azure: 'Azure',
+    Beige: 'Beige',
+    Bisque: 'Bisque',
+    Black: 'Black',
+    BlanchedAlmond: 'BlanchedAlmond',
+    Blue: 'Blue',
+    BlueViolet: 'BlueViolet',
+    Brown: 'Brown',
+    BurlyWood: 'BurlyWood',
+    CadetBlue: 'CadetBlue',
+    Chartreuse: 'Chartreuse',
+    Chocolate: 'Chocolate',
+    Coral: 'Coral',
+    CornflowerBlue: 'CornflowerBlue',
+    Cornsilk: 'Cornsilk',
+    Crimson: 'Crimson',
+    Cyan: 'Cyan',
+    DarkBlue: 'DarkBlue',
+    DarkCyan: 'DarkCyan',
+    DarkGoldenrod: 'DarkGoldenrod',
+    DarkGray: 'DarkGray',
+    DarkGreen: 'DarkGreen',
+    DarkKhaki: 'DarkKhaki',
+    DarkMagenta: 'DarkMagenta',
+    DarkOliveGreen: 'DarkOliveGreen',
+    DarkOrange: 'DarkOrange',
+    DarkOrchid: 'DarkOrchid',
+    DarkRed: 'DarkRed',
+    DarkSalmon: 'DarkSalmon',
+    DarkSeaGreen: 'DarkSeaGreen',
+    DarkSlateBlue: 'DarkSlateBlue',
+    DarkSlateGray: 'DarkSlateGray',
+    DarkTurquoise: 'DarkTurquoise',
+    DarkViolet: 'DarkViolet',
+    DeepPink: 'DeepPink',
+    DeepSkyBlue: 'DeepSkyBlue',
+    DimGray: 'DimGray',
+    DodgerBlue: 'DodgerBlue',
+    FireBrick: 'FireBrick',
+    FloralWhite: 'FloralWhite',
+    ForestGreen: 'ForestGreen',
+    Fuchsia: 'Fuchsia',
+    Gainsboro: 'Gainsboro',
+    GhostWhite: 'GhostWhite',
+    Gold: 'Gold',
+    Goldenrod: 'Goldenrod',
+    Gray: 'Gray',
+    Green: 'Green',
+    GreenYellow: 'GreenYellow',
+    Honeydew: 'Honeydew',
+    HotPink: 'HotPink',
+    IndianRed: 'IndianRed',
+    Indigo: 'Indigo',
+    Ivory: 'Ivory',
+    Khaki: 'Khaki',
+    Lavender: 'Lavender',
+    LavenderBlush: 'LavenderBlush',
+    LawnGreen: 'LawnGreen',
+    LemonChiffon: 'LemonChiffon',
+    LightBlue: 'LightBlue',
+    LightCoral: 'LightCoral',
+    LightCyan: 'LightCyan',
+    LightGoldenrodYellow: 'LightGoldenrodYellow',
+    LightGreen: 'LightGreen',
+    LightGrey: 'LightGrey',
+    LightPink: 'LightPink',
+    LightSalmon: 'LightSalmon',
+    LightSeaGreen: 'LightSeaGreen',
+    LightSkyBlue: 'LightSkyBlue',
+    LightSlateGray: 'LightSlateGray',
+    LightSteelBlue: 'LightSteelBlue',
+    LightYellow: 'LightYellow',
+    Lime: 'Lime',
+    LimeGreen: 'LimeGreen',
+    Linen: 'Linen',
+    Magenta: 'Magenta',
+    Maroon: 'Maroon',
+    MediumAquamarine: 'MediumAquamarine',
+    MediumBlue: 'MediumBlue',
+    MediumOrchid: 'MediumOrchid',
+    MediumPurple: 'MediumPurple',
+    MediumSeaGreen: 'MediumSeaGreen',
+    MediumSlateBlue: 'MediumSlateBlue',
+    MediumSpringGreen: 'MediumSpringGreen',
+    MediumTurquoise: 'MediumTurquoise',
+    MediumVioletRed: 'MediumVioletRed',
+    MidnightBlue: 'MidnightBlue',
+    MintCream: 'MintCream',
+    MistyRose: 'MistyRose',
+    Moccasin: 'Moccasin',
+    NavajoWhite: 'NavajoWhite',
+    Navy: 'Navy',
+    OldLace: 'OldLace',
+    Olive: 'Olive',
+    OliveDrab: 'OliveDrab',
+    Orange: 'Orange',
+    OrangeRed: 'OrangeRed',
+    Orchid: 'Orchid',
+    PaleGoldenrod: 'PaleGoldenrod',
+    PaleGreen: 'PaleGreen',
+    PaleTurquoise: 'PaleTurquoise',
+    PaleVioletRed: 'PaleVioletRed',
+    PapayaWhip: 'PapayaWhip',
+    PeachPuff: 'PeachPuff',
+    Peru: 'Peru',
+    Pink: 'Pink',
+    Plaid: 'Plaid',
+    Plum: 'Plum',
+    PowderBlue: 'PowderBlue',
+    Purple: 'Purple',
+    Red: 'Red',
+    RosyBrown: 'RosyBrown',
+    RoyalBlue: 'RoyalBlue',
+    SaddleBrown: 'SaddleBrown',
+    Salmon: 'Salmon',
+    SandyBrown: 'SandyBrown',
+    SeaGreen: 'SeaGreen',
+    Seashell: 'Seashell',
+    Sienna: 'Sienna',
+    Silver: 'Silver',
+    SkyBlue: 'SkyBlue',
+    SlateBlue: 'SlateBlue',
+    SlateGray: 'SlateGray',
+    Snow: 'Snow',
+    SpringGreen: 'SpringGreen',
+    SteelBlue: 'SteelBlue',
+    Tan: 'Tan',
+    Teal: 'Teal',
+    Thistle: 'Thistle',
+    Tomato: 'Tomato',
+    Turquoise: 'Turquoise',
+    Violet: 'Violet',
+    Wheat: 'Wheat',
+    White: 'White',
+    WhiteSmoke: 'WhiteSmoke',
+    Yellow: 'Yellow',
+    YellowGreen: 'YellowGreen'    
+};
+
 const Pins = {
     D0: '0',
     D1: '1',
@@ -92,7 +237,7 @@ const InterrupMode = {
 };
 
 const DataType = {
-    WholeNumber: 'WHOLE_NUMBER',
+    Integer: 'INTEGER',
     Decimal: 'DECIMAL',
     String: 'STRING'
 };
@@ -121,6 +266,579 @@ class ArduinoFastLEDDevice {
      */
     static get DEVICE_ID () {
         return 'FastLED';
+    }
+
+    get COLORS_MENU () {
+        return [
+            {
+                text: 'AliceBlue',        
+                value: Colors.AliceBlue   
+            },
+            {
+                text: 'Amethyst',
+                value: Colors.Amethyst    
+            },
+            {
+                text: 'AntiqueWhite',     
+                value: Colors.AntiqueWhite
+            },
+            {
+                text: 'Aqua',
+                value: Colors.Aqua        
+            },
+            {
+                text: 'Aquamarine',       
+                value: Colors.Aquamarine  
+            },
+            {
+                text: 'Azure',
+                value: Colors.Azure
+            },
+            {
+                text: 'Beige',
+                value: Colors.Beige
+            },
+            {
+                text: 'Bisque',
+                value: Colors.Bisque
+            },
+            {
+                text: 'Black',
+                value: Colors.Black
+            },
+            {
+                text: 'BlanchedAlmond',
+                value: Colors.BlanchedAlmond
+            },
+            {
+                text: 'Blue',
+                value: Colors.Blue
+            },
+            {
+                text: 'BlueViolet',
+                value: Colors.BlueViolet
+            },
+            {
+                text: 'Brown',
+                value: Colors.Brown
+            },
+            {
+                text: 'BurlyWood',
+                value: Colors.BurlyWood
+            },
+            {
+                text: 'CadetBlue',
+                value: Colors.CadetBlue
+            },
+            {
+                text: 'Chartreuse',
+                value: Colors.Chartreuse
+            },
+            {
+                text: 'Chocolate',
+                value: Colors.Chocolate
+            },
+            {
+                text: 'Coral',
+                value: Colors.Coral
+            },
+            {
+                text: 'CornflowerBlue',
+                value: Colors.CornflowerBlue
+            },
+            {
+                text: 'Cornsilk',
+                value: Colors.Cornsilk
+            },
+            {
+                text: 'Crimson',
+                value: Colors.Crimson
+            },
+            {
+                text: 'Cyan',
+                value: Colors.Cyan
+            },
+            {
+                text: 'DarkBlue',
+                value: Colors.DarkBlue
+            },
+            {
+                text: 'DarkCyan',
+                value: Colors.DarkCyan
+            },
+            {
+                text: 'DarkGoldenrod',
+                value: Colors.DarkGoldenrod
+            },
+            {
+                text: 'DarkGray',
+                value: Colors.DarkGray
+            },
+            {
+                text: 'DarkGreen',
+                value: Colors.DarkGreen
+            },
+            {
+                text: 'DarkKhaki',
+                value: Colors.DarkKhaki
+            },
+            {
+                text: 'DarkMagenta',
+                value: Colors.DarkMagenta
+            },
+            {
+                text: 'DarkOliveGreen',
+                value: Colors.DarkOliveGreen
+            },
+            {
+                text: 'DarkOrange',
+                value: Colors.DarkOrange
+            },
+            {
+                text: 'DarkOrchid',
+                value: Colors.DarkOrchid
+            },
+            {
+                text: 'DarkRed',
+                value: Colors.DarkRed
+            },
+            {
+                text: 'DarkSalmon',
+                value: Colors.DarkSalmon
+            },
+            {
+                text: 'DarkSeaGreen',
+                value: Colors.DarkSeaGreen
+            },
+            {
+                text: 'DarkSlateBlue',
+                value: Colors.DarkSlateBlue
+            },
+            {
+                text: 'DarkSlateGray',
+                value: Colors.DarkSlateGray
+            },
+            {
+                text: 'DarkTurquoise',
+                value: Colors.DarkTurquoise
+            },
+            {
+                text: 'DarkViolet',
+                value: Colors.DarkViolet
+            },
+            {
+                text: 'DeepPink',
+                value: Colors.DeepPink
+            },
+            {
+                text: 'DeepSkyBlue',
+                value: Colors.DeepSkyBlue
+            },
+            {
+                text: 'DimGray',
+                value: Colors.DimGray
+            },
+            {
+                text: 'DodgerBlue',
+                value: Colors.DodgerBlue
+            },
+            {
+                text: 'FireBrick',
+                value: Colors.FireBrick
+            },
+            {
+                text: 'FloralWhite',
+                value: Colors.FloralWhite
+            },
+            {
+                text: 'ForestGreen',
+                value: Colors.ForestGreen
+            },
+            {
+                text: 'Fuchsia',
+                value: Colors.Fuchsia
+            },
+            {
+                text: 'Gainsboro',
+                value: Colors.Gainsboro
+            },
+            {
+                text: 'GhostWhite',
+                value: Colors.GhostWhite
+            },
+            {
+                text: 'Gold',
+                value: Colors.Gold
+            },
+            {
+                text: 'Goldenrod',
+                value: Colors.Goldenrod
+            },
+            {
+                text: 'Gray',
+                value: Colors.Gray
+            },
+            {
+                text: 'Green',
+                value: Colors.Green
+            },
+            {
+                text: 'GreenYellow',
+                value: Colors.GreenYellow
+            },
+            {
+                text: 'Honeydew',
+                value: Colors.Honeydew
+            },
+            {
+                text: 'HotPink',
+                value: Colors.HotPink
+            },
+            {
+                text: 'IndianRed',
+                value: Colors.IndianRed
+            },
+            {
+                text: 'Indigo',
+                value: Colors.Indigo
+            },
+            {
+                text: 'Ivory',
+                value: Colors.Ivory
+            },
+            {
+                text: 'Khaki',
+                value: Colors.Khaki
+            },
+            {
+                text: 'Lavender',
+                value: Colors.Lavender
+            },
+            {
+                text: 'LavenderBlush',
+                value: Colors.LavenderBlush
+            },
+            {
+                text: 'LawnGreen',
+                value: Colors.LawnGreen
+            },
+            {
+                text: 'LemonChiffon',
+                value: Colors.LemonChiffon
+            },
+            {
+                text: 'LightBlue',
+                value: Colors.LightBlue
+            },
+            {
+                text: 'LightCoral',
+                value: Colors.LightCoral
+            },
+            {
+                text: 'LightCyan',
+                value: Colors.LightCyan
+            },
+            {
+                text: 'LightGoldenrodYellow',
+                value: Colors.LightGoldenrodYellow
+            },
+            {
+                text: 'LightGreen',
+                value: Colors.LightGreen
+            },
+            {
+                text: 'LightGrey',
+                value: Colors.LightGrey
+            },
+            {
+                text: 'LightPink',
+                value: Colors.LightPink
+            },
+            {
+                text: 'LightSalmon',
+                value: Colors.LightSalmon
+            },
+            {
+                text: 'LightSeaGreen',
+                value: Colors.LightSeaGreen
+            },
+            {
+                text: 'LightSkyBlue',
+                value: Colors.LightSkyBlue
+            },
+            {
+                text: 'LightSlateGray',
+                value: Colors.LightSlateGray
+            },
+            {
+                text: 'LightSteelBlue',
+                value: Colors.LightSteelBlue
+            },
+            {
+                text: 'LightYellow',
+                value: Colors.LightYellow
+            },
+            {
+                text: 'Lime',
+                value: Colors.Lime
+            },
+            {
+                text: 'LimeGreen',
+                value: Colors.LimeGreen
+            },
+            {
+                text: 'Linen',
+                value: Colors.Linen
+            },
+            {
+                text: 'Magenta',
+                value: Colors.Magenta
+            },
+            {
+                text: 'Maroon',
+                value: Colors.Maroon
+            },
+            {
+                text: 'MediumAquamarine',
+                value: Colors.MediumAquamarine
+            },
+            {
+                text: 'MediumBlue',
+                value: Colors.MediumBlue
+            },
+            {
+                text: 'MediumOrchid',
+                value: Colors.MediumOrchid
+            },
+            {
+                text: 'MediumPurple',
+                value: Colors.MediumPurple
+            },
+            {
+                text: 'MediumSeaGreen',
+                value: Colors.MediumSeaGreen
+            },
+            {
+                text: 'MediumSlateBlue',
+                value: Colors.MediumSlateBlue
+            },
+            {
+                text: 'MediumSpringGreen',
+                value: Colors.MediumSpringGreen
+            },
+            {
+                text: 'MediumTurquoise',
+                value: Colors.MediumTurquoise
+            },
+            {
+                text: 'MediumVioletRed',
+                value: Colors.MediumVioletRed
+            },
+            {
+                text: 'MidnightBlue',
+                value: Colors.MidnightBlue
+            },
+            {
+                text: 'MintCream',
+                value: Colors.MintCream
+            },
+            {
+                text: 'MistyRose',
+                value: Colors.MistyRose
+            },
+            {
+                text: 'Moccasin',
+                value: Colors.Moccasin
+            },
+            {
+                text: 'NavajoWhite',
+                value: Colors.NavajoWhite
+            },
+            {
+                text: 'Navy',
+                value: Colors.Navy
+            },
+            {
+                text: 'OldLace',
+                value: Colors.OldLace
+            },
+            {
+                text: 'Olive',
+                value: Colors.Olive
+            },
+            {
+                text: 'OliveDrab',
+                value: Colors.OliveDrab
+            },
+            {
+                text: 'Orange',
+                value: Colors.Orange
+            },
+            {
+                text: 'OrangeRed',
+                value: Colors.OrangeRed
+            },
+            {
+                text: 'Orchid',
+                value: Colors.Orchid
+            },
+            {
+                text: 'PaleGoldenrod',
+                value: Colors.PaleGoldenrod
+            },
+            {
+                text: 'PaleGreen',
+                value: Colors.PaleGreen
+            },
+            {
+                text: 'PaleTurquoise',
+                value: Colors.PaleTurquoise
+            },
+            {
+                text: 'PaleVioletRed',
+                value: Colors.PaleVioletRed
+            },
+            {
+                text: 'PapayaWhip',
+                value: Colors.PapayaWhip
+            },
+            {
+                text: 'PeachPuff',
+                value: Colors.PeachPuff
+            },
+            {
+                text: 'Peru',
+                value: Colors.Peru
+            },
+            {
+                text: 'Pink',
+                value: Colors.Pink
+            },
+            {
+                text: 'Plaid',
+                value: Colors.Plaid
+            },
+            {
+                text: 'Plum',
+                value: Colors.Plum
+            },
+            {
+                text: 'PowderBlue',
+                value: Colors.PowderBlue
+            },
+            {
+                text: 'Purple',
+                value: Colors.Purple
+            },
+            {
+                text: 'Red',
+                value: Colors.Red
+            },
+            {
+                text: 'RosyBrown',
+                value: Colors.RosyBrown
+            },
+            {
+                text: 'RoyalBlue',
+                value: Colors.RoyalBlue
+            },
+            {
+                text: 'SaddleBrown',
+                value: Colors.SaddleBrown
+            },
+            {
+                text: 'Salmon',
+                value: Colors.Salmon
+            },
+            {
+                text: 'SandyBrown',
+                value: Colors.SandyBrown
+            },
+            {
+                text: 'SeaGreen',
+                value: Colors.SeaGreen
+            },
+            {
+                text: 'Seashell',
+                value: Colors.Seashell
+            },
+            {
+                text: 'Sienna',
+                value: Colors.Sienna
+            },
+            {
+                text: 'Silver',
+                value: Colors.Silver
+            },
+            {
+                text: 'SkyBlue',
+                value: Colors.SkyBlue
+            },
+            {
+                text: 'SlateBlue',
+                value: Colors.SlateBlue
+            },
+            {
+                text: 'SlateGray',
+                value: Colors.SlateGray
+            },
+            {
+                text: 'Snow',
+                value: Colors.Snow
+            },
+            {
+                text: 'SpringGreen',
+                value: Colors.SpringGreen
+            },
+            {
+                text: 'SteelBlue',
+                value: Colors.SteelBlue
+            },
+            {
+                text: 'Tan',
+                value: Colors.Tan
+            },
+            {
+                text: 'Teal',
+                value: Colors.Teal
+            },
+            {
+                text: 'Thistle',
+                value: Colors.Thistle
+            },
+            {
+                text: 'Tomato',
+                value: Colors.Tomato
+            },
+            {
+                text: 'Turquoise',
+                value: Colors.Turquoise
+            },
+            {
+                text: 'Violet',
+                value: Colors.Violet
+            },
+            {
+                text: 'Wheat',
+                value: Colors.Wheat
+            },
+            {
+                text: 'White',
+                value: Colors.White
+            },
+            {
+                text: 'WhiteSmoke',
+                value: Colors.WhiteSmoke
+            },
+            {
+                text: 'Yellow',
+                value: Colors.Yellow
+            },
+            {
+                text: 'YellowGreen',
+                value: Colors.YellowGreen
+            }            
+        ];
     }
 
     get PINS_MENU () {
@@ -485,11 +1203,11 @@ class ArduinoFastLEDDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'arduino.dataTypeMenu.wholeNumber',
-                    default: 'whole number',
-                    description: 'label for whole number'
+                    id: 'arduino.dataTypeMenu.integer',
+                    default: 'integer',
+                    description: 'label for integer'
                 }),
-                value: DataType.WholeNumber
+                value: DataType.Integer
             },
             {
                 text: formatMessage({
@@ -532,7 +1250,7 @@ class ArduinoFastLEDDevice {
     getInfo () {
         return [
             {
-                id: 'pin',
+                id: 'fastled',
                 name: formatMessage({
                     id: 'arduino.category.pins',
                     default: 'Pins',
@@ -543,163 +1261,287 @@ class ArduinoFastLEDDevice {
                 color3: '#004B4C',
                 blocks: [
                     {
-                        opcode: 'setPinMode',
+                        opcode: 'setLEDNumber',
                         text: formatMessage({
-                            id: 'arduino.pins.setPinMode',
-                            default: 'set pin [PIN] mode [MODE]',
-                            description: 'arduino set pin mode'
+                            id: 'arduino.pins.setLEDNumber',
+                            default: 'set LED number [NUMBER]',
+                            description: 'arduino set number of LED'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: Pins.D0
-                            },
-                            MODE: {
-                                type: ArgumentType.STRING,
-                                menu: 'mode',
-                                defaultValue: Mode.Input
+                            NUMBER: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 5
                             }
                         }
                     },
                     {
-                        opcode: 'setDigitalOutput',
+                        opcode: 'setBrightness',
                         text: formatMessage({
-                            id: 'arduino.pins.setDigitalOutput',
-                            default: 'set digital pin [PIN] out [LEVEL]',
-                            description: 'arduino set digital pin out'
+                            id: 'arduino.pins.setBrightness',
+                            default: 'set LED brightness [NUMBER]',
+                            description: 'arduino set brightness of LED'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: Pins.D0
-                            },
-                            LEVEL: {
-                                type: ArgumentType.STRING,
-                                menu: 'level',
-                                defaultValue: Level.High
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'setPwmOutput',
-                        text: formatMessage({
-                            id: 'arduino.pins.setPwmOutput',
-                            default: 'set pwm pin [PIN] out [OUT]',
-                            description: 'arduino set pwm pin out'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pwmPins',
-                                defaultValue: Pins.D3
-                            },
-                            OUT: {
+                            NUMBER: {
                                 type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: '255'
+                                defaultValue: 10
                             }
                         }
-                    },
-                    '---',
+                    },                    
                     {
-                        opcode: 'readDigitalPin',
+                        opcode: 'setAllLEDColor',
                         text: formatMessage({
-                            id: 'arduino.pins.readDigitalPin',
-                            default: 'read digital pin [PIN]',
-                            description: 'arduino read digital pin'
-                        }),
-                        blockType: BlockType.BOOLEAN,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'digitalPins',
-                                defaultValue: Pins.D0
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'readAnalogPin',
-                        text: formatMessage({
-                            id: 'arduino.pins.readAnalogPin',
-                            default: 'read analog pin [PIN]',
-                            description: 'arduino read analog pin'
-                        }),
-                        blockType: BlockType.REPORTER,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'analogPins',
-                                defaultValue: Pins.A0
-                            }
-                        }
-                    },
-                    '---',
-                    {
-                        opcode: 'setServoOutput',
-                        text: formatMessage({
-                            id: 'arduino.pins.setServoOutput',
-                            default: 'set servo pin [PIN] out [OUT]',
-                            description: 'arduino set servo pin out'
+                            id: 'arduino.pins.setAllLEDColor',
+                            default: 'set all LED color to [COLOR]',
+                            description: 'arduino set all LED Color'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            PIN: {
+                            COLOR: {
                                 type: ArgumentType.STRING,
-                                menu: 'pwmPins',
-                                defaultValue: Pins.D3
-                            },
-                            OUT: {
-                                type: ArgumentType.ANGLE,
-                                defaultValue: '90'
+                                menu: 'colors',
+                                defaultValue: Colors.AliceBlue
                             }
                         }
                     },
-                    '---',
                     {
-                        opcode: 'attachInterrupt',
+                        opcode: 'setAllLEDColorRGB',
                         text: formatMessage({
-                            id: 'arduino.pins.attachInterrupt',
-                            default: 'attach interrupt pin [PIN] mode [MODE] executes',
-                            description: 'arduino attach interrupt'
-                        }),
-                        blockType: BlockType.CONDITIONAL,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'interruptPins',
-                                defaultValue: Pins.D3
-                            },
-                            MODE: {
-                                type: ArgumentType.STRING,
-                                menu: 'interruptMode',
-                                defaultValue: InterrupMode.Rising
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    },
-                    {
-                        opcode: 'detachInterrupt',
-                        text: formatMessage({
-                            id: 'arduino.pins.detachInterrupt',
-                            default: 'detach interrupt pin [PIN]',
-                            description: 'arduino attach interrupt'
+                            id: 'arduino.pins.setAllLEDColorRGB',
+                            default: 'set all LED color to Red [RED] Green[GREEN] Blue [BLUE]',
+                            description: 'arduino set All LED RGB Color'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'interruptPins',
-                                defaultValue: Pins.D3
+                            RED: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            GREEN: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            BLUE: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
                             }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    }
+                        }
+                    },
+                    {
+                        opcode: 'setAllLEDColorHSV',
+                        text: formatMessage({
+                            id: 'arduino.pins.setAllLEDColorHSV',
+                            default: 'set all LED color to Hue [HUE] Saturation [SATURATION] Value [VALUE]',
+                            description: 'arduino set All LED HSV Color'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            HUE: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            SATURATION: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            VALUE: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'setLEDColorGradient',
+                        text: formatMessage({
+                            id: 'arduino.pins.setLEDColorGradient',
+                            default: 'set all LED color from [COLOR_FROM] to [COLOR_TO]',
+                            description: 'arduino set LED gradient color'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            COLOR_FROM: {
+                                type: ArgumentType.STRING,
+                                menu: 'colors',
+                                defaultValue: Colors.AliceBlue
+                            },
+                            COLOR_TO: {
+                                type: ArgumentType.STRING,
+                                menu: 'colors',
+                                defaultValue: Colors.Red
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'setLEDColorRainbow',
+                        text: formatMessage({
+                            id: 'arduino.pins.setLEDColorRainbow',
+                            default: 'set all LED rainbow color in [MILLISECOND] millisecond',
+                            description: 'arduino set LED rainbow color'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            MILLISECOND: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 150
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'setLEDColor',
+                        text: formatMessage({
+                            id: 'arduino.pins.setLEDColor',
+                            default: 'set LED [NUMBER] color to [COLOR]',
+                            description: 'arduino set LED Color'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            NUMBER: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                            COLOR: {
+                                type: ArgumentType.STRING,
+                                menu: 'colors',
+                                defaultValue: Colors.AliceBlue
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'setLEDColorRGB',
+                        text: formatMessage({
+                            id: 'arduino.pins.setLEDColorRGB',
+                            default: 'set LED [NUMBER] color to Red [RED] Green[GREEN] Blue [BLUE]',
+                            description: 'arduino set LED RGB Color'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            NUMBER: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                            RED: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            GREEN: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            BLUE: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'setLEDColorHSV',
+                        text: formatMessage({
+                            id: 'arduino.pins.setLEDColorHSV',
+                            default: 'set LED [NUMBER] color to Hue [HUE] Saturation [SATURATION] Value [VALUE]',
+                            description: 'arduino set LED HSV Color'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            NUMBER: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                            HUE: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            SATURATION: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            VALUE: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'repeat',
+                        text: formatMessage({
+                            id: 'arduino.pins.repeat',
+                            default: 'repeat LED',
+                            description: 'arduino for i loop'
+                        }),
+                        blockType: BlockType.LOOP,
+                        arguments: {
+                        }
+                    },                                        
+                    {
+                        opcode: 'repeat_n_ms',
+                        text: formatMessage({
+                            id: 'arduino.pins.repeat_n_ms',
+                            default: 'repeat in [MILLISECOND] milliseconds',
+                            description: 'arduino FastLED Recurring event trigger in millisecond'
+                        }),
+                        blockType: BlockType.LOOP,
+                        arguments: {
+                            MILLISECOND: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }                            
+                        }
+                    },                                        
+                    {
+                        opcode: 'repeat_n_s',
+                        text: formatMessage({
+                            id: 'arduino.pins.repeat_n_s',
+                            default: 'repeat in [SECOND] seconds',
+                            description: 'arduino FastLED Recurring event trigger in second'
+                        }),
+                        blockType: BlockType.LOOP,
+                        arguments: {
+                            SECOND: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }                            
+                        }
+                    },                                        
+                    {
+                        opcode: 'repeat_n_min',
+                        text: formatMessage({
+                            id: 'arduino.pins.repeat_n_min',
+                            default: 'repeat in [MINTUE] mintues',
+                            description: 'arduino FastLED Recurring event trigger in mintue'
+                        }),
+                        blockType: BlockType.LOOP,
+                        arguments: {
+                            MINTUE: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }                            
+                        }
+                    },                                        
+                    {
+                        opcode: 'repeat_n_hour',
+                        text: formatMessage({
+                            id: 'arduino.pins.repeat_n_hour',
+                            default: 'repeat in [HOUR] hours',
+                            description: 'arduino FastLED Recurring event trigger in hour'
+                        }),
+                        blockType: BlockType.LOOP,
+                        arguments: {
+                            HOUR: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }                            
+                        }
+                    },                                        
+                    '---',
+                    '---',
+                    '---',
+                    '---',
                 ],
                 menus: {
+                    colors: {
+                        items: this.COLORS_MENU
+                    },
                     pins: {
                         items: this.PINS_MENU
                     },
@@ -892,7 +1734,7 @@ class ArduinoFastLEDDevice {
                             TYPE: {
                                 type: ArgumentType.STRING,
                                 menu: 'dataType',
-                                defaultValue: DataType.WholeNumber
+                                defaultValue: DataType.Integer
                             }
                         },
                         programMode: [ProgramModeType.UPLOAD]

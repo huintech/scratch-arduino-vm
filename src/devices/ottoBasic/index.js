@@ -93,7 +93,7 @@ const InterrupMode = {
 };
 
 const DataType = {
-    WholeNumber: 'WHOLE_NUMBER',
+    Integer: 'INTEGER',
     Decimal: 'DECIMAL',
     String: 'STRING'
 };
@@ -486,11 +486,11 @@ class ArduinoOttoBasicDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'arduino.dataTypeMenu.wholeNumber',
-                    default: 'whole number',
-                    description: 'label for whole number'
+                    id: 'arduino.dataTypeMenu.integer',
+                    default: 'integer',
+                    description: 'label for integer'
                 }),
-                value: DataType.WholeNumber
+                value: DataType.Integer
             },
             {
                 text: formatMessage({
@@ -893,7 +893,7 @@ class ArduinoOttoBasicDevice {
                             TYPE: {
                                 type: ArgumentType.STRING,
                                 menu: 'dataType',
-                                defaultValue: DataType.WholeNumber
+                                defaultValue: DataType.Integer
                             }
                         },
                         programMode: [ProgramModeType.UPLOAD]
