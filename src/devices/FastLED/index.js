@@ -1290,6 +1290,7 @@ class ArduinoFastLEDDevice {
                             }
                         }
                     },                    
+                    '---',                                    
                     {
                         opcode: 'setAllLEDColor',
                         text: formatMessage({
@@ -1388,6 +1389,7 @@ class ArduinoFastLEDDevice {
                             }
                         }
                     },
+                    '---',                                    
                     {
                         opcode: 'setLEDColor',
                         text: formatMessage({
@@ -1462,6 +1464,7 @@ class ArduinoFastLEDDevice {
                             }
                         }
                     },
+                    '---',                                    
                     {
                         opcode: 'repeat',
                         text: formatMessage({
@@ -1472,7 +1475,8 @@ class ArduinoFastLEDDevice {
                         blockType: BlockType.LOOP,
                         arguments: {
                         }
-                    },                                        
+                    },
+                    '---',                                    
                     {
                         opcode: 'repeat_n_ms',
                         text: formatMessage({
@@ -1533,10 +1537,6 @@ class ArduinoFastLEDDevice {
                             }                            
                         }
                     },                                        
-                    '---',
-                    '---',
-                    '---',
-                    '---',
                 ],
                 menus: {
                     colors: {
