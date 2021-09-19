@@ -37,7 +37,7 @@ const DIVECE_OPT = {
 
 const Colors = {
     AliceBlue: 'AliceBlue',
-    Amethyst: 'Amethyst',        
+    Amethyst: 'Amethyst',
     AntiqueWhite: 'AntiqueWhite',
     Aqua: 'Aqua',
     Aquamarine: 'Aquamarine',
@@ -271,573 +271,573 @@ class ArduinoFastLEDDevice {
     get COLORS_MENU () {
         return [
             {
-                text: 'AliceBlue',        
+                text: '1. AliceBlue',
                 value: Colors.AliceBlue   
             },
             {
-                text: 'Amethyst',
+                text: '2. Amethyst',
                 value: Colors.Amethyst    
             },
             {
-                text: 'AntiqueWhite',     
+                text: '3. AntiqueWhite',
                 value: Colors.AntiqueWhite
             },
             {
-                text: 'Aqua',
+                text: '4. Aqua',
                 value: Colors.Aqua        
             },
             {
-                text: 'Aquamarine',       
+                text: '5. Aquamarine',
                 value: Colors.Aquamarine  
             },
             {
-                text: 'Azure',
+                text: '6. Azure',
                 value: Colors.Azure
             },
             {
-                text: 'Beige',
+                text: '7. Beige',
                 value: Colors.Beige
             },
             {
-                text: 'Bisque',
+                text: '8. Bisque',
                 value: Colors.Bisque
             },
             {
-                text: 'Black',
+                text: '9. Black',
                 value: Colors.Black
             },
             {
-                text: 'BlanchedAlmond',
+                text: '10. BlanchedAlmond',
                 value: Colors.BlanchedAlmond
             },
             {
-                text: 'Blue',
+                text: '11. Blue',
                 value: Colors.Blue
             },
             {
-                text: 'BlueViolet',
+                text: '12. BlueViolet',
                 value: Colors.BlueViolet
             },
             {
-                text: 'Brown',
+                text: '13. Brown',
                 value: Colors.Brown
             },
             {
-                text: 'BurlyWood',
+                text: '14. BurlyWood',
                 value: Colors.BurlyWood
             },
             {
-                text: 'CadetBlue',
+                text: '15. CadetBlue',
                 value: Colors.CadetBlue
             },
             {
-                text: 'Chartreuse',
+                text: '16. Chartreuse',
                 value: Colors.Chartreuse
             },
             {
-                text: 'Chocolate',
+                text: '17. Chocolate',
                 value: Colors.Chocolate
             },
             {
-                text: 'Coral',
+                text: '18. Coral',
                 value: Colors.Coral
             },
             {
-                text: 'CornflowerBlue',
+                text: '19. CornflowerBlue',
                 value: Colors.CornflowerBlue
             },
             {
-                text: 'Cornsilk',
+                text: '20. Cornsilk',
                 value: Colors.Cornsilk
             },
             {
-                text: 'Crimson',
+                text: '21. Crimson',
                 value: Colors.Crimson
             },
             {
-                text: 'Cyan',
+                text: '22. Cyan',
                 value: Colors.Cyan
             },
             {
-                text: 'DarkBlue',
+                text: '23. DarkBlue',
                 value: Colors.DarkBlue
             },
             {
-                text: 'DarkCyan',
+                text: '24. DarkCyan',
                 value: Colors.DarkCyan
             },
             {
-                text: 'DarkGoldenrod',
+                text: '25. DarkGoldenrod',
                 value: Colors.DarkGoldenrod
             },
             {
-                text: 'DarkGray',
+                text: '26. DarkGray',
                 value: Colors.DarkGray
             },
             {
-                text: 'DarkGreen',
+                text: '27. DarkGreen',
                 value: Colors.DarkGreen
             },
             {
-                text: 'DarkKhaki',
+                text: '28. DarkKhaki',
                 value: Colors.DarkKhaki
             },
             {
-                text: 'DarkMagenta',
+                text: '29. DarkMagenta',
                 value: Colors.DarkMagenta
             },
             {
-                text: 'DarkOliveGreen',
+                text: '30. DarkOliveGreen',
                 value: Colors.DarkOliveGreen
             },
             {
-                text: 'DarkOrange',
+                text: '31. DarkOrange',
                 value: Colors.DarkOrange
             },
             {
-                text: 'DarkOrchid',
+                text: '32. DarkOrchid',
                 value: Colors.DarkOrchid
             },
             {
-                text: 'DarkRed',
+                text: '33. DarkRed',
                 value: Colors.DarkRed
             },
             {
-                text: 'DarkSalmon',
+                text: '34. DarkSalmon',
                 value: Colors.DarkSalmon
             },
             {
-                text: 'DarkSeaGreen',
+                text: '35. DarkSeaGreen',
                 value: Colors.DarkSeaGreen
             },
             {
-                text: 'DarkSlateBlue',
+                text: '36. DarkSlateBlue',
                 value: Colors.DarkSlateBlue
             },
             {
-                text: 'DarkSlateGray',
+                text: '37. DarkSlateGray',
                 value: Colors.DarkSlateGray
             },
             {
-                text: 'DarkTurquoise',
+                text: '38. DarkTurquoise',
                 value: Colors.DarkTurquoise
             },
             {
-                text: 'DarkViolet',
+                text: '39. DarkViolet',
                 value: Colors.DarkViolet
             },
             {
-                text: 'DeepPink',
+                text: '40. DeepPink',
                 value: Colors.DeepPink
             },
             {
-                text: 'DeepSkyBlue',
+                text: '41. DeepSkyBlue',
                 value: Colors.DeepSkyBlue
             },
             {
-                text: 'DimGray',
+                text: '42. DimGray',
                 value: Colors.DimGray
             },
             {
-                text: 'DodgerBlue',
+                text: '43. DodgerBlue',
                 value: Colors.DodgerBlue
             },
             {
-                text: 'FireBrick',
+                text: '44. FireBrick',
                 value: Colors.FireBrick
             },
             {
-                text: 'FloralWhite',
+                text: '45. FloralWhite',
                 value: Colors.FloralWhite
             },
             {
-                text: 'ForestGreen',
+                text: '46. ForestGreen',
                 value: Colors.ForestGreen
             },
             {
-                text: 'Fuchsia',
+                text: '47. Fuchsia',
                 value: Colors.Fuchsia
             },
             {
-                text: 'Gainsboro',
+                text: '48. Gainsboro',
                 value: Colors.Gainsboro
             },
             {
-                text: 'GhostWhite',
+                text: '49. GhostWhite',
                 value: Colors.GhostWhite
             },
             {
-                text: 'Gold',
+                text: '50. Gold',
                 value: Colors.Gold
             },
             {
-                text: 'Goldenrod',
+                text: '51. Goldenrod',
                 value: Colors.Goldenrod
             },
             {
-                text: 'Gray',
+                text: '52. Gray',
                 value: Colors.Gray
             },
             {
-                text: 'Green',
+                text: '53. Green',
                 value: Colors.Green
             },
             {
-                text: 'GreenYellow',
+                text: '54. GreenYellow',
                 value: Colors.GreenYellow
             },
             {
-                text: 'Honeydew',
+                text: '55. Honeydew',
                 value: Colors.Honeydew
             },
             {
-                text: 'HotPink',
+                text: '56. HotPink',
                 value: Colors.HotPink
             },
             {
-                text: 'IndianRed',
+                text: '57. IndianRed',
                 value: Colors.IndianRed
             },
             {
-                text: 'Indigo',
+                text: '58. Indigo',
                 value: Colors.Indigo
             },
             {
-                text: 'Ivory',
+                text: '59. Ivory',
                 value: Colors.Ivory
             },
             {
-                text: 'Khaki',
+                text: '60. Khaki',
                 value: Colors.Khaki
             },
             {
-                text: 'Lavender',
+                text: '61. Lavender',
                 value: Colors.Lavender
             },
             {
-                text: 'LavenderBlush',
+                text: '62. LavenderBlush',
                 value: Colors.LavenderBlush
             },
             {
-                text: 'LawnGreen',
+                text: '63. LawnGreen',
                 value: Colors.LawnGreen
             },
             {
-                text: 'LemonChiffon',
+                text: '64. LemonChiffon',
                 value: Colors.LemonChiffon
             },
             {
-                text: 'LightBlue',
+                text: '65. LightBlue',
                 value: Colors.LightBlue
             },
             {
-                text: 'LightCoral',
+                text: '66. LightCoral',
                 value: Colors.LightCoral
             },
             {
-                text: 'LightCyan',
+                text: '67. LightCyan',
                 value: Colors.LightCyan
             },
             {
-                text: 'LightGoldenrodYellow',
+                text: '68. LightGoldenrodYellow',
                 value: Colors.LightGoldenrodYellow
             },
             {
-                text: 'LightGreen',
+                text: '69. LightGreen',
                 value: Colors.LightGreen
             },
             {
-                text: 'LightGrey',
+                text: '70. LightGrey',
                 value: Colors.LightGrey
             },
             {
-                text: 'LightPink',
+                text: '71. LightPink',
                 value: Colors.LightPink
             },
             {
-                text: 'LightSalmon',
+                text: '72. LightSalmon',
                 value: Colors.LightSalmon
             },
             {
-                text: 'LightSeaGreen',
+                text: '73. LightSeaGreen',
                 value: Colors.LightSeaGreen
             },
             {
-                text: 'LightSkyBlue',
+                text: '74. LightSkyBlue',
                 value: Colors.LightSkyBlue
             },
             {
-                text: 'LightSlateGray',
+                text: '75. LightSlateGray',
                 value: Colors.LightSlateGray
             },
             {
-                text: 'LightSteelBlue',
+                text: '76. LightSteelBlue',
                 value: Colors.LightSteelBlue
             },
             {
-                text: 'LightYellow',
+                text: '77. LightYellow',
                 value: Colors.LightYellow
             },
             {
-                text: 'Lime',
+                text: '78. Lime',
                 value: Colors.Lime
             },
             {
-                text: 'LimeGreen',
+                text: '79. LimeGreen',
                 value: Colors.LimeGreen
             },
             {
-                text: 'Linen',
+                text: '80. Linen',
                 value: Colors.Linen
             },
             {
-                text: 'Magenta',
+                text: '81. Magenta',
                 value: Colors.Magenta
             },
             {
-                text: 'Maroon',
+                text: '82. Maroon',
                 value: Colors.Maroon
             },
             {
-                text: 'MediumAquamarine',
+                text: '83. MediumAquamarine',
                 value: Colors.MediumAquamarine
             },
             {
-                text: 'MediumBlue',
+                text: '84. MediumBlue',
                 value: Colors.MediumBlue
             },
             {
-                text: 'MediumOrchid',
+                text: '85. MediumOrchid',
                 value: Colors.MediumOrchid
             },
             {
-                text: 'MediumPurple',
+                text: '86. MediumPurple',
                 value: Colors.MediumPurple
             },
             {
-                text: 'MediumSeaGreen',
+                text: '87. MediumSeaGreen',
                 value: Colors.MediumSeaGreen
             },
             {
-                text: 'MediumSlateBlue',
+                text: '88. MediumSlateBlue',
                 value: Colors.MediumSlateBlue
             },
             {
-                text: 'MediumSpringGreen',
+                text: '89. MediumSpringGreen',
                 value: Colors.MediumSpringGreen
             },
             {
-                text: 'MediumTurquoise',
+                text: '90. MediumTurquoise',
                 value: Colors.MediumTurquoise
             },
             {
-                text: 'MediumVioletRed',
+                text: '91. MediumVioletRed',
                 value: Colors.MediumVioletRed
             },
             {
-                text: 'MidnightBlue',
+                text: '92. MidnightBlue',
                 value: Colors.MidnightBlue
             },
             {
-                text: 'MintCream',
+                text: '93. MintCream',
                 value: Colors.MintCream
             },
             {
-                text: 'MistyRose',
+                text: '94. MistyRose',
                 value: Colors.MistyRose
             },
             {
-                text: 'Moccasin',
+                text: '95. Moccasin',
                 value: Colors.Moccasin
             },
             {
-                text: 'NavajoWhite',
+                text: '96. NavajoWhite',
                 value: Colors.NavajoWhite
             },
             {
-                text: 'Navy',
+                text: '97. Navy',
                 value: Colors.Navy
             },
             {
-                text: 'OldLace',
+                text: '98. OldLace',
                 value: Colors.OldLace
             },
             {
-                text: 'Olive',
+                text: '99. Olive',
                 value: Colors.Olive
             },
             {
-                text: 'OliveDrab',
+                text: '100. OliveDrab',
                 value: Colors.OliveDrab
             },
             {
-                text: 'Orange',
+                text: '101. Orange',
                 value: Colors.Orange
             },
             {
-                text: 'OrangeRed',
+                text: '102. OrangeRed',
                 value: Colors.OrangeRed
             },
             {
-                text: 'Orchid',
+                text: '103. Orchid',
                 value: Colors.Orchid
             },
             {
-                text: 'PaleGoldenrod',
+                text: '104. PaleGoldenrod',
                 value: Colors.PaleGoldenrod
             },
             {
-                text: 'PaleGreen',
+                text: '105. PaleGreen',
                 value: Colors.PaleGreen
             },
             {
-                text: 'PaleTurquoise',
+                text: '106. PaleTurquoise',
                 value: Colors.PaleTurquoise
             },
             {
-                text: 'PaleVioletRed',
+                text: '107. PaleVioletRed',
                 value: Colors.PaleVioletRed
             },
             {
-                text: 'PapayaWhip',
+                text: '108. PapayaWhip',
                 value: Colors.PapayaWhip
             },
             {
-                text: 'PeachPuff',
+                text: '109. PeachPuff',
                 value: Colors.PeachPuff
             },
             {
-                text: 'Peru',
+                text: '110. Peru',
                 value: Colors.Peru
             },
             {
-                text: 'Pink',
+                text: '111. Pink',
                 value: Colors.Pink
             },
             {
-                text: 'Plaid',
+                text: '112. Plaid',
                 value: Colors.Plaid
             },
             {
-                text: 'Plum',
+                text: '113. Plum',
                 value: Colors.Plum
             },
             {
-                text: 'PowderBlue',
+                text: '114. PowderBlue',
                 value: Colors.PowderBlue
             },
             {
-                text: 'Purple',
+                text: '115. Purple',
                 value: Colors.Purple
             },
             {
-                text: 'Red',
+                text: '116. Red',
                 value: Colors.Red
             },
             {
-                text: 'RosyBrown',
+                text: '117. RosyBrown',
                 value: Colors.RosyBrown
             },
             {
-                text: 'RoyalBlue',
+                text: '118. RoyalBlue',
                 value: Colors.RoyalBlue
             },
             {
-                text: 'SaddleBrown',
+                text: '119. SaddleBrown',
                 value: Colors.SaddleBrown
             },
             {
-                text: 'Salmon',
+                text: '120. Salmon',
                 value: Colors.Salmon
             },
             {
-                text: 'SandyBrown',
+                text: '121. SandyBrown',
                 value: Colors.SandyBrown
             },
             {
-                text: 'SeaGreen',
+                text: '122. SeaGreen',
                 value: Colors.SeaGreen
             },
             {
-                text: 'Seashell',
+                text: '123. Seashell',
                 value: Colors.Seashell
             },
             {
-                text: 'Sienna',
+                text: '124. Sienna',
                 value: Colors.Sienna
             },
             {
-                text: 'Silver',
+                text: '125. Silver',
                 value: Colors.Silver
             },
             {
-                text: 'SkyBlue',
+                text: '126. SkyBlue',
                 value: Colors.SkyBlue
             },
             {
-                text: 'SlateBlue',
+                text: '127. SlateBlue',
                 value: Colors.SlateBlue
             },
             {
-                text: 'SlateGray',
+                text: '128. SlateGray',
                 value: Colors.SlateGray
             },
             {
-                text: 'Snow',
+                text: '129. Snow',
                 value: Colors.Snow
             },
             {
-                text: 'SpringGreen',
+                text: '130. SpringGreen',
                 value: Colors.SpringGreen
             },
             {
-                text: 'SteelBlue',
+                text: '131. SteelBlue',
                 value: Colors.SteelBlue
             },
             {
-                text: 'Tan',
+                text: '132. Tan',
                 value: Colors.Tan
             },
             {
-                text: 'Teal',
+                text: '133. Teal',
                 value: Colors.Teal
             },
             {
-                text: 'Thistle',
+                text: '134. Thistle',
                 value: Colors.Thistle
             },
             {
-                text: 'Tomato',
+                text: '135. Tomato',
                 value: Colors.Tomato
             },
             {
-                text: 'Turquoise',
+                text: '136. Turquoise',
                 value: Colors.Turquoise
             },
             {
-                text: 'Violet',
+                text: '137. Violet',
                 value: Colors.Violet
             },
             {
-                text: 'Wheat',
+                text: '138. Wheat',
                 value: Colors.Wheat
             },
             {
-                text: 'White',
+                text: '139. White',
                 value: Colors.White
             },
             {
-                text: 'WhiteSmoke',
+                text: '140. WhiteSmoke',
                 value: Colors.WhiteSmoke
             },
             {
-                text: 'Yellow',
+                text: '141. Yellow',
                 value: Colors.Yellow
             },
             {
-                text: 'YellowGreen',
+                text: '142. YellowGreen',
                 value: Colors.YellowGreen
-            }            
+            }      
         ];
     }
 
@@ -1289,8 +1289,8 @@ class ArduinoFastLEDDevice {
                                 defaultValue: 10
                             }
                         }
-                    },                    
-                    '---',                                    
+                    },
+                    '---',
                     {
                         opcode: 'setAllLEDColor',
                         text: formatMessage({
@@ -1389,7 +1389,7 @@ class ArduinoFastLEDDevice {
                             }
                         }
                     },
-                    '---',                                    
+                    '---',
                     {
                         opcode: 'setLEDColor',
                         text: formatMessage({
@@ -1464,19 +1464,19 @@ class ArduinoFastLEDDevice {
                             }
                         }
                     },
-                    '---',                                    
+                    '---',
                     {
                         opcode: 'repeat',
                         text: formatMessage({
                             id: 'arduino.pins.repeat',
-                            default: 'repeat LED',
+                            default: 'repeat " i " LED',
                             description: 'arduino for i loop'
                         }),
                         blockType: BlockType.LOOP,
                         arguments: {
                         }
                     },
-                    '---',                                    
+                    '---',
                     {
                         opcode: 'repeat_n_ms',
                         text: formatMessage({
@@ -1491,7 +1491,7 @@ class ArduinoFastLEDDevice {
                                 defaultValue: 1
                             }                            
                         }
-                    },                                        
+                    },
                     {
                         opcode: 'repeat_n_s',
                         text: formatMessage({
@@ -1506,7 +1506,7 @@ class ArduinoFastLEDDevice {
                                 defaultValue: 1
                             }                            
                         }
-                    },                                        
+                    },
                     {
                         opcode: 'repeat_n_min',
                         text: formatMessage({
@@ -1521,7 +1521,7 @@ class ArduinoFastLEDDevice {
                                 defaultValue: 1
                             }                            
                         }
-                    },                                        
+                    },
                     {
                         opcode: 'repeat_n_hour',
                         text: formatMessage({
@@ -1536,7 +1536,7 @@ class ArduinoFastLEDDevice {
                                 defaultValue: 1
                             }                            
                         }
-                    },                                        
+                    },
                 ],
                 menus: {
                     colors: {
