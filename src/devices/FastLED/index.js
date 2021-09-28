@@ -1253,12 +1253,14 @@ class ArduinoFastLEDDevice {
                 id: 'fastled',
                 name: formatMessage({
                     id: 'arduino.category.pins',
-                    default: 'Pins',
+                    default: 'LED',
                     description: 'The name of the arduino device pin category'
                 }),
                 color1: '#009297',
                 color2: '#004B4C',
                 color3: '#004B4C',
+                menuIconURI: 'data:image/png;base64,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',
+                blockIconURI: 'data:image/png;base64,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',
                 blocks: [
                     {
                         opcode: 'setLEDNumber',
@@ -1310,46 +1312,14 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'setAllLEDColorRGB',
                         text: formatMessage({
-                            id: 'arduino.pins.setAllLEDColorRGB',
-                            default: 'set all LED color to Red [RED] Green[GREEN] Blue [BLUE]',
-                            description: 'arduino set All LED RGB Color'
+                            id: 'arduino.pins.setAllLEDColor',
+                            default: 'set all LED color to [COLOR]',
+                            description: 'arduino set All LED Color (HSV -> RGB)'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            RED: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
-                            },
-                            GREEN: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
-                            },
-                            BLUE: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'setAllLEDColorHSV',
-                        text: formatMessage({
-                            id: 'arduino.pins.setAllLEDColorHSV',
-                            default: 'set all LED color to Hue [HUE] Saturation [SATURATION] Value [VALUE]',
-                            description: 'arduino set All LED HSV Color'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            HUE: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
-                            },
-                            SATURATION: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
-                            },
-                            VALUE: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
+                            COLOR: {
+                                type: ArgumentType.COLOR,
                             }
                         }
                     },
@@ -1414,7 +1384,7 @@ class ArduinoFastLEDDevice {
                         opcode: 'setLEDColorRGB',
                         text: formatMessage({
                             id: 'arduino.pins.setLEDColorRGB',
-                            default: 'set LED [NUMBER] color to Red [RED] Green[GREEN] Blue [BLUE]',
+                            default: 'set LED [NUMBER] color to [COLOR]',
                             description: 'arduino set LED RGB Color'
                         }),
                         blockType: BlockType.COMMAND,
@@ -1423,45 +1393,9 @@ class ArduinoFastLEDDevice {
                                 type: ArgumentType.NUMBER,
                                 defaultValue: 0
                             },
-                            RED: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
+                            COLOR: {
+                                type: ArgumentType.COLOR,
                             },
-                            GREEN: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
-                            },
-                            BLUE: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'setLEDColorHSV',
-                        text: formatMessage({
-                            id: 'arduino.pins.setLEDColorHSV',
-                            default: 'set LED [NUMBER] color to Hue [HUE] Saturation [SATURATION] Value [VALUE]',
-                            description: 'arduino set LED HSV Color'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            NUMBER: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: 0
-                            },
-                            HUE: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
-                            },
-                            SATURATION: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
-                            },
-                            VALUE: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: 255
-                            }
                         }
                     },
                     '---',
