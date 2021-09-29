@@ -161,7 +161,7 @@ class Serialport extends JSONRPC {
     }
 
     /**
-     * Upload realtime firmware to the peripheral.
+     * Upload realtime firmata firmware to the peripheral.
      * @param {object} config - the configuration of upload process.
      * @return {Promise} - a promise from the remote send request.
      */
