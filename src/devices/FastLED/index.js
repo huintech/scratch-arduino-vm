@@ -1252,7 +1252,7 @@ class ArduinoFastLEDDevice {
             {
                 id: 'fastled',
                 name: formatMessage({
-                    id: 'arduino.category.pins',
+                    id: 'arduino.category.fastled',
                     default: 'LED',
                     description: 'The name of the arduino device pin category'
                 }),
