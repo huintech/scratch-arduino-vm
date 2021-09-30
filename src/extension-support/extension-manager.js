@@ -32,9 +32,9 @@ const builtinExtensions = {
 
 // These deviceId need to be mached
 // GUI: src/libraries/devices/index.jsx -> deviceId
-// VM: src/ottoBasic/index.js -> class ScratchArduinoNanoDevice
+// VM: src/ottoRobot/index.js -> class ArduinoOttoRobotDevice
 const builtinDevices = {
-    ottoBasic: () => require('../devices/ottoBasic'),
+    ottoRobot: () => require('../devices/ottoRobot'),
     FastLED: () => require('../devices/FastLED'),
     arduinoUno: () => require('../devices/arduinoUno'),
     arduinoNano: () => require('../devices/arduinoNano'),

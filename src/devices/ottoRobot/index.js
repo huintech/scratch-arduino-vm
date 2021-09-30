@@ -116,12 +116,12 @@ class ArduinoNano extends ArduinoPeripheral{
 /**
  * Scratch Arduino blocks to interact with a Arduino Nano peripheral.
  */
-class ArduinoOttoBasicDevice {
+class ArduinoOttoRobotDevice {
     /**
      * @return {string} - the ID of this extension.
      */
     static get DEVICE_ID () {
-        return 'ottoBasic';
+        return 'ottoRobot';
     }
 
     get PINS_MENU () {
@@ -524,7 +524,7 @@ class ArduinoOttoBasicDevice {
         this.runtime = runtime;
 
         // Create a new Arduino nano peripheral instance
-        this._peripheral = new ArduinoNano(this.runtime, ArduinoOttoBasicDevice.DEVICE_ID, originalDeviceId);
+        this._peripheral = new ArduinoNano(this.runtime, ArduinoOttoRobotDevice.DEVICE_ID, originalDeviceId);
     }
 
     /**
@@ -533,15 +533,17 @@ class ArduinoOttoBasicDevice {
     getInfo () {
         return [
             {
-                id: 'pin',
+                id: 'ottorobot',
                 name: formatMessage({
-                    id: 'arduino.category.pins',
-                    default: 'Pins',
+                    id: 'arduino.category.ottorobot',
+                    default: 'Otto',
                     description: 'The name of the arduino device pin category'
                 }),
                 color1: '#009297',
                 color2: '#004B4C',
                 color3: '#004B4C',
+                menuIconURI: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdQAAA3UAe+RuhUAAAUbSURBVFhH3VdrSGVVFF7nvh/e6+1eH2n5GBFNTdEKSX+EEkVEIMPgj4iJiJEYnEkRzBJEUurHkEEQpPZH/DFIWIL6Q5lBGqa0Jh8UjTajoaJzG1PvHcUZ7+uc3Vr7nqtO95zrq199sM9+rL32+dbaa6+zjwAxUHb+0zdEaTdb70gDECUQwQghUWQBX0iSUC5JIj61EAxirSENhutpgDGsmSD4txcFyfdg/N73X/9MUiWoErhYfzHrh8DrC2JwSzA9kYtrs/BsJtILwjUgDWzugbcZMIkaAvi8d4GFAnN3r17KJ4kSVAk0NDQ8c9Py3lxodxNMDiSAOJPMwG4GuL0C6InHVe0WBgVPC7C8wcDtCct2vbfBAKL71ueVT/EBBXDHKUGr1aIpZCk5G+BCBYO8ta9AutkMzZV/g9mwb/qZJIBLhb+Be6AWKoVv4JXCMAFB0IBBJ1h4RwWqBBYXF3ci/rVbJND8OQwtLS3Q3d0NX3zcABV5Wi4jnH1OCxfOvwl9fX1wubYWSmx3ZAmRUHUyhyqB/mv9D2mvqWD8gcmyb0hcXBwEKP5k+EMCOBwO3tbpdKAzWnmbwMMhBmLRc7zw0e/ekO8BmJ15cK5UAOdfQ+BeXYHCV9+Gz65b9uLAZWPwftk63Lr2LRQ8/yKMrpfAr8sAvq07YNGEvD9eecnJJyogNoEPiYAHzK4CPmDDrbAaGdz37rs/AvJ0YnwIvDt4LNEjBP/2ApgF/8kI1NTUnFu1v9xv0ElgtFEQU0CSJKLCwi18CLyFfb7f+/WOdwkses0jk3usoqen5xeafmQMDw9/Nz09zQKBAIbByTA/P888Hg/r7OxskpeNgmoQohWYy7iNpwLy4GvJ3SioEiAL5OaJcRQDVAlEcFoepC/xL4cyYhI47RaQPhHQaNRfE4sAN/00HvhPtuA0iHgAa1Um//8tOMwDqoLm5uaO4uLiBqfTCTabTR4NEzqwcNRYpE9YXl7mH66hoaHLXV1dX/LBf0GVQFFRUU5paelPaWlpRuwyXOzRyspKA5LxkByPFiUqFgqFQK/XM1EUaUza3t5OiI+P/yQ9Pd1Ix8/tdgdR77Wpqak/SO/IaG9v/2BgYIDhvYAtLS2xwcFBVldX944sVkVTU9O7o6OjbGNjg5exsTHW0dFx/FScmJgopKSkQGZmJmRkZEBycjKgZYdGJd0LqLhcLl7sdjuYzWZVvWMdw1jRHAFuSdTL8JKiGsnHIoD3RLl1PCAB1XuhKoG1tTUBP8cwPj4OExMTvGDQHboFNGdubg4mJyd5mZmZIc/ZZXEUFAlkZ2fbTSbT2dzcXDAajRTlPAaQlOr9PgKv15tK0U9HkWqMG8B7QSb2j+7t8vLyMryQoM4+gsEga2xsXJenKKK1tdWC+SPg9/tlLcaQBF1IGBqEv1fRUGRFiYci+CBo/xMSXDHTYlzcjpCamqIxGAzySDgb0klSOwmKBMjlStAe4sTk5CdBgwlR7u4hVujoqqurDWhdCbpKQDcHMGN5MWieXV1dhYWFBa5Mxw+9Cbu+oKymjLU1wJhh+LMankc6BMqWVqvVkJWVtWcZpmh248aNkFBfX3+lqqqqkSI3Pz//sXx+sMzOzsLm5ub9tra2FD5BAb29vVaMfA+9jNxOIPJEAA0JYmHUJ8NQzkZGRt7SYQ6/jlbfQwg+nw/n7IHRXw5FMiUSzOm0yAZfVQVoQABvwVfRA/qkpCROnNaRxXvY2tqiU/UwJyfH/w9pNJbWNrMrwwAAAABJRU5ErkJggg==',
+                blockIconURI: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdQAAA3UAe+RuhUAAAUbSURBVFhH3VdrSGVVFF7nvh/e6+1eH2n5GBFNTdEKSX+EEkVEIMPgj4iJiJEYnEkRzBJEUurHkEEQpPZH/DFIWIL6Q5lBGqa0Jh8UjTajoaJzG1PvHcUZ7+uc3Vr7nqtO95zrq199sM9+rL32+dbaa6+zjwAxUHb+0zdEaTdb70gDECUQwQghUWQBX0iSUC5JIj61EAxirSENhutpgDGsmSD4txcFyfdg/N73X/9MUiWoErhYfzHrh8DrC2JwSzA9kYtrs/BsJtILwjUgDWzugbcZMIkaAvi8d4GFAnN3r17KJ4kSVAk0NDQ8c9Py3lxodxNMDiSAOJPMwG4GuL0C6InHVe0WBgVPC7C8wcDtCct2vbfBAKL71ueVT/EBBXDHKUGr1aIpZCk5G+BCBYO8ta9AutkMzZV/g9mwb/qZJIBLhb+Be6AWKoVv4JXCMAFB0IBBJ1h4RwWqBBYXF3ci/rVbJND8OQwtLS3Q3d0NX3zcABV5Wi4jnH1OCxfOvwl9fX1wubYWSmx3ZAmRUHUyhyqB/mv9D2mvqWD8gcmyb0hcXBwEKP5k+EMCOBwO3tbpdKAzWnmbwMMhBmLRc7zw0e/ekO8BmJ15cK5UAOdfQ+BeXYHCV9+Gz65b9uLAZWPwftk63Lr2LRQ8/yKMrpfAr8sAvq07YNGEvD9eecnJJyogNoEPiYAHzK4CPmDDrbAaGdz37rs/AvJ0YnwIvDt4LNEjBP/2ApgF/8kI1NTUnFu1v9xv0ElgtFEQU0CSJKLCwi18CLyFfb7f+/WOdwkses0jk3usoqen5xeafmQMDw9/Nz09zQKBAIbByTA/P888Hg/r7OxskpeNgmoQohWYy7iNpwLy4GvJ3SioEiAL5OaJcRQDVAlEcFoepC/xL4cyYhI47RaQPhHQaNRfE4sAN/00HvhPtuA0iHgAa1Um//8tOMwDqoLm5uaO4uLiBqfTCTabTR4NEzqwcNRYpE9YXl7mH66hoaHLXV1dX/LBf0GVQFFRUU5paelPaWlpRuwyXOzRyspKA5LxkByPFiUqFgqFQK/XM1EUaUza3t5OiI+P/yQ9Pd1Ix8/tdgdR77Wpqak/SO/IaG9v/2BgYIDhvYAtLS2xwcFBVldX944sVkVTU9O7o6OjbGNjg5exsTHW0dFx/FScmJgopKSkQGZmJmRkZEBycjKgZYdGJd0LqLhcLl7sdjuYzWZVvWMdw1jRHAFuSdTL8JKiGsnHIoD3RLl1PCAB1XuhKoG1tTUBP8cwPj4OExMTvGDQHboFNGdubg4mJyd5mZmZIc/ZZXEUFAlkZ2fbTSbT2dzcXDAajRTlPAaQlOr9PgKv15tK0U9HkWqMG8B7QSb2j+7t8vLyMryQoM4+gsEga2xsXJenKKK1tdWC+SPg9/tlLcaQBF1IGBqEv1fRUGRFiYci+CBo/xMSXDHTYlzcjpCamqIxGAzySDgb0klSOwmKBMjlStAe4sTk5CdBgwlR7u4hVujoqqurDWhdCbpKQDcHMGN5MWieXV1dhYWFBa5Mxw+9Cbu+oKymjLU1wJhh+LMankc6BMqWVqvVkJWVtWcZpmh248aNkFBfX3+lqqqqkSI3Pz//sXx+sMzOzsLm5ub9tra2FD5BAb29vVaMfA+9jNxOIPJEAA0JYmHUJ8NQzkZGRt7SYQ6/jlbfQwg+nw/n7IHRXw5FMiUSzOm0yAZfVQVoQABvwVfRA/qkpCROnNaRxXvY2tqiU/UwJyfH/w9pNJbWNrMrwwAAAABJRU5ErkJggg==',
                 blocks: [
                     {
                         opcode: 'setPinMode',
@@ -999,4 +1001,4 @@ class ArduinoOttoBasicDevice {
     }
 }
 
-module.exports = ArduinoOttoBasicDevice;
+module.exports = ArduinoOttoRobotDevice;
