@@ -1310,9 +1310,9 @@ class ArduinoFastLEDDevice {
                         }
                     },
                     {
-                        opcode: 'setAllLEDColorRGB',
+                        opcode: 'setAllLEDColorHSV',
                         text: formatMessage({
-                            id: 'arduino.pins.setAllLEDColor',
+                            id: 'arduino.pins.setAllLEDColorHSV',
                             default: 'set all LED color to [COLOR]',
                             description: 'arduino set All LED Color (HSV -> RGB)'
                         }),
@@ -1320,6 +1320,29 @@ class ArduinoFastLEDDevice {
                         arguments: {
                             COLOR: {
                                 type: ArgumentType.COLOR,
+                            }
+                        }
+                    },                    
+                    {
+                        opcode: 'setAllLEDColorRGB',
+                        text: formatMessage({
+                            id: 'arduino.pins.setAllLEDColorRGB',
+                            default: 'set all LED color to Red [RED] Green[GREEN] Blue [BLUE]',
+                            description: 'arduino set All LED RGB Color'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            RED: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            GREEN: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            BLUE: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
                             }
                         }
                     },
@@ -1381,11 +1404,11 @@ class ArduinoFastLEDDevice {
                         }
                     },
                     {
-                        opcode: 'setLEDColorRGB',
+                        opcode: 'setLEDColorHSV',
                         text: formatMessage({
-                            id: 'arduino.pins.setLEDColorRGB',
+                            id: 'arduino.pins.setLEDColorHSV',
                             default: 'set LED [NUMBER] color to [COLOR]',
-                            description: 'arduino set LED RGB Color'
+                            description: 'arduino set LED RGB Color (HSV -> RGB)'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -1396,6 +1419,33 @@ class ArduinoFastLEDDevice {
                             COLOR: {
                                 type: ArgumentType.COLOR,
                             },
+                        }
+                    },                    
+                    {
+                        opcode: 'setLEDColorRGB',
+                        text: formatMessage({
+                            id: 'arduino.pins.setLEDColorRGB',
+                            default: 'set LED [NUMBER] color to Red [RED] Green[GREEN] Blue [BLUE]',
+                            description: 'arduino set LED RGB Color'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            NUMBER: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                            RED: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            GREEN: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            },
+                            BLUE: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 255
+                            }
                         }
                     },
                     '---',
