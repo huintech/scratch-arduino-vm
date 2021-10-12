@@ -58,7 +58,6 @@ const Pins = {
     A5: 'A5'
 };
 
-
 const Level = {
     High: 'HIGH',
     Low: 'LOW'
@@ -122,6 +121,79 @@ class ArduinoOttoRobotDevice {
      */
     static get DEVICE_ID () {
         return 'ottoRobot';
+    }
+
+    get MOVES_MENU () {
+        return [
+            {
+                text: 'Forward',
+                value: 'Forward'
+            },
+            {
+                text: 'Backward',
+                value: 'Backward'
+            },
+            {
+                text: 'Turn Left',
+                value: 'Turn Left'
+            },
+            {
+                text: 'Turn Right',
+                value: 'Turn Right'
+            }
+        ]
+    }
+    get DANCES_MENU () {
+        return [
+            {
+                text: 'Moonwalker',
+                value: 'Moonwalker'
+            },
+            {
+                text: 'Crusaito',
+                value: 'Crusaito'
+            },
+            {
+                text: 'Flapping',
+                value: 'Flapping'
+            }
+        ]
+    }
+    get DIRECTIONS_MENU () {
+        return [
+            {
+                text: 'Left',
+                value: 1
+            },
+            {
+                text: 'Right',
+                value: -1
+            }
+        ]
+    }
+    get ACTIONS_MENU () {
+        return [
+            {
+                text: 'Ascending Turn',
+                value: 'Ascending Turn'
+            },
+            {
+                text: 'Jitter',
+                value: 'Jitter'
+            },
+            {
+                text: 'Swing',
+                value: 'Swing'
+            },
+            {
+                text: 'Tiptoe Swing',
+                value: 'Tiptoe Swing'
+            },
+            {
+                text: 'Up & Down',
+                value: 'Up & Down'
+            }
+        ]
     }
 
     get PINS_MENU () {
@@ -533,11 +605,11 @@ class ArduinoOttoRobotDevice {
     getInfo () {
         return [
             {
-                id: 'ottorobot',
+                id: 'ottoRobot',
                 name: formatMessage({
-                    id: 'arduino.category.ottorobot',
-                    default: 'Otto',
-                    description: 'The name of the arduino device pin category'
+                    id: 'arduino.category.ottoRobot',
+                    default: 'Otto Robot',
+                    description: 'The name of the Otto Robot in veritcal block'
                 }),
                 color1: '#009297',
                 color2: '#004B4C',
@@ -546,163 +618,144 @@ class ArduinoOttoRobotDevice {
                 blockIconURI: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADdQAAA3UAe+RuhUAAAUbSURBVFhH3VdrSGVVFF7nvh/e6+1eH2n5GBFNTdEKSX+EEkVEIMPgj4iJiJEYnEkRzBJEUurHkEEQpPZH/DFIWIL6Q5lBGqa0Jh8UjTajoaJzG1PvHcUZ7+uc3Vr7nqtO95zrq199sM9+rL32+dbaa6+zjwAxUHb+0zdEaTdb70gDECUQwQghUWQBX0iSUC5JIj61EAxirSENhutpgDGsmSD4txcFyfdg/N73X/9MUiWoErhYfzHrh8DrC2JwSzA9kYtrs/BsJtILwjUgDWzugbcZMIkaAvi8d4GFAnN3r17KJ4kSVAk0NDQ8c9Py3lxodxNMDiSAOJPMwG4GuL0C6InHVe0WBgVPC7C8wcDtCct2vbfBAKL71ueVT/EBBXDHKUGr1aIpZCk5G+BCBYO8ta9AutkMzZV/g9mwb/qZJIBLhb+Be6AWKoVv4JXCMAFB0IBBJ1h4RwWqBBYXF3ci/rVbJND8OQwtLS3Q3d0NX3zcABV5Wi4jnH1OCxfOvwl9fX1wubYWSmx3ZAmRUHUyhyqB/mv9D2mvqWD8gcmyb0hcXBwEKP5k+EMCOBwO3tbpdKAzWnmbwMMhBmLRc7zw0e/ekO8BmJ15cK5UAOdfQ+BeXYHCV9+Gz65b9uLAZWPwftk63Lr2LRQ8/yKMrpfAr8sAvq07YNGEvD9eecnJJyogNoEPiYAHzK4CPmDDrbAaGdz37rs/AvJ0YnwIvDt4LNEjBP/2ApgF/8kI1NTUnFu1v9xv0ElgtFEQU0CSJKLCwi18CLyFfb7f+/WOdwkses0jk3usoqen5xeafmQMDw9/Nz09zQKBAIbByTA/P888Hg/r7OxskpeNgmoQohWYy7iNpwLy4GvJ3SioEiAL5OaJcRQDVAlEcFoepC/xL4cyYhI47RaQPhHQaNRfE4sAN/00HvhPtuA0iHgAa1Um//8tOMwDqoLm5uaO4uLiBqfTCTabTR4NEzqwcNRYpE9YXl7mH66hoaHLXV1dX/LBf0GVQFFRUU5paelPaWlpRuwyXOzRyspKA5LxkByPFiUqFgqFQK/XM1EUaUza3t5OiI+P/yQ9Pd1Ix8/tdgdR77Wpqak/SO/IaG9v/2BgYIDhvYAtLS2xwcFBVldX944sVkVTU9O7o6OjbGNjg5exsTHW0dFx/FScmJgopKSkQGZmJmRkZEBycjKgZYdGJd0LqLhcLl7sdjuYzWZVvWMdw1jRHAFuSdTL8JKiGsnHIoD3RLl1PCAB1XuhKoG1tTUBP8cwPj4OExMTvGDQHboFNGdubg4mJyd5mZmZIc/ZZXEUFAlkZ2fbTSbT2dzcXDAajRTlPAaQlOr9PgKv15tK0U9HkWqMG8B7QSb2j+7t8vLyMryQoM4+gsEga2xsXJenKKK1tdWC+SPg9/tlLcaQBF1IGBqEv1fRUGRFiYci+CBo/xMSXDHTYlzcjpCamqIxGAzySDgb0klSOwmKBMjlStAe4sTk5CdBgwlR7u4hVujoqqurDWhdCbpKQDcHMGN5MWieXV1dhYWFBa5Mxw+9Cbu+oKymjLU1wJhh+LMankc6BMqWVqvVkJWVtWcZpmh248aNkFBfX3+lqqqqkSI3Pz//sXx+sMzOzsLm5ub9tra2FD5BAb29vVaMfA+9jNxOIPJEAA0JYmHUJ8NQzkZGRt7SYQ6/jlbfQwg+nw/n7IHRXw5FMiUSzOm0yAZfVQVoQABvwVfRA/qkpCROnNaRxXvY2tqiU/UwJyfH/w9pNJbWNrMrwwAAAABJRU5ErkJggg==',
                 blocks: [
                     {
-                        opcode: 'setPinMode',
+                        opcode: 'setInitial',
                         text: formatMessage({
-                            id: 'arduino.pins.setPinMode',
-                            default: 'set pin [PIN] mode [MODE]',
-                            description: 'arduino set pin mode'
+                            id: 'arduino.ottoRobot.setInitial',
+                            default: 'Initial Otto Robot',
+                            description: 'Initial Otto Robot'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: Pins.D0
-                            },
-                            MODE: {
-                                type: ArgumentType.STRING,
-                                menu: 'mode',
-                                defaultValue: Mode.Input
-                            }
                         }
                     },
                     {
-                        opcode: 'setDigitalOutput',
+                        opcode: 'setHome',
                         text: formatMessage({
-                            id: 'arduino.pins.setDigitalOutput',
-                            default: 'set digital pin [PIN] out [LEVEL]',
-                            description: 'arduino set digital pin out'
+                            id: 'arduino.ottoRobot.setHome',
+                            default: 'Otto Robot Home',
+                            description: 'Set Otto Robot home position'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: Pins.D0
-                            },
-                            LEVEL: {
-                                type: ArgumentType.STRING,
-                                menu: 'level',
-                                defaultValue: Level.High
-                            }
                         }
                     },
                     {
-                        opcode: 'setPwmOutput',
+                        opcode: 'setMove',
                         text: formatMessage({
-                            id: 'arduino.pins.setPwmOutput',
-                            default: 'set pwm pin [PIN] out [OUT]',
-                            description: 'arduino set pwm pin out'
+                            id: 'arduino.ottoRobot.setMove',
+                            default: 'Move [MOVE] steps [STEPS] speed [SPEED]',
+                            description: 'Set Otto Robot Move'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            PIN: {
+                            MOVE: {
                                 type: ArgumentType.STRING,
-                                menu: 'pwmPins',
-                                defaultValue: Pins.D3
+                                menu: 'moves',
+                                defaultValue: 'Forward'
                             },
-                            OUT: {
+                            STEPS: {
                                 type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: '255'
-                            }
-                        }
-                    },
-                    '---',
-                    {
-                        opcode: 'readDigitalPin',
-                        text: formatMessage({
-                            id: 'arduino.pins.readDigitalPin',
-                            default: 'read digital pin [PIN]',
-                            description: 'arduino read digital pin'
-                        }),
-                        blockType: BlockType.BOOLEAN,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'digitalPins',
-                                defaultValue: Pins.D0
+                                defaultValue: 1
+                            },
+                            SPEED: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 128
                             }
                         }
                     },
                     {
-                        opcode: 'readAnalogPin',
+                        opcode: 'setDance',
                         text: formatMessage({
-                            id: 'arduino.pins.readAnalogPin',
-                            default: 'read analog pin [PIN]',
-                            description: 'arduino read analog pin'
-                        }),
-                        blockType: BlockType.REPORTER,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'analogPins',
-                                defaultValue: Pins.A0
-                            }
-                        }
-                    },
-                    '---',
-                    {
-                        opcode: 'setServoOutput',
-                        text: formatMessage({
-                            id: 'arduino.pins.setServoOutput',
-                            default: 'set servo pin [PIN] out [OUT]',
-                            description: 'arduino set servo pin out'
+                            id: 'arduino.ottoRobot.setDance',
+                            default: 'Dance [DANCE] steps [STEPS] speed [SPEED] size [SIZE] direction [DIRECTION]',
+                            description: 'Set Otto Robot Dance'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            PIN: {
+                            DANCE: {
                                 type: ArgumentType.STRING,
-                                menu: 'pwmPins',
-                                defaultValue: Pins.D3
+                                menu: 'dances',
+                                defaultValue: 'Moonwalker'
                             },
-                            OUT: {
-                                type: ArgumentType.ANGLE,
-                                defaultValue: '90'
+                            STEPS: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 1
+                            },
+                            SPEED: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 128
+                            },
+                            SIZE: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 150
+                            },
+                            DIRECTION: {
+                                type: ArgumentType.BOOLEAN,
+                                menu: 'directions',
+                                defaultValue: 1
                             }
                         }
                     },
-                    '---',
                     {
-                        opcode: 'attachInterrupt',
+                        opcode: 'setAction',
                         text: formatMessage({
-                            id: 'arduino.pins.attachInterrupt',
-                            default: 'attach interrupt pin [PIN] mode [MODE] executes',
-                            description: 'arduino attach interrupt'
-                        }),
-                        blockType: BlockType.CONDITIONAL,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'interruptPins',
-                                defaultValue: Pins.D3
-                            },
-                            MODE: {
-                                type: ArgumentType.STRING,
-                                menu: 'interruptMode',
-                                defaultValue: InterrupMode.Rising
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    },
-                    {
-                        opcode: 'detachInterrupt',
-                        text: formatMessage({
-                            id: 'arduino.pins.detachInterrupt',
-                            default: 'detach interrupt pin [PIN]',
-                            description: 'arduino attach interrupt'
+                            id: 'arduino.ottoRobot.setAction',
+                            default: 'Action [ACTION] steps [STEPS] speed [SPEED] size [SIZE]',
+                            description: 'Set Otto Robot Action'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            PIN: {
+                            ACTION: {
                                 type: ArgumentType.STRING,
-                                menu: 'interruptPins',
-                                defaultValue: Pins.D3
+                                menu: 'actions',
+                                defaultValue: 'Ascending Turn'
+                            },
+                            STEPS: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 1
+                            },
+                            SPEED: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 128
+                            },
+                            SIZE: {
+                                type: ArgumentType.UINT8_NUMBER,
+                                defaultValue: 150
                             }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
+                        }
+                    },
+
+
+
+
+
+                    '---',
+                    {
+                        opcode: 'setCalibration',
+                        text: formatMessage({
+                            id: 'arduino.ottoRobot.setCalibration',
+                            default: 'Calibrate Otto Robot Servo',
+                            description: 'Calibrate Otto Robot Servo'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                        }
                     }
                 ],
                 menus: {
+                    moves: {
+                        // acceptReporters: true,
+                        items: this.MOVES_MENU
+                    },
+                    dances: {
+                        items: this.DANCES_MENU
+                    },
+                    directions: {
+                        items: this.DIRECTIONS_MENU
+                    },
+                    actions: {
+                        items: this.ACTIONS_MENU
+                    },
                     pins: {
                         items: this.PINS_MENU
                     },
