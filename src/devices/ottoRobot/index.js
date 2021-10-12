@@ -147,15 +147,15 @@ class ArduinoOttoRobotDevice {
         return [
             {
                 text: 'Moonwalker',
-                value: 'Moonwalker'
+                value: 'moonwalker'
             },
             {
                 text: 'Crusaito',
-                value: 'Crusaito'
+                value: 'crusaito'
             },
             {
                 text: 'Flapping',
-                value: 'Flapping'
+                value: 'flapping'
             }
         ]
     }
@@ -175,23 +175,103 @@ class ArduinoOttoRobotDevice {
         return [
             {
                 text: 'Ascending Turn',
-                value: 'Ascending Turn'
+                value: 'ascendingTurn'
             },
             {
                 text: 'Jitter',
-                value: 'Jitter'
+                value: 'jitter'
             },
             {
                 text: 'Swing',
-                value: 'Swing'
+                value: 'swing'
             },
             {
                 text: 'Tiptoe Swing',
-                value: 'Tiptoe Swing'
+                value: 'tiptoeSwing'
             },
             {
                 text: 'Up & Down',
-                value: 'Up & Down'
+                value: 'updown'
+            }
+        ]
+    }
+    get SOUNDS_MENU () {
+        return [
+            {
+                text: 'Button Pressed',
+                value: 'S_buttonPushed'
+            },
+            {
+                text: 'Confused',
+                value: 'S_confused'
+            },
+            {
+                text: 'Connected',
+                value: 'S_connection'
+            },
+            {
+                text: 'Disconnected',
+                value: 'S_disconnection'
+            },
+            {
+                text: 'Cuddy',
+                value: 'S_cuddly'
+            },
+            {
+                text: 'Fart 1',
+                value: 'S_fart1'
+            },
+            {
+                text: 'Fart 2',
+                value: 'S_fart2'
+            },
+            {
+                text: 'Fart 3',
+                value: 'S_fart3'
+            },
+            {
+                text: 'Short Happy',
+                value: 'S_happy_short'
+            },
+            {
+                text: 'Happy',
+                value: 'S_happy'
+            },
+            {
+                text: 'Supper Happy',
+                value: 'S_superHappy'
+            },
+            {
+                text: 'OhOoh 1',
+                value: 'S_OhOoh'
+            },
+            {
+                text: 'OhOoh 2',
+                value: 'S_OhOoh2'
+            },
+            {
+                text: 'Mode 1',
+                value: 'S_mode1'
+            },
+            {
+                text: 'Mode 2',
+                value: 'S_mode2'
+            },
+            {
+                text: 'Mode 3',
+                value: 'S_mode3'
+            },
+            {
+                text: 'Sad',
+                value: 'S_sad'
+            },
+            {
+                text: 'Sleeping',
+                value: 'S_sleeping'
+            },
+            {
+                text: 'Surprise',
+                value: 'S_surprise'
             }
         ]
     }
@@ -724,6 +804,22 @@ class ArduinoOttoRobotDevice {
                             }
                         }
                     },
+                    {
+                        opcode: 'setPlaySound',
+                        text: formatMessage({
+                            id: 'arduino.ottoRobot.setPlaySound',
+                            default: 'Play Sound [SOUND]',
+                            description: 'Set Otto Robot play sound'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            SOUND: {
+                                type: ArgumentType.STRING,
+                                menu: 'sounds',
+                                defaultValue: 'S_buttonPushed'
+                            }
+                        }
+                    },
 
 
 
@@ -755,6 +851,9 @@ class ArduinoOttoRobotDevice {
                     },
                     actions: {
                         items: this.ACTIONS_MENU
+                    },
+                    sounds: {
+                        items: this.SOUNDS_MENU
                     },
                     pins: {
                         items: this.PINS_MENU
