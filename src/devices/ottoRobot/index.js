@@ -1280,7 +1280,7 @@ class ArduinoOttoRobotDevice {
                         opcode: 'readDistance',
                         text: formatMessage({
                             id: 'arduino.pins.readDistance',
-                            default: 'distance',
+                            default: 'distance CM',
                             description: 'arduino read distance from ultrasonic'
                         }),
                         blockType: BlockType.REPORTER,
