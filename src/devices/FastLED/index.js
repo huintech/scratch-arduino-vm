@@ -1254,7 +1254,7 @@ class ArduinoFastLEDDevice {
                 name: formatMessage({
                     id: 'arduino.category.fastled',
                     default: 'LED',
-                    description: 'The name of the arduino device pin category'
+                    description: 'The name of the LED in verital block'
                 }),
                 color1: '#009297',
                 color2: '#004B4C',
@@ -1265,7 +1265,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'setLEDNumber',
                         text: formatMessage({
-                            id: 'arduino.pins.setLEDNumber',
+                            id: 'arduino.fastled.setLEDNumber',
                             default: 'set LED number [NUMBER]',
                             description: 'arduino set number of LED'
                         }),
@@ -1280,7 +1280,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'setBrightness',
                         text: formatMessage({
-                            id: 'arduino.pins.setBrightness',
+                            id: 'arduino.fastled.setBrightness',
                             default: 'set LED brightness [NUMBER]',
                             description: 'arduino set brightness of LED'
                         }),
@@ -1296,7 +1296,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'setAllLEDColor',
                         text: formatMessage({
-                            id: 'arduino.pins.setAllLEDColor',
+                            id: 'arduino.fastled.setAllLEDColor',
                             default: 'set all LED color to [COLOR]',
                             description: 'arduino set all LED Color'
                         }),
@@ -1312,7 +1312,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'setAllLEDColorHSV',
                         text: formatMessage({
-                            id: 'arduino.pins.setAllLEDColorHSV',
+                            id: 'arduino.fastled.setAllLEDColorHSV',
                             default: 'set all LED color to [COLOR]',
                             description: 'arduino set All LED Color (HSV -> RGB)'
                         }),
@@ -1326,7 +1326,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'setAllLEDColorRGB',
                         text: formatMessage({
-                            id: 'arduino.pins.setAllLEDColorRGB',
+                            id: 'arduino.fastled.setAllLEDColorRGB',
                             default: 'set all LED color to Red [RED] Green[GREEN] Blue [BLUE]',
                             description: 'arduino set All LED RGB Color'
                         }),
@@ -1349,7 +1349,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'setLEDColorGradient',
                         text: formatMessage({
-                            id: 'arduino.pins.setLEDColorGradient',
+                            id: 'arduino.fastled.setLEDColorGradient',
                             default: 'set all LED color from [COLOR_FROM] to [COLOR_TO]',
                             description: 'arduino set LED gradient color'
                         }),
@@ -1370,7 +1370,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'setLEDColorRainbow',
                         text: formatMessage({
-                            id: 'arduino.pins.setLEDColorRainbow',
+                            id: 'arduino.fastled.setLEDColorRainbow',
                             default: 'set all LED rainbow color in [MILLISECOND] millisecond',
                             description: 'arduino set LED rainbow color'
                         }),
@@ -1386,7 +1386,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'setLEDColor',
                         text: formatMessage({
-                            id: 'arduino.pins.setLEDColor',
+                            id: 'arduino.fastled.setLEDColor',
                             default: 'set LED [NUMBER] color to [COLOR]',
                             description: 'arduino set LED Color'
                         }),
@@ -1406,7 +1406,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'setLEDColorHSV',
                         text: formatMessage({
-                            id: 'arduino.pins.setLEDColorHSV',
+                            id: 'arduino.fastled.setLEDColorHSV',
                             default: 'set LED [NUMBER] color to [COLOR]',
                             description: 'arduino set LED RGB Color (HSV -> RGB)'
                         }),
@@ -1424,7 +1424,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'setLEDColorRGB',
                         text: formatMessage({
-                            id: 'arduino.pins.setLEDColorRGB',
+                            id: 'arduino.fastled.setLEDColorRGB',
                             default: 'set LED [NUMBER] color to Red [RED] Green[GREEN] Blue [BLUE]',
                             description: 'arduino set LED RGB Color'
                         }),
@@ -1452,7 +1452,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'repeat',
                         text: formatMessage({
-                            id: 'arduino.pins.repeat',
+                            id: 'arduino.fastled.repeat',
                             default: 'repeat " i " LED',
                             description: 'arduino for i loop'
                         }),
@@ -1464,7 +1464,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'repeat_n_ms',
                         text: formatMessage({
-                            id: 'arduino.pins.repeat_n_ms',
+                            id: 'arduino.fastled.repeat_n_ms',
                             default: 'repeat in [MILLISECOND] milliseconds',
                             description: 'arduino FastLED Recurring event trigger in millisecond'
                         }),
@@ -1479,7 +1479,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'repeat_n_s',
                         text: formatMessage({
-                            id: 'arduino.pins.repeat_n_s',
+                            id: 'arduino.fastled.repeat_n_s',
                             default: 'repeat in [SECOND] seconds',
                             description: 'arduino FastLED Recurring event trigger in second'
                         }),
@@ -1494,7 +1494,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'repeat_n_min',
                         text: formatMessage({
-                            id: 'arduino.pins.repeat_n_min',
+                            id: 'arduino.fastled.repeat_n_min',
                             default: 'repeat in [MINTUE] mintues',
                             description: 'arduino FastLED Recurring event trigger in mintue'
                         }),
@@ -1509,7 +1509,7 @@ class ArduinoFastLEDDevice {
                     {
                         opcode: 'repeat_n_hour',
                         text: formatMessage({
-                            id: 'arduino.pins.repeat_n_hour',
+                            id: 'arduino.fastled.repeat_n_hour',
                             default: 'repeat in [HOUR] hours',
                             description: 'arduino FastLED Recurring event trigger in hour'
                         }),

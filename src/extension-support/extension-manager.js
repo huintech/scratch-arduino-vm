@@ -266,7 +266,7 @@ class ExtensionManager {
             this.unloadAllDeviceExtension();
 
             return Promise.resolve();
-        } else if (realDeviceId === 'unselectDevice') { // unload the device return to pure realtime programming mode.
+        } else if (realDeviceId === 'unselectDevice') { // unload the device return to pure interactivate programming mode.
             this.runtime.setDevice(null);
             this.runtime.setDeviceType(null);
             this.runtime.setPnpIdList([]);
