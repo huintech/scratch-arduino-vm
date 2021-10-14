@@ -122,6 +122,7 @@ class ArduinoOttoRobotDevice {
     static get DEVICE_ID () {
         return 'ottoRobot';
     }
+
     get DANCES_MENU () {
         return [
             {
@@ -138,6 +139,7 @@ class ArduinoOttoRobotDevice {
             }
         ]
     }
+
     get GESTURES_MENU () {
         return [
             {
@@ -194,6 +196,7 @@ class ArduinoOttoRobotDevice {
             }
         ]
     }
+
     get SOUNDS_MENU () {
         return [
             {
@@ -274,6 +277,7 @@ class ArduinoOttoRobotDevice {
             }
         ]
     }
+
     get TONES_MENU () {
         return [
             {
@@ -678,6 +682,7 @@ class ArduinoOttoRobotDevice {
             }
         ]
     }
+
     get MOVES_MENU () {
         return [
             {
@@ -698,6 +703,7 @@ class ArduinoOttoRobotDevice {
             }
         ]
     }
+
     get ACTIONS_MENU () {
         return [
             {
@@ -766,6 +772,7 @@ class ArduinoOttoRobotDevice {
             }
         ]
     }
+
     get PINS_MENU () {
         return [
             {
@@ -1259,6 +1266,29 @@ class ArduinoOttoRobotDevice {
                     },
                     '---',
                     {
+                        opcode: 'setDistance',
+                        text: formatMessage({
+                            id: 'arduino.pins.setDistance',
+                            default: 'Get distance',
+                            description: 'arduino set distance from ultrasonic'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                        }
+                    },
+                    {
+                        opcode: 'readDistance',
+                        text: formatMessage({
+                            id: 'arduino.pins.readDistance',
+                            default: 'distance',
+                            description: 'arduino read distance from ultrasonic'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                        }
+                    },
+                    '---',
+                    {
                         opcode: 'setMove',
                         text: formatMessage({
                             id: 'arduino.ottoRobot.setMove',
@@ -1359,11 +1389,6 @@ class ArduinoOttoRobotDevice {
                             }
                         }
                     },
-
-
-
-
-
                     '---',
                     {
                         opcode: 'setCalibration',
