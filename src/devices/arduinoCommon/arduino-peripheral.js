@@ -43,6 +43,22 @@ const Mode = {
     InputPullup: 'INPUT_PULLUP'
 };
 
+// sesor id
+const Sensors = {
+    LightSensor: 14,
+    "Accelerometer": 18,
+    "Temperature": 21,
+    "Buzzer": 3,
+    "IRdistance": 5,
+    "Linetracer": 7,
+    "IR": 9,
+    "RGBled": 25,
+    Motor: 26,
+    "LedMatrix": 27    //0x1b
+};
+
+const Directions = {"both": 0, "Left": 1, "Right": 2, "Forward": 3, "Backward": 4};
+
 /**
  * Manage communication with a Arduino peripheral over a Scratch Arduino Link client socket.
  */
@@ -357,6 +373,10 @@ class ArduinoPeripheral{
      * @return {boolean} - whether the peripheral is ready for realtime mode communication.
      */
     isReady () {
+        // TODO: for debug, delete after
+        console.log(`is realtimemode :  ${this._runtime.getCurrentIsRealtimeMode()}`);
+        console.log(`is firmata connected :  ${this._isFirmataConnected}`);
+
         if (this._runtime.getCurrentIsRealtimeMode() && this._isFirmataConnected) {
             return true;
         }
@@ -494,6 +514,40 @@ class ArduinoPeripheral{
 
             this._firmata.servoConfig(pin, 600, 2400);
             this._firmata.servoWrite(pin, value);
+        }
+    }
+
+    // ---- coconut -----
+    /**
+     * move motors for coconut
+     * @param direction
+     * @returns {Promise<unknown>}
+     */
+    coconutMoveMotors(direction) {
+        if (typeof direction == "string") direction = Directions[direction];
+
+        const options = {
+            sensor: Sensors.Motor,
+            index: 0,
+            direction: direction,
+            speed: 60
+        };
+
+        console.log(`_peripheral : ${JSON.stringify(options)}`);
+        console.log(`isReady : ${this.isReady()}`);
+
+
+        if (this.isReady()) {
+            // const speed = 60;
+            return new Promise(resolve => {
+                // this._firmata.coconutMoveMotors(Sensors.Motor, direction, speed => {
+                this._firmata.coconutMoveMotors(options => {
+                    resolve(value);
+                });
+                window.setTimeout(() => {
+                    resolve();
+                }, FrimataReadTimeout);
+            });
         }
     }
 }

@@ -32,8 +32,9 @@ const builtinExtensions = {
 
 // These deviceId need to be mached
 // GUI: src/libraries/devices/index.jsx -> deviceId
-// VM: src/ottoRobot/index.js -> class ArduinoOttoRobotDevice
+// VM: src/coconut/index.js -> class CoconutDevice
 const builtinDevices = {
+    coconut: () => require('../devices/coconut'),
     ottoRobot: () => require('../devices/ottoRobot'),
     FastLED: () => require('../devices/FastLED'),
     arduinoUno: () => require('../devices/arduinoUno'),

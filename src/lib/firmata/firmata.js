@@ -2376,6 +2376,49 @@ class Firmata extends Emitter {
         writeToTransport(this, [SYSTEM_RESET]);
     }
 
+    // common function
+    /**
+     * @brief 모듈 실행
+     */
+    get coconutRunPackage() {
+        let bytes = [0xff, 0x55, 0, 0, 2];
+
+        for (let i=0; i<arguments.length; i++) {
+            if (arguments[i].constructor == "[class Array]") {
+                bytes = bytes.concat(arguments[i]);
+            }
+            else {
+                bytes.push(arguments[i]);
+            }
+        }//for
+
+        bytes[2] = bytes.length-3;  // data length
+
+        // 장치에 ArrayBuffer data 전송
+        // device.send(bytes);
+        return bytes;
+    }//function
+
+    // ------ coconut blocks ------
+    coconutMoveMotors(options, callback) {
+        const {
+            motor,
+            index,
+            direction,
+            speed
+        } = options;
+
+        let datas = this.coconutRunPackage(motor, index, direction, speed);
+
+        console.log(`moveMotors : options : ${JSON.stringify(options)}`);
+        console.log(`moveMotors : datas : ${JSON.stringify(datas)}`);
+
+        // writeToTransport(this, datas);
+        writeToTransport(this, [0xff, 0x55, 0x06, 0x00, 0x02, 0x1a, 0x00, 0x03, 0x3c]);
+
+        // this.once(`coconut-move-motors`, callback);
+    }
+
     /**
      * Firmata.isAcceptablePort Determines if a `port` object (from SerialPort.list())
      * is a valid Arduino (or similar) device.
