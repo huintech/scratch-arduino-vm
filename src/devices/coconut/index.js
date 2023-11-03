@@ -8,6 +8,7 @@ const Cast = require('../../util/cast')
 const log = require('../../util/log')
 
 const ArduinoPeripheral = require('../arduinoCommon/arduino-peripheral');
+const CoconutPeripheral = require('../arduinoCommon/coconut-peripheral')
 
 /**
  * The list of USB device filters.
@@ -124,7 +125,8 @@ const DirectionValues = {
 /**
  * Manage communication with a Arduino Uno peripheral over a Scratch Arduino Link client socket.
  */
-class Coconut extends ArduinoPeripheral {
+// class Coconut extends ArduinoPeripheral {
+class Coconut extends CoconutPeripheral {
     /**
      * Construct a Arduino communication object.
      * @param {Runtime} runtime - the Coconut runtime

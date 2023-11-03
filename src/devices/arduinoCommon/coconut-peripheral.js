@@ -62,7 +62,7 @@ const Directions = {"both": 0, "Left": 1, "Right": 2, "Forward": 3, "Backward": 
 /**
  * Manage communication with a Arduino peripheral over a Scratch Arduino Link client socket.
  */
-class ArduinoPeripheral{
+class CoconutPeripheral{
 
     /**
      * Construct a Arduino communication object.
@@ -258,8 +258,11 @@ class ArduinoPeripheral{
 
         console.log(`send to coconut: heartbeat ${JSON.stringify(message)}`);
 
-        const data = Base64Util.uint8ArrayToBase64(message);
-        this._serialport.write(data, 'base64');
+        // const data = Base64Util.uint8ArrayToBase64(message);
+        // this._serialport.write(data);
+
+        // send byte array
+        this._serialport.write(message);
     }
 
     /**
@@ -554,4 +557,4 @@ class ArduinoPeripheral{
     }
 }
 
-module.exports = ArduinoPeripheral;
+module.exports = CoconutPeripheral;
