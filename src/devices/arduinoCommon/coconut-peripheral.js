@@ -46,18 +46,25 @@ const Mode = {
 // sesor id
 const Sensors = {
     LightSensor: 14,
-    "Accelerometer": 18,
-    "Temperature": 21,
-    "Buzzer": 3,
-    "IRdistance": 5,
-    "Linetracer": 7,
-    "IR": 9,
-    "RGBled": 25,
+    Accelerometer: 18,
+    Temperature: 21,
+    Buzzer: 3,
+    IRdistance: 5,
+    Linetracer: 7,
+    IR: 9,
+    RGBled: 25,
     Motor: 26,
-    "LedMatrix": 27    //0x1b
+    LedMatrix: 27 // 0x1b
 };
 
-const Directions = {"both": 0, "Left": 1, "Right": 2, "Forward": 3, "Backward": 4};
+const Directions = {
+    Both: 0, Left: 1, Right: 2, Forward: 3, Backward: 4
+};
+
+const Colors = {
+    Black: 0, White: 1,
+    Red: 2, Green: 3, Blue: 4, Yellow: 5, Cyan: 6, Magenta: 7
+};
 
 /**
  * Manage communication with a Arduino peripheral over a Scratch Arduino Link client socket.
@@ -269,7 +276,7 @@ class CoconutPeripheral{
      * Start send/recive heartbeat timer.
      * @private
      */
-     _startHeartbeat () {
+    _startHeartbeat () {
         if (this._runtime.getCurrentIsRealtimeMode()) {
             // eslint-disable-next-line no-negated-condition
             if (!this._firmata) {
@@ -355,7 +362,13 @@ class CoconutPeripheral{
      * @private
      */
     _onConnect () {
+        console.log(`_onMessage`);
         this._serialport.read(this._onMessage);
+
+        console.log(`write reset protocol : ff 55 02 00 04`);
+        this._serialport.write([0xff, 0x55, 0x02, 0x00, 0x04]);
+
+	    console.log(`_startHeartbeat`);
         this._startHeartbeat();
 
         this._runtime.on(this._runtime.constructor.PROGRAM_MODE_UPDATE, this._handleProgramModeUpdate);
@@ -524,35 +537,344 @@ class CoconutPeripheral{
 
     // ---- coconut -----
     /**
+     * @brief 모듈 실행
+     */
+    coconutRunPackage () {
+        let bytes = [0xff, 0x55, 0, 0, 2];
+
+        for (let i = 0; i < arguments.length; i++) {
+            // console.log(`type: ${arguments[i].constructor}, val= ${arguments[i]}`);
+            // console.log(`type: ${(typeof arguments[i])}, val= ${arguments[i]}`);
+            // if (arguments[i].constructor == '[class Array]') {
+            if (typeof arguments[i] == 'object') {
+                bytes = bytes.concat(arguments[i]);
+            } else {
+                bytes.push(arguments[i]);
+            }
+        } // for
+
+        bytes[2] = bytes.length - 3; // data length
+        // console.log(`package bytes array: ${bytes}, length ${bytes.length}`);
+        // 장치에 ArrayBuffer data 전송
+        // device.send(bytes);
+        return bytes;
+    } // function
+
+    /**
      * move motors for coconut
      * @param direction
      * @returns {Promise<unknown>}
      */
-    coconutMoveMotors(direction) {
-        if (typeof direction == "string") direction = Directions[direction];
+    coconutMoveMotors (direction) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        const speed = 60;
 
-        const options = {
-            sensor: Sensors.Motor,
-            index: 0,
-            direction: direction,
-            speed: 60
-        };
+        // const {
+        //     Sensors.Motor,
+        //     0,
+        //     direction,
+        //     speed
+        // } = options;
 
-        console.log(`_peripheral : ${JSON.stringify(options)}`);
+        // const options = {
+        //     sensor: Sensors.Motor,
+        //     index: 0,
+        //     direction: direction,
+        //     speed: 60
+        // };
+
+        // console.log(`_peripheral : ${JSON.stringify(options)}`);
+        console.log(`isReady : ${this.isReady()}`);
+        console.log(`isConnected : ${this.isConnected()}`);
+
+        if (this.isConnected()) {
+            const datas = this.coconutRunPackage(Sensors.Motor, 0, direction, speed);
+
+            console.log(`move motors datas : ${datas}`);
+
+            this.send(datas);
+        }
+
+        // if (this.isReady()) {
+        //     // const speed = 60;
+        //     return new Promise(resolve => {
+        //         // this._firmata.coconutMoveMotors(Sensors.Motor, direction, speed => {
+        //         this._firmata.coconutMoveMotors(options => {
+        //             resolve(value);
+        //         });
+        //         window.setTimeout(() => {
+        //             resolve();
+        //         }, FrimataReadTimeout);
+        //     });
+        // }
+    }
+
+    /**
+     * coconut turn motor
+     * @param direction left or right
+     */
+    coconutTurnMotors (direction) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        const speed = 60;
+
+        console.log(`isReady : ${this.isReady()}`);
+        console.log(`isConnected : ${this.isConnected()}`);
+
+        if (this.isConnected()) {
+            const datas = this.coconutRunPackage(Sensors.Motor, 0, direction, speed);
+
+            console.log(`turn motors datas : ${datas}`);
+
+            this.send(datas);
+        }
+    }
+
+    /**
+     *
+     * @param direction
+     * @param sec
+     */
+    coconutMoveGoTimes (direction, sec) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        // let sec = args.TIME_SEC;
+
+        // 시간이 0보다 작으면 양수로 변환
+        if (sec < 0) sec = -sec;
+        sec = 1000 * sec; // ms 변환
+
+        const speed = 60;
+
+        if (this.isConnected()) {
+            // sensor, seq, dir, speed, degree, time
+            const datas = this.coconutRunPackage(Sensors.Motor, 3, direction, speed, this.short2array(sec));
+
+            console.log(`move motors datas : ${datas}`);
+
+            this.send(datas);
+        }
+
+        // seq, direction, speed, degree, time
+        // runPackage(devices["Motor"], 3, direction, speed, short2array(sec));
+    }
+
+    /**
+     *
+     * @param direction
+     * @param sec
+     */
+    coconutTurnMotorTimes (direction, sec) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        // let sec = args.TIME_SEC;
+
+        // 시간이 0보다 작으면 양수로 변환
+        if (sec < 0) sec = -sec;
+        sec = 1000 * sec; // ms 변환
+
+        const speed = 60;
+
+        if (this.isConnected()) {
+            // sensor, seq, dir, speed, degree, time
+            const datas = this.coconutRunPackage(Sensors.Motor, 3, direction, speed, this.short2array(sec));
+
+            console.log(`turn motors datas : ${datas}`);
+
+            this.send(datas);
+        }
+    }
+
+    short2array (short) {
+        // Create a 2-byte array (16 bits) using an Int16Array
+        const byteArray = new Int16Array(1);
+        byteArray[0] = short;
+
+        // Convert the Int16Array to a regular byte array (Uint8Array)
+        const byteView = new Uint8Array(byteArray.buffer);
+
+        console.log(`short ${short} => bytes ${JSON.stringify(byteView)}`);
+
+        return Array.from(byteView);
+    }
+
+    /**
+     * stop coconut motor
+     */
+    coconutStopMotor () {
+        const datas = this.coconutRunPackage(Sensors.Motor, 1);
+
+        console.log(`stop motors datas : ${datas}`);
+
+        // const options = {
+        //     sensor: Sensors.Motor,
+        //     index: 0,
+        //     direction: direction,
+        //     speed: 60
+        // };
+
+        // console.log(`_peripheral : ${JSON.stringify(options)}`);
         console.log(`isReady : ${this.isReady()}`);
 
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
 
-        if (this.isReady()) {
-            // const speed = 60;
-            return new Promise(resolve => {
-                // this._firmata.coconutMoveMotors(Sensors.Motor, direction, speed => {
-                this._firmata.coconutMoveMotors(options => {
-                    resolve(value);
-                });
-                window.setTimeout(() => {
-                    resolve();
-                }, FrimataReadTimeout);
-            });
+    /**
+     * Rotate the motor while turning on the RGB LED
+     * @param direction LEFT, RIGHT
+     * @param color Red, Blue, Green, Yellow, Cyan, Magenta, White
+     */
+    coconutMoveMotorColors (direction, color) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        if (typeof color === 'string') color = Colors[color];
+        const speed = 60;
+
+        // deviceid, seq, direction, speed, color
+        const datas = this.coconutRunPackage(Sensors.Motor, 5, direction, speed, color);
+
+        console.log(`moveMotorColors datas : ${datas}`);
+
+        // console.log(`_peripheral : ${JSON.stringify(options)}`);
+        console.log(`isReady : ${this.isReady()}`);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * Move by the entered distance
+     * @param direction
+     * @param cm
+     */
+    coconutMoveGoCm (direction, cm) {
+        if (typeof direction === 'string') direction = Directions[direction];
+
+        // runPackage(devices["Motor"], 10, direction, cm);
+        const datas = this.coconutRunPackage(Sensors.Motor, 10, direction, cm);
+
+        console.log(`moveGoCm datas : ${datas}`);
+
+        // console.log(`_peripheral : ${JSON.stringify(options)}`);
+        console.log(`isReady : ${this.isReady()}`);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * turn motor by degree
+     * @param direction
+     * @param degree
+     */
+    coconutTurnMotorDegrees (direction, degree) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        // if (typeof direction === 'string') direction = Directions[direction];
+
+        // runPackage(devices["Motor"], 11, direction, short2array(degree));
+        const datas = this.coconutRunPackage(Sensors.Motor, 11, direction, this.short2array(degree));
+
+        console.log(`TurnMotorDegrees datas : ${datas}`);
+
+        // console.log(`_peripheral : ${JSON.stringify(options)}`);
+        console.log(`isReady : ${this.isReady()}`);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * turn on RGB LED
+     * @param direction
+     * @param color
+     */
+    coconutRGBOns (direction, color) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        if (typeof color === 'string') color = Colors[color];
+
+        // runPackage(devices["RGBled"], 0, direction, color);
+        const datas = this.coconutRunPackage(Sensors.RGBled, 0, direction, color);
+
+        console.log(`RGBon datas : ${datas}`);
+
+        // console.log(`_peripheral : ${JSON.stringify(options)}`);
+        console.log(`isReady : ${this.isReady()}`);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * turn off RGB LED direction
+     * @param direction
+     */
+    coconutRGBOffs (direction) {
+        if (typeof direction === 'string') direction = Directions[direction];
+
+        // runPackage(devices["RGBled"], 1, direction, 0);
+        const datas = this.coconutRunPackage(Sensors.RGBled, 1, direction);
+
+        console.log(`RGBoff datas : ${datas}`);
+
+        // console.log(`_peripheral : ${JSON.stringify(options)}`);
+        console.log(`isReady : ${this.isReady()}`);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * turn off RGB LED
+     * @param direction
+     * @param color
+     */
+    coconutRGBOffColors (direction, color) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        if (typeof color === 'string') color = Colors[color];
+
+        // runPackage(devices["RGBled"], 1, direction, color);
+        const datas = this.coconutRunPackage(Sensors.RGBled, 1, direction, color);
+
+        console.log(`RGBoffColor datas : ${datas}`);
+
+        // console.log(`_peripheral : ${JSON.stringify(options)}`);
+        console.log(`isReady : ${this.isReady()}`);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * turn on RGB LED
+     * @param direction
+     * @param color
+     * @param sec
+     */
+    coconutRGBOnTimes (direction, color, sec) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        if (typeof color === 'string') color = Colors[color];
+
+        console.log(`typeof sec ${typeof sec}`);
+
+        // 시간이 정수가 아니거나 0보다 작을 경우 0으로 변경
+        if (typeof sec !== 'number') sec = 0;
+        else if (sec < 0) sec = 0;
+        else sec *= 1000; // ms 변환
+
+        // runPackage(devices["RGBled"], 3, direction, color, short2array(sec));
+        const datas = this.coconutRunPackage(Sensors.RGBled, 3, direction, color, this.short2array(sec));
+
+        console.log(`RGBonTime datas : ${datas}`);
+
+        // console.log(`_peripheral : ${JSON.stringify(options)}`);
+        console.log(`isReady : ${this.isReady()}`);
+
+        if (this.isConnected()) {
+            this.send(datas);
         }
     }
 }

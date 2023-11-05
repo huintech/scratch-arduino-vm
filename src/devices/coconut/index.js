@@ -4,11 +4,11 @@ const ArgumentType = require('../../extension-support/argument-type');
 const BlockType = require('../../extension-support/block-type');
 const ProgramModeType = require('../../extension-support/program-mode-type');
 
-const Cast = require('../../util/cast')
-const log = require('../../util/log')
+const Cast = require('../../util/cast');
+const log = require('../../util/log');
 
 const ArduinoPeripheral = require('../arduinoCommon/arduino-peripheral');
-const CoconutPeripheral = require('../arduinoCommon/coconut-peripheral')
+const CoconutPeripheral = require('../arduinoCommon/coconut-peripheral');
 
 /**
  * The list of USB device filters.
@@ -123,6 +123,20 @@ const DirectionValues = {
 };
 
 /**
+ * RGB LED color
+ */
+const LEDColorValues = {
+    RED: 'Red',
+    GREEN: 'Green',
+    BLUE: 'Blue',
+    YELLOW: 'Yellow',
+    CYAN: 'Cyan',
+    MAGENTA: 'Magenta',
+    WHITE: 'White',
+    BLACK: 'Black'
+};
+
+/**
  * Manage communication with a Arduino Uno peripheral over a Scratch Arduino Link client socket.
  */
 // class Coconut extends ArduinoPeripheral {
@@ -167,10 +181,182 @@ class CoconutDevice {
             {
                 text: formatMessage({
                     id: 'coconut.dir_backward',
-                    // default: 'Backward',
+                    default: 'Backward',
                     description: 'move backward'
                 }),
                 value: DirectionValues.BACKWARD
+            }
+        ];
+    }
+
+    /**
+     * Left or Right direction menu
+     * @returns {[{text: (*|string), value: string},{text: (*|string), value: string}]}
+     * @constructor
+     */
+    get DIRECTION_LR_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.dir_left',
+                    default: 'Left',
+                    description: 'turn left'
+                }),
+                value: DirectionValues.LEFT
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.dir_right',
+                    default: 'Right',
+                    description: 'turn right'
+                }),
+                value: DirectionValues.RIGHT
+            }
+        ];
+    }
+
+    /**
+     * RGB LED colors
+     * @returns {[{text: (*|string), value: string},{text: (*|string), value: string}]}
+     * @constructor
+     */
+    get LED_COLOR_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.color_red',
+                    default: 'Red',
+                    description: 'Red color'
+                }),
+                value: LEDColorValues.RED
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.color_green',
+                    default: 'Green',
+                    description: 'Green color'
+                }),
+                value: LEDColorValues.GREEN
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.color_blue',
+                    default: 'Blue',
+                    description: 'Blue color'
+                }),
+                value: LEDColorValues.BLUE
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.color_yellow',
+                    default: 'Yellow',
+                    description: 'Yellow color'
+                }),
+                value: LEDColorValues.YELLOW
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.color_cyan',
+                    default: 'Cyan',
+                    description: 'Cyan color'
+                }),
+                value: LEDColorValues.CYAN
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.color_magenta',
+                    default: 'Magenta',
+                    description: 'Magenta color'
+                }),
+                value: LEDColorValues.MAGENTA
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.color_white',
+                    default: 'White',
+                    description: 'White color'
+                }),
+                value: LEDColorValues.WHITE
+            }
+        ];
+    }
+
+    /**
+     * degree mmenu
+     * @returns {[{mDegrees: number[]}]}
+     * @constructor
+     */
+    get DEGREE_MENU () {
+        return [
+            {
+                text: '30',
+                value: 30
+            },
+            {
+                text: '45',
+                value: 45
+            },
+            {
+                text: '60',
+                value: 60
+            },
+            {
+                text: '90',
+                value: 90
+            },
+            {
+                text: '120',
+                value: 120
+            },
+            {
+                text: '150',
+                value: 150
+            },
+            {
+                text: '180',
+                value: 180
+            },
+            {
+                text: '270',
+                value: 270
+            },
+            {
+                text: '360',
+                value: 360
+            }
+        ];
+    }
+
+    /**
+     * Direction of RGB LED
+     * @returns {[{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string}]}
+     * @constructor
+     */
+    get DIRECTION_RGB_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.dir_left',
+                    default: 'Left',
+                    description: 'left direction'
+                }),
+                value: DirectionValues.LEFT
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.dir_right',
+                    default: 'Right',
+                    description: 'right direction'
+                }),
+                value: DirectionValues.RIGHT
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.dir_both',
+                    default: 'Both',
+                    description: 'left and right direction'
+                }),
+                value: DirectionValues.BOTH
             }
         ];
     }
@@ -530,20 +716,20 @@ class CoconutDevice {
                     description: 'The name of the arduino device pin category'
                 }),
                 color1: '#009297',
-                color2: '#004B4C',
-                color3: '#004B4C',
+                // color1: '#004B4C',
+                // color: '#004B4C',
                 blocks: [
                     // 코코넛/코코넛-S 블럭
                     // [앞으로/뒤로] 움직이기
                     {
                         opcode: 'moveMotors',
-                        text : formatMessage({
+                        text: formatMessage({
                             id: 'coconut.moveMotors',
                             default: 'move [DIRECTION_FB]',
                             description: 'move forward or backward'
                         }),
-                        blockType : BlockType.COMMAND,
-                        arguments:{
+                        blockType: BlockType.COMMAND,
+                        arguments: {
                             DIRECTION_FB: {
                                 type: ArgumentType.STRING,
                                 menu: 'DirectionFBMenu',
@@ -551,6 +737,221 @@ class CoconutDevice {
                             }
                         }
                     },
+                    {
+                        opcode: 'turnMotors',
+                        text: formatMessage({
+                            id: 'coconut.turnMotors',
+                            default: 'turn [DIRECTION_LR]',
+                            description: 'turn left or right'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_LR: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionLRMenu',
+                                defaultValue: DirectionValues.LEFT
+                            }
+                        }
+                    },
+                    // 정지
+                    {
+                        opcode: 'stopMotors',
+                        text: formatMessage({
+                            id: 'coconut.stopMotors',
+                            default: 'stop motor',
+                            description: 'stop motor'
+                        }),
+                        blockType: BlockType.COMMAND
+                    },
+                    '---',
+                    {
+                        opcode: 'moveGoTimes',
+                        text: formatMessage({
+                            id: 'coconut.moveGoTimes',
+                            default: 'move [DIRECTION_FB] for [TIME_SEC] second(s)',
+                            description: 'move forward(backward) for specific times'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_FB: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionFBMenu',
+                                defaultValue: DirectionValues.FORWARD
+                            },
+                            TIME_SEC: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'turnMotorTimes',
+                        text: formatMessage({
+                            id: 'coconut.turnMotorTimes',
+                            default: 'turn [DIRECTION_LR] for [TIME_SEC] second(s)',
+                            description: 'turn left(right) for specific times'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_LR: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionLRMenu',
+                                defaultValue: DirectionValues.LEFT
+                            },
+                            TIME_SEC: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'moveMotorColors',
+                        text: formatMessage({
+                            id: 'coconut.moveMotorColors',
+                            default: 'turn [DIRECTION_LR] RGB [LED_COLOR]',
+                            description: 'turn on RGB LED for turning motor'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_LR: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionLRMenu',
+                                defaultValue: DirectionValues.LEFT
+                            },
+                            LED_COLOR: {
+                                type: ArgumentType.STRING,
+                                menu: 'LEDColorMenu',
+                                defaultValue: LEDColorValues.RED
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'moveGoCm',
+                        text: formatMessage({
+                            id: 'coconut.moveGoCm',
+                            default: 'move [DIRECTION_FB] [N_CM] cm',
+                            description: 'Move by the entered distance'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_FB: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionFBMenu',
+                                defaultValue: DirectionValues.FORWARD
+                            },
+                            N_CM: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'turnMotorDegrees',
+                        text: formatMessage({
+                            id: 'coconut.turnMotorDegrees',
+                            default: 'turn [DIRECTION_LR] to [DEGREE] degrees',
+                            description: 'Move by the entered distance'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_LR: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionLRMenu',
+                                defaultValue: DirectionValues.LEFT
+                            },
+                            DEGREE: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'DegreeMenu',
+                                defaultValue: 90
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'rgbOns',
+                        text: formatMessage({
+                            id: 'coconut.rgbOns',
+                            default: 'turn on RGB [DIRECTION_RGB] [LED_COLOR]',
+                            description: 'Turn on RGB LED'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_RGB: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionRGBMenu',
+                                defaultValue: DirectionValues.LEFT
+                            },
+                            LED_COLOR: {
+                                type: ArgumentType.STRING,
+                                menu: 'LEDColorMenu',
+                                defaultValue: LEDColorValues.RED
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'rgbOffs',
+                        text: formatMessage({
+                            id: 'coconut.rgbOffs',
+                            default: 'turn off RGB [DIRECTION_RGB]',
+                            description: 'Turn off RGB LED'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_RGB: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionRGBMenu',
+                                defaultValue: DirectionValues.LEFT
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'rgbOffColors',
+                        text: formatMessage({
+                            id: 'coconut.rgbOffColors',
+                            default: 'turn off RGB [DIRECTION_RGB] [LED_COLOR]',
+                            description: 'Turn off RGB LED '
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_RGB: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionRGBMenu',
+                                defaultValue: DirectionValues.LEFT
+                            },
+                            LED_COLOR: {
+                                type: ArgumentType.STRING,
+                                menu: 'LEDColorMenu',
+                                defaultValue: LEDColorValues.RED
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'rgbOnTimes',
+                        text: formatMessage({
+                            id: 'coconut.rgbOnTimes',
+                            default: 'turn on RGB [DIRECTION_RGB] [LED_COLOR] for [TIME_SEC] second(s)',
+                            description: 'Turn off RGB LED '
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_RGB: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionRGBMenu',
+                                defaultValue: DirectionValues.LEFT
+                            },
+                            LED_COLOR: {
+                                type: ArgumentType.STRING,
+                                menu: 'LEDColorMenu',
+                                defaultValue: LEDColorValues.RED
+                            },
+                            TIME_SEC: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        }
+                    },
+                    '---',
                     {
                         opcode: 'setPinMode',
                         text: formatMessage({
@@ -714,6 +1115,18 @@ class CoconutDevice {
                         // acceptReporters: false,
                         items: this.DIRECTION_FB_MENU
                     },
+                    DirectionLRMenu: {
+                        items: this.DIRECTION_LR_MENU
+                    },
+                    LEDColorMenu: {
+                        items: this.LED_COLOR_MENU
+                    },
+                    DegreeMenu: {
+                        items: this.DEGREE_MENU
+                    },
+                    DirectionRGBMenu: {
+                        items: this.DIRECTION_RGB_MENU
+                    },
                     pins: {
                         items: this.PINS_MENU
                     },
@@ -738,223 +1151,137 @@ class CoconutDevice {
                     }
                 }
             },
-            {
-                id: 'serial',
-                name: formatMessage({
-                    id: 'arduino.category.serial',
-                    default: 'Serial',
-                    description: 'The name of the arduino device serial category'
-                }),
-                color1: '#9966FF',
-                color2: '#774DCB',
-                color3: '#774DCB',
-                blocks: [
-                    {
-                        opcode: 'serialBegin',
-                        text: formatMessage({
-                            id: 'arduino.serial.serialBegin',
-                            default: 'serial begin baudrate [VALUE]',
-                            description: 'arduino serial begin'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            VALUE: {
-                                type: ArgumentType.STRING,
-                                menu: 'baudrate',
-                                defaultValue: Buadrate.B9600
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    },
-                    {
-                        opcode: 'serialPrint',
-                        text: formatMessage({
-                            id: 'arduino.serial.serialPrint',
-                            default: 'serial print [VALUE] [EOL]',
-                            description: 'arduino serial print'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            VALUE: {
-                                type: ArgumentType.STRING,
-                                defaultValue: 'Hello Scratch Arduino'
-                            },
-                            EOL: {
-                                type: ArgumentType.STRING,
-                                menu: 'eol',
-                                defaultValue: Eol.Warp
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    },
-                    {
-                        opcode: 'serialAvailable',
-                        text: formatMessage({
-                            id: 'arduino.serial.serialAvailable',
-                            default: 'serial available data length',
-                            description: 'arduino serial available data length'
-                        }),
-                        blockType: BlockType.REPORTER,
-                        disableMonitor: true,
-                        programMode: [ProgramModeType.UPLOAD]
-                    },
-                    {
-                        opcode: 'serialReadData',
-                        text: formatMessage({
-                            id: 'arduino.serial.serialReadData',
-                            default: 'serial read data',
-                            description: 'arduino serial read data'
-                        }),
-                        blockType: BlockType.REPORTER,
-                        disableMonitor: true,
-                        programMode: [ProgramModeType.UPLOAD]
-                    }
-                ],
-                menus: {
-                    baudrate: {
-                        items: this.BAUDTATE_MENU
-                    },
-                    eol: {
-                        items: this.EOL_MENU
-                    }
-                }
-            },
-            {
-                id: 'data',
-                name: formatMessage({
-                    id: 'arduino.category.data',
-                    default: 'Data',
-                    description: 'The name of the arduino device data category'
-                }),
-                color1: '#CF63CF',
-                color2: '#C94FC9',
-                color3: '#BD42BD',
-                blocks: [
-                    {
-                        opcode: 'dataMap',
-                        text: formatMessage({
-                            id: 'arduino.data.dataMap',
-                            default: 'map [DATA] from ([ARG0], [ARG1]) to ([ARG2], [ARG3])',
-                            description: 'arduino data map'
-                        }),
-                        blockType: BlockType.REPORTER,
-                        arguments: {
-                            DATA: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: '50'
-                            },
-                            ARG0: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: '1'
-                            },
-                            ARG1: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: '100'
-                            },
-                            ARG2: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: '1'
-                            },
-                            ARG3: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: '1000'
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    },
-                    '---',
-                    {
-                        opcode: 'dataConstrain',
-                        text: formatMessage({
-                            id: 'arduino.data.dataConstrain',
-                            default: 'constrain [DATA] between ([ARG0], [ARG1])',
-                            description: 'arduino data constrain'
-                        }),
-                        blockType: BlockType.REPORTER,
-                        arguments: {
-                            DATA: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: '50'
-                            },
-                            ARG0: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: '1'
-                            },
-                            ARG1: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: '100'
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    },
-                    {
-                        opcode: 'dataConvert',
-                        text: formatMessage({
-                            id: 'arduino.data.dataConvert',
-                            default: 'convert [DATA] to [TYPE]',
-                            description: 'arduino data convert'
-                        }),
-                        blockType: BlockType.REPORTER,
-                        arguments: {
-                            DATA: {
-                                type: ArgumentType.STRING,
-                                defaultValue: '123'
-                            },
-                            TYPE: {
-                                type: ArgumentType.STRING,
-                                menu: 'dataType',
-                                defaultValue: DataType.Integer
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    },
-                    {
-                        opcode: 'dataConvertASCIICharacter',
-                        text: formatMessage({
-                            id: 'arduino.data.dataConvertASCIICharacter',
-                            default: 'convert [DATA] to ASCII character',
-                            description: 'arduino data convert to ASCII character'
-                        }),
-                        blockType: BlockType.REPORTER,
-                        arguments: {
-                            DATA: {
-                                type: ArgumentType.NUMBER,
-                                defaultValue: '97'
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    },
-                    {
-                        opcode: 'dataConvertASCIINumber',
-                        text: formatMessage({
-                            id: 'arduino.data.dataConvertASCIINumber',
-                            default: 'convert [DATA] to ASCII nubmer',
-                            description: 'arduino data convert to ASCII nubmer'
-                        }),
-                        blockType: BlockType.REPORTER,
-                        arguments: {
-                            DATA: {
-                                type: ArgumentType.STRING,
-                                defaultValue: 'a'
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    }
-                ],
-                menus: {
-                    dataType: {
-                        items: this.DATA_TYPE_MENU
-                    }
-                }
-            }
         ];
     }
 
     // TODO: 호출 함수(로직 추가 전)
-    moveMotors(args) {
+    /**
+     * move forward or backward
+     * @param args
+     * @returns {Promise<void>}
+     */
+    moveMotors (args) {
         console.log(`moveMotors... ${args.DIRECTION_FB}`);
 
         this._peripheral.coconutMoveMotors(args.DIRECTION_FB);
+        return Promise.resolve();
+    }
+
+    turnMotors (args) {
+        console.log(`turn motors ${args.DIRECTION_LR}`);
+
+        this._peripheral.coconutTurnMotors(args.DIRECTION_LR);
+        return Promise.resolve();
+    }
+
+    /**
+     *
+     * @param args
+     * @returns {Promise<void>}
+     */
+    moveGoTimes (args) {
+        console.log(`move go times ${args.DIRECTION_FB} ${args.TIME_SEC} secs`);
+
+        // let sec = args.TIME_SEC;
+
+        this._peripheral.coconutMoveGoTimes(args.DIRECTION_FB, args.TIME_SEC);
+        return Promise.resolve();
+    }
+
+    /**
+     * coconut turn motor for specific times (left or right)
+     * @param args
+     * @returns {Promise<void>}
+     */
+    turnMotorTimes (args) {
+        console.log(`turn motor for times ${args.DIRECTION_LR} ${args.TIME_SEC} secs`);
+
+        // let sec = args.TIME_SEC;
+
+        this._peripheral.coconutTurnMotorTimes(args.DIRECTION_LR, args.TIME_SEC);
+        return Promise.resolve();
+    }
+
+    /**
+     * stop motor
+     */
+    stopMotors () {
+        console.log('stop motor');
+        this._peripheral.coconutStopMotor();
+        return Promise.resolve();
+    }
+
+    moveMotorColors (args) {
+        console.log(`turn on RGB ${args.LED_COLOR} for turing ${args.DIRECTION_LR}`);
+
+        // let sec = args.TIME_SEC;
+
+        this._peripheral.coconutMoveMotorColors(args.DIRECTION_LR, args.LED_COLOR);
+        return Promise.resolve();
+    }
+
+    /**
+     * Move by the entered distance
+     * @param args
+     * @returns {Promise<void>}
+     */
+    moveGoCm (args) {
+        console.log(`move ${args.DIRECTION_FB} by distance ${args.N_CM}`);
+
+        this._peripheral.coconutMoveGoCm(args.DIRECTION_FB, args.N_CM);
+        return Promise.resolve();
+    }
+
+    /**
+     * turn motor by degree
+     * @param args
+     * @returns {Promise<void>}
+     */
+    turnMotorDegrees (args) {
+        console.log(`turn ${args.DIRECTION_LR} by degree ${args.DEGREE}`);
+
+        this._peripheral.coconutTurnMotorDegrees(args.DIRECTION_LR, args.DEGREE);
+        return Promise.resolve();
+    }
+
+    /**
+     * Turn on RGB LED
+     * @param args
+     */
+    rgbOns (args) {
+        console.log(`turn on ${args.DIRECTION_RGB} by color ${args.LED_COLOR}`);
+
+        this._peripheral.coconutRGBOns(args.DIRECTION_RGB, args.LED_COLOR);
+        return Promise.resolve();
+    }
+
+    /**
+     * turn off RGB LED
+     * @param args
+     * @returns {Promise<void>}
+     */
+    rgbOffs (args) {
+        console.log(`turn off ${args.DIRECTION_RGB} RGB LED`);
+
+        this._peripheral.coconutRGBOffs(args.DIRECTION_RGB);
+        return Promise.resolve();
+    }
+
+    /**
+     * turn off RGB LED
+     * @param args
+     */
+    rgbOffColors (args) {
+        console.log(`turn off ${args.DIRECTION_RGB} RGB LED ${args.LED_COLOR}`);
+
+        this._peripheral.coconutRGBOffColors(args.DIRECTION_RGB, args.LED_COLOR);
+        return Promise.resolve();
+    }
+
+    rgbOnTimes (args) {
+        console.log(`turn off ${args.DIRECTION_RGB} RGB LED ${args.LED_COLOR} ${args.TIME_SEC} secs`);
+
+        this._peripheral.coconutRGBOnTimes(args.DIRECTION_RGB, args.LED_COLOR, args.TIME_SEC);
         return Promise.resolve();
     }
 
