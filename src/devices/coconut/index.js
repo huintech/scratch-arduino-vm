@@ -137,6 +137,56 @@ const LEDColorValues = {
 };
 
 /**
+ * Note values
+ * @type {{}}
+ */
+const NoteValues = {
+    NOTE_C: "NOTE_C", NOTE_D: "NOTE_D", NOTE_E: "NOTE_E",
+    NOTE_F: "NOTE_F", NOTE_G: "NOTE_G", NOTE_A: "NOTE_A", NOTE_B: "NOTE_B"
+};
+
+const SharpValues = { NONE: '-', SHARP: '#', FLAT: 'b' };
+
+/**
+ * beat values
+ * @type {{QUATER: string, HALF: string, DOT_QUATER: string, DOT_8TH: string, DOT_HALF: string, DOT_16TH: string, THIRTYH_2ND: string, WHOLE: string, EIGHTH: string, SIXTEENTH: string, DOT_32ND: string}}
+ */
+const BeatValues = {
+    HALF: 'Half', QUATER: 'Quater', EIGHTH: 'Eighth', SIXTEENTH: 'Sixteenth',
+    THIRTYH_2ND: 'Thirty-second', WHOLE: 'Whole',
+    DOT_HALF: 'Dotted half', DOT_QUATER: 'Dotted quarter',
+    DOT_8TH: 'Dotted eighth', DOT_16TH: 'Dotted sixteenth',
+    DOT_32ND: 'Dotted thirty-second', ORIGINAL: 'original'
+}
+
+/**
+ * rest beat values
+ * @type {{QUATER: string, HALF: string, WHOLE: string, EIGHTH: string, SIXTEENTH: string}}
+ */
+const BeatRestValues = {
+    HALF: "Half_rest", QUATER: "Quater_rest", EIGHTH: "Eighth_rest",
+    SIXTEENTH: "Sixteenth_rest", WHOLE: "Whole_rest"
+};
+
+/**
+ * detect values
+ * @type {{}}
+ */
+const DetectValues = { YES: 'Yes', NO: 'No' };
+
+/**
+ * line tracer command
+ * @type {{LEFT: string, RIGHT: string}}
+ */
+const CommandValues = { LEFT: 'Turn left', RIGHT: 'Turn right' };
+
+/**
+ * on off values
+ * @type {{OFF: string, ON: string}}
+ */
+const OnOffValues = { ON: 'On', OFF: 'Off' };
+
+/**
  * Manage communication with a Arduino Uno peripheral over a Scratch Arduino Link client socket.
  */
 // class Coconut extends ArduinoPeripheral {
@@ -332,7 +382,7 @@ class CoconutDevice {
      * @returns {[{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string}]}
      * @constructor
      */
-    get DIRECTION_RGB_MENU () {
+    get DIRECTION_LRB_MENU () {
         return [
             {
                 text: formatMessage({
@@ -357,6 +407,598 @@ class CoconutDevice {
                     description: 'left and right direction'
                 }),
                 value: DirectionValues.BOTH
+            }
+        ];
+    }
+
+    /**
+     * NOTE menu
+     * @constructor
+     */
+    get NOTE_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.note_c',
+                    default: 'NOTE_C',
+                    description: 'note c'
+                }),
+                value: NoteValues.NOTE_C
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.note_d',
+                    default: 'NOTE_D',
+                    description: 'note d'
+                }),
+                value: NoteValues.NOTE_D
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.note_e',
+                    default: 'NOTE_E',
+                    description: 'note e'
+                }),
+                value: NoteValues.NOTE_E
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.note_f',
+                    default: 'NOTE_F',
+                    description: 'note F'
+                }),
+                value: NoteValues.NOTE_F
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.note_g',
+                    default: 'NOTE_G',
+                    description: 'note G'
+                }),
+                value: NoteValues.NOTE_G
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.note_a',
+                    default: 'NOTE_A',
+                    description: 'note a'
+                }),
+                value: NoteValues.NOTE_A
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.note_b',
+                    default: 'NOTE_B',
+                    description: 'note b'
+                }),
+                value: NoteValues.NOTE_B
+            }
+        ];
+    }
+
+    /**
+     * octave menu
+     * @returns {[{text: (*|string), value: string}]}
+     * @constructor
+     */
+    get OCTAVE_MENU () {
+        return [
+            {
+                text: '3',
+                value: 3
+            },
+            {
+                text: '4',
+                value: 4
+            },
+            {
+                text: '5',
+                value: 5
+            },
+            {
+                text: '6',
+                value: 6
+            }
+        ];
+    }
+
+    /**
+     * Sharp menu
+     * @constructor
+     */
+    get SHARP_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.normal_note',
+                    default: '-',
+                    description: 'normal none'
+                }),
+                value: SharpValues.NONE
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.sharp_note',
+                    default: '#',
+                    description: 'sharp note'
+                }),
+                value: SharpValues.SHARP
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.flat_note',
+                    default: 'b',
+                    description: 'flat note'
+                }),
+                value: SharpValues.FLAT
+            }
+        ];
+    }
+
+    /**
+     * Beat menu
+     * @constructor
+     */
+    get BEAT_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_half',
+                    default: BeatValues.HALF,
+                    description: 'half beat'
+                }),
+                value: BeatValues.HALF
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_quater',
+                    default: BeatValues.QUATER,
+                    description: 'quater beat'
+                }),
+                value: BeatValues.QUATER
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_8th',
+                    default: BeatValues.EIGHTH,
+                    description: 'Eighth beat'
+                }),
+                value: BeatValues.EIGHTH
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_16th',
+                    default: BeatValues.SIXTEENTH,
+                    description: 'Sixteenth beat'
+                }),
+                value: BeatValues.SIXTEENTH
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_32nd',
+                    default: BeatValues.THIRTY_2ND,
+                    description: 'Thirty-second beat'
+                }),
+                value: BeatValues.THIRTY_2ND
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_whole',
+                    default: BeatValues.WHOLE,
+                    description: 'Whole beat'
+                }),
+                value: BeatValues.WHOLE
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_dot_half',
+                    default: BeatValues.DOT_HALF,
+                    description: 'Dotted half beat'
+                }),
+                value: BeatValues.DOT_HALF
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_dot_quarter',
+                    default: BeatValues.DOT_QUATER,
+                    description: 'Dotted quarter beat'
+                }),
+                value: BeatValues.DOT_QUATER
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_dot_8th',
+                    default: BeatValues.DOT_8TH,
+                    description: 'Dotted eighth beat'
+                }),
+                value: BeatValues.DOT_8TH
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_dot_16th',
+                    default: BeatValues.DOT_16TH,
+                    description: 'Dotted sixteenth beat'
+                }),
+                value: BeatValues.DOT_16TH
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_dot_32th',
+                    default: BeatValues.DOT_32ND,
+                    description: 'Dotted thirty-second beat'
+                }),
+                value: BeatValues.DOT_32ND
+            },
+        ];
+    }
+
+    /**
+     * rest beat menu
+     * @constructor
+     */
+    get BEAT_REST_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_half_rest',
+                    default: BeatRestValues.HALF,
+                    description: 'half rest beat'
+                }),
+                value: BeatRestValues.HALF
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_quater_rest',
+                    default: BeatRestValues.QUATER,
+                    description: 'quater rest beat'
+                }),
+                value: BeatRestValues.QUATER
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_8th_rest',
+                    default: BeatRestValues.EIGHTH,
+                    description: 'eighth rest beat'
+                }),
+                value: BeatRestValues.EIGHTH
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_16th_rest',
+                    default: BeatRestValues.SIXTEENTH,
+                    description: 'sixteenth rest beat'
+                }),
+                value: BeatRestValues.SIXTEENTH
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_whole_rest',
+                    default: BeatRestValues.WHOLE,
+                    description: 'whole rest beat'
+                }),
+                value: BeatRestValues.WHOLE
+            }
+        ];
+    }
+
+    /**
+     * changing beat menu
+     * @returns {[{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: *},null,null,null,null,null,null]}
+     * @constructor
+     */
+    get BEAT_CHANGE_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_half',
+                    default: BeatValues.HALF,
+                    description: 'half beat'
+                }),
+                value: BeatValues.HALF
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_quater',
+                    default: BeatValues.QUATER,
+                    description: 'quater beat'
+                }),
+                value: BeatValues.QUATER
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_8th',
+                    default: BeatValues.EIGHTH,
+                    description: 'Eighth beat'
+                }),
+                value: BeatValues.EIGHTH
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_16th',
+                    default: BeatValues.SIXTEENTH,
+                    description: 'Sixteenth beat'
+                }),
+                value: BeatValues.SIXTEENTH
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_32nd',
+                    default: BeatValues.THIRTY_2ND,
+                    description: 'Thirty-second beat'
+                }),
+                value: BeatValues.THIRTY_2ND
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_whole',
+                    default: BeatValues.WHOLE,
+                    description: 'Whole beat'
+                }),
+                value: BeatValues.WHOLE
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_dot_half',
+                    default: BeatValues.DOT_HALF,
+                    description: 'Dotted half beat'
+                }),
+                value: BeatValues.DOT_HALF
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_dot_quarter',
+                    default: BeatValues.DOT_QUATER,
+                    description: 'Dotted quarter beat'
+                }),
+                value: BeatValues.DOT_QUATER
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_dot_8th',
+                    default: BeatValues.DOT_8TH,
+                    description: 'Dotted eighth beat'
+                }),
+                value: BeatValues.DOT_8TH
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_dot_16th',
+                    default: BeatValues.DOT_16TH,
+                    description: 'Dotted sixteenth beat'
+                }),
+                value: BeatValues.DOT_16TH
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_dot_32th',
+                    default: BeatValues.DOT_32ND,
+                    description: 'Dotted thirty-second beat'
+                }),
+                value: BeatValues.DOT_32ND
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beat_original',
+                    default: BeatValues.ORIGINAL,
+                    description: 'original beat'
+                }),
+                value: BeatValues.ORIGINAL
+            }
+        ];
+    }
+
+    /**
+     * detection menu
+     * @constructor
+     */
+    get DETECT_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.detect_yes',
+                    default: DetectValues.YES,
+                    description: 'detected'
+                }),
+                value: DetectValues.YES
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.detect_no',
+                    default: DetectValues.NO,
+                    description: 'not detected'
+                }),
+                value: DetectValues.NO
+            }
+        ];
+    }
+
+    /**
+     * line tracer command menu
+     * @constructor
+     */
+    get COMMAND_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.command_left',
+                    default: CommandValues.LEFT,
+                    description: 'turn left'
+                }),
+                value: CommandValues.LEFT
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.command_right',
+                    default: CommandValues.RIGHT,
+                    description: 'turn right'
+                }),
+                value: CommandValues.RIGHT
+            }
+        ];
+    }
+
+    /**
+     * on/off menu
+     * @constructor
+     */
+    get ON_OFF_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.on',
+                    default: OnOffValues.ON,
+                    description: 'turn on'
+                }),
+                value: OnOffValues.ON
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.off',
+                    default: OnOffValues.OFF,
+                    description: 'turn off'
+                }),
+                value: OnOffValues.OFF
+            }
+        ];
+    }
+
+    /**
+     * led matrix row menu
+     * @constructor
+     */
+    get ROW_MENU () {
+        return [
+            {
+                text: 'Both',
+                value: 0
+            },
+            {
+                text: '1',
+                value: 1
+            },
+            {
+                text: '2',
+                value: 2
+            },
+            {
+                text: '3',
+                value: 3
+            },
+            {
+                text: '4',
+                value: 4
+            },
+            {
+                text: '5',
+                value: 5
+            },
+            {
+                text: '6',
+                value: 6
+            },
+            {
+                text: '7',
+                value: 7
+            },
+            {
+                text: '8',
+                value: 8
+            }
+        ];
+    }
+
+    /**
+     * LED matrix col menu
+     * @returns {[{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},null,null,null,null]}
+     * @constructor
+     */
+    get COL_MENU () {
+        return [
+            {
+                text: 'Both',
+                value: 0
+            },
+            {
+                text: '1',
+                value: 1
+            },
+            {
+                text: '2',
+                value: 2
+            },
+            {
+                text: '3',
+                value: 3
+            },
+            {
+                text: '4',
+                value: 4
+            },
+            {
+                text: '5',
+                value: 5
+            },
+            {
+                text: '6',
+                value: 6
+            },
+            {
+                text: '7',
+                value: 7
+            },
+            {
+                text: '8',
+                value: 8
+            }
+        ];
+    }
+
+    /**
+     * number to show on LED Matrix
+     * @returns {[{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},null,null,null,null,null]}
+     * @constructor
+     */
+    get NUMBER_MENU () {
+        return [
+            {
+                text: '0',
+                value: 0
+            },
+            {
+                text: '1',
+                value: 1
+            },
+            {
+                text: '2',
+                value: 2
+            },
+            {
+                text: '3',
+                value: 3
+            },
+            {
+                text: '4',
+                value: 4
+            },
+            {
+                text: '5',
+                value: 5
+            },
+            {
+                text: '6',
+                value: 6
+            },
+            {
+                text: '7',
+                value: 7
+            },
+            {
+                text: '8',
+                value: 8
+            },
+            {
+                text: '9',
+                value: 9
             }
         ];
     }
@@ -861,9 +1503,9 @@ class CoconutDevice {
                                 defaultValue: DirectionValues.LEFT
                             },
                             DEGREE: {
-                                type: ArgumentType.NUMBER,
+                                type: ArgumentType.ANGLE,
                                 menu: 'DegreeMenu',
-                                defaultValue: 90
+                                defaultValue: '90'
                             }
                         }
                     },
@@ -872,14 +1514,14 @@ class CoconutDevice {
                         opcode: 'rgbOns',
                         text: formatMessage({
                             id: 'coconut.rgbOns',
-                            default: 'turn on RGB [DIRECTION_RGB] [LED_COLOR]',
+                            default: 'turn on RGB [DIRECTION_LRB] [LED_COLOR]',
                             description: 'Turn on RGB LED'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            DIRECTION_RGB: {
+                            DIRECTION_LRB: {
                                 type: ArgumentType.STRING,
-                                menu: 'DirectionRGBMenu',
+                                menu: 'DirectionLRBMenu',
                                 defaultValue: DirectionValues.LEFT
                             },
                             LED_COLOR: {
@@ -893,14 +1535,14 @@ class CoconutDevice {
                         opcode: 'rgbOffs',
                         text: formatMessage({
                             id: 'coconut.rgbOffs',
-                            default: 'turn off RGB [DIRECTION_RGB]',
+                            default: 'turn off RGB [DIRECTION_LRB]',
                             description: 'Turn off RGB LED'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            DIRECTION_RGB: {
+                            DIRECTION_LRB: {
                                 type: ArgumentType.STRING,
-                                menu: 'DirectionRGBMenu',
+                                menu: 'DirectionLRBMenu',
                                 defaultValue: DirectionValues.LEFT
                             }
                         }
@@ -909,14 +1551,14 @@ class CoconutDevice {
                         opcode: 'rgbOffColors',
                         text: formatMessage({
                             id: 'coconut.rgbOffColors',
-                            default: 'turn off RGB [DIRECTION_RGB] [LED_COLOR]',
+                            default: 'turn off RGB [DIRECTION_LRB] [LED_COLOR]',
                             description: 'Turn off RGB LED '
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            DIRECTION_RGB: {
+                            DIRECTION_LRB: {
                                 type: ArgumentType.STRING,
-                                menu: 'DirectionRGBMenu',
+                                menu: 'DirectionLRBMenu',
                                 defaultValue: DirectionValues.LEFT
                             },
                             LED_COLOR: {
@@ -930,14 +1572,14 @@ class CoconutDevice {
                         opcode: 'rgbOnTimes',
                         text: formatMessage({
                             id: 'coconut.rgbOnTimes',
-                            default: 'turn on RGB [DIRECTION_RGB] [LED_COLOR] for [TIME_SEC] second(s)',
+                            default: 'turn on RGB [DIRECTION_LRB] [LED_COLOR] for [TIME_SEC] second(s)',
                             description: 'Turn off RGB LED '
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            DIRECTION_RGB: {
+                            DIRECTION_LRB: {
                                 type: ArgumentType.STRING,
-                                menu: 'DirectionRGBMenu',
+                                menu: 'DirectionLRBMenu',
                                 defaultValue: DirectionValues.LEFT
                             },
                             LED_COLOR: {
@@ -947,6 +1589,335 @@ class CoconutDevice {
                             },
                             TIME_SEC: {
                                 type: ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'beeps',
+                        text: formatMessage({
+                            id: 'coconut.beeps',
+                            default: 'buzzer on',
+                            description: 'buzzer on'
+                        }),
+                        blockType: BlockType.COMMAND,
+                    },
+                    {
+                        opcode: 'playBuzzerTimes',
+                        text: formatMessage({
+                            id: 'coconut.playBuzzerTimes',
+                            default: 'play buzzer for [TIME_SEC] second(s)',
+                            description: 'buzzer on for some seconds'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            TIME_SEC: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0.6
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'playBuzzerFreqs',
+                        text: formatMessage({
+                            id: 'coconut.playBuzzerFreqs',
+                            default: 'play buzzer on frequency [N_FREQUENCY] Hz for [TIME_SEC] second(s)',
+                            description: 'buzzer on frequency for some seconds'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            N_FREQUENCY: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 300
+                            },
+                            TIME_SEC: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0.6
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'buzzerOff',
+                        text: formatMessage({
+                            id: 'coconut.buzzerOff',
+                            default: 'buzzer off',
+                            description: 'buzzer off'
+                        }),
+                        blockType: BlockType.COMMAND,
+                    },
+                    {
+                        opcode: 'playNote',
+                        text: formatMessage({
+                            id: 'coconut.playNote',
+                            default: 'play buzzer on note [NOTE] octave [OCTAVE] [SHARP] beat [BEAT]',
+                            description: 'buzzer on frequency for some seconds'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            NOTE: {
+                                type: ArgumentType.STRING,
+                                menu: 'NoteMenu',
+                                defaultValue: NoteValues.NOTE_C
+                            },
+                            OCTAVE: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'OctaveMenu',
+                                defaultValue: 4
+                            },
+                            SHARP: {
+                                type: ArgumentType.STRING,
+                                menu: 'SharpMenu',
+                                defaultValue: SharpValues.NONE
+                            },
+                            BEAT: {
+                                type: ArgumentType.STRING,
+                                menu: 'BeatMenu',
+                                defaultValue: BeatValues.HALF
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'restBeat',
+                        text: formatMessage({
+                            id: 'coconut.restBeat',
+                            default: 'rest beat [BEAT_REST]',
+                            description: 'rest beat'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            BEAT_REST: {
+                                type: ArgumentType.STRING,
+                                menu: 'BeatRestMenu',
+                                defaultValue: BeatRestValues.HALF
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'playNoteColor',
+                        text: formatMessage({
+                            id: 'coconut.playNoteColor',
+                            default: 'play buzzer on note [NOTE] octave [OCTAVE] [SHARP] beat [BEAT] RGB [DIRECTION_RGB] [LED_COLOR]',
+                            description: 'play note with RGB LED'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            NOTE: {
+                                type: ArgumentType.STRING,
+                                menu: 'NoteMenu',
+                                defaultValue: NoteValues.NOTE_C
+                            },
+                            OCTAVE: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'OctaveMenu',
+                                defaultValue: 4
+                            },
+                            SHARP: {
+                                type: ArgumentType.STRING,
+                                menu: 'SharpMenu',
+                                defaultValue: SharpValues.NONE
+                            },
+                            BEAT: {
+                                type: ArgumentType.STRING,
+                                menu: 'BeatMenu',
+                                defaultValue: BeatValues.HALF
+                            },
+                            DIRECTION_RGB: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionRGBMenu',
+                                defaultValue: DirectionValues.BOTH
+                            },
+                            LED_COLOR: {
+                                type: ArgumentType.STRING,
+                                menu: 'LEDColorMenu',
+                                defaultValue: LEDColorValues.RED
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'changeBeat',
+                        text: formatMessage({
+                            id: 'coconut.changeBeat',
+                            default: 'change the beat [BEAT_CHANGE]',
+                            description: 'change beat'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            BEAT_CHANGE: {
+                                type: ArgumentType.STRING,
+                                menu: 'BeatChangeMenu',
+                                defaultValue: BeatValues.HALF
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'getLineTracer',
+                        text: formatMessage({
+                            id: 'coconut.getLineTracer',
+                            default: 'line tracer [DIRECTION_LR]',
+                            description: 'read line tracer left or right'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            DIRECTION_LR: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionLRMenu',
+                                defaultValue: DirectionValues.LEFT
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'isLineDetected',
+                        text: formatMessage({
+                            id: 'coconut.isLineDetected',
+                            default: 'line tracer detect [DIRECTION_LRB] [DETECT]',
+                            description: 'check if line tracer is detected'
+                        }),
+                        blockType: BlockType.BOOLEAN,
+                        arguments: {
+                            DIRECTION_LRB: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionLRBMenu',
+                                defaultValue: DirectionValues.LEFT
+                            },
+                            DETECT: {
+                                type: ArgumentType.STRING,
+                                menu: 'DetectMenu',
+                                defaultValue: DetectValues.YES
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'getLineTracers',
+                        text: formatMessage({
+                            id: 'coconut.getLineTracers',
+                            default: 'line tracer detection',
+                            description: 'line trace detection result'
+                        }),
+                        blockType: BlockType.REPORTER,
+                    },
+                    {
+                        opcode: 'lineTracerCmd',
+                        text: formatMessage({
+                            id: 'coconut.lineTracerCmd',
+                            default: '[COMMAND] until meet the black line',
+                            description: 'turn motor until meet the black line'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            COMMAND: {
+                                type: ArgumentType.STRING,
+                                menu: 'CommandMenu',
+                                defaultValue: CommandValues.LEFT
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'getDistance',
+                        text: formatMessage({
+                            id: 'coconut.getDistance',
+                            default: 'IR distance sensor [DIRECTION_LR]',
+                            description: 'read IR distance sensor'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            DIRECTION_LR: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionLRMenu',
+                                defaultValue: DirectionValues.LEFT
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'isDetectObstacle',
+                        text: formatMessage({
+                            id: 'coconut.isDetectObstacle',
+                            default: 'detecting obstacle [DIRECTION_LRB] [DETECT]',
+                            description: 'check if IR distance sensor is detected'
+                        }),
+                        blockType: BlockType.BOOLEAN,
+                        arguments: {
+                            DIRECTION_LRB: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionLRBMenu',
+                                defaultValue: DirectionValues.LEFT
+                            },
+                            DETECT: {
+                                type: ArgumentType.STRING,
+                                menu: 'DetectMenu',
+                                defaultValue: DetectValues.YES
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'isDetectObstacles',
+                        text: formatMessage({
+                            id: 'coconut.isDetectObstacles',
+                            default: 'detecting obstacle',
+                            description: 'check if IR distance sensor is detected'
+                        }),
+                        blockType: BlockType.BOOLEAN,
+                        arguments: { }
+                    },
+                    '---',
+                    {
+                        opcode: 'ledMatrixOn',
+                        text: formatMessage({
+                            id: 'coconut.ledMatrixOn',
+                            default: 'LED Matrix [ON_OFF] ( ROW [ROW] , COL [COL] )',
+                            description: 'LED Matrix on (single control)'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            ON_OFF: {
+                                type: ArgumentType.STRING,
+                                menu: 'OnOffMenu',
+                                defaultValue: OnOffValues.ON
+                            },
+                            ROW: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'RowMenu',
+                                defaultValue: 1
+                            },
+                            COL: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'ColMenu',
+                                defaultValue: 1
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'ledMatrixOnAll',
+                        text: formatMessage({
+                            id: 'coconut.ledMatrixOnAll',
+                            default: 'turn on all LED Matrix',
+                            description: 'turn on all LED Matrix'
+                        }),
+                        blockType: BlockType.COMMAND,
+                    },
+                    {
+                        opcode: 'ledMatrixClear',
+                        text: formatMessage({
+                            id: 'coconut.ledMatrixClear',
+                            default: 'LED Matrix clear all',
+                            description: 'LED Matrix clear all'
+                        }),
+                        blockType: BlockType.COMMAND,
+                    },
+                    {
+                        opcode: 'showLedMatrixNumber',
+                        text: formatMessage({
+                            id: 'coconut.showLedMatrixNumber',
+                            default: 'shows number [NUMBER] on LED Matrix',
+                            description: 'show number on LED Matrix'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            NUMBER: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'NumberMenu',
                                 defaultValue: 1
                             }
                         }
@@ -1124,8 +2095,44 @@ class CoconutDevice {
                     DegreeMenu: {
                         items: this.DEGREE_MENU
                     },
-                    DirectionRGBMenu: {
-                        items: this.DIRECTION_RGB_MENU
+                    DirectionLRBMenu: {
+                        items: this.DIRECTION_LRB_MENU
+                    },
+                    NoteMenu: {
+                        items: this.NOTE_MENU
+                    },
+                    OctaveMenu: {
+                        items: this.OCTAVE_MENU
+                    },
+                    SharpMenu: {
+                        items: this.SHARP_MENU
+                    },
+                    BeatMenu: {
+                        items: this.BEAT_MENU
+                    },
+                    BeatRestMenu: {
+                        items: this.BEAT_REST_MENU
+                    },
+                    BeatChangeMenu: {
+                        items: this.BEAT_CHANGE_MENU
+                    },
+                    DetectMenu: {
+                        items: this.DETECT_MENU
+                    },
+                    CommandMenu: {
+                        items: this.COMMAND_MENU
+                    },
+                    OnOffMenu: {
+                        items: this.ON_OFF_MENU
+                    },
+                    RowMenu: {
+                        items: this.ROW_MENU
+                    },
+                    ColMenu: {
+                       items: this.COL_MENU
+                    },
+                    NumberMenu: {
+                        items: this.NUMBER_MENU
                     },
                     pins: {
                         items: this.PINS_MENU
@@ -1278,10 +2285,190 @@ class CoconutDevice {
         return Promise.resolve();
     }
 
+    /**
+     *
+     * @param args
+     * @returns {Promise<void>}
+     */
     rgbOnTimes (args) {
         console.log(`turn off ${args.DIRECTION_RGB} RGB LED ${args.LED_COLOR} ${args.TIME_SEC} secs`);
 
         this._peripheral.coconutRGBOnTimes(args.DIRECTION_RGB, args.LED_COLOR, args.TIME_SEC);
+        return Promise.resolve();
+    }
+
+    /**
+     * buzzer on
+     * @returns {Promise<void>}
+     */
+    beeps () {
+        this._peripheral.coconutBeeps();
+        return Promise.resolve();
+    }
+
+    /**
+     * buzzer on for some seconds
+     * @param args
+     */
+    playBuzzerTimes (args) {
+        // console.log(`turn off ${args.DIRECTION_RGB} RGB LED ${args.LED_COLOR} ${args.TIME_SEC} secs`);
+
+        this._peripheral.coconutPlayBuzzerTimes(args.TIME_SEC);
+        return Promise.resolve();
+    }
+
+    /**
+     * buzzer on frequency for some seconds
+     * @param args
+     */
+    playBuzzerFreqs (args) {
+        console.log(`buzzer on freq ${args.N_FREQUENCY} Hz  ${args.TIME_SEC} secs`);
+
+        this._peripheral.coconutPlayBuzzerFreqs(args.N_FREQUENCY, args.TIME_SEC);
+        return Promise.resolve();
+    }
+
+    /**
+     * buzzer off
+     * @returns {Promise<void>}
+     */
+    buzzerOff () {
+        this._peripheral.coconutBuzzerOff();
+        return Promise.resolve();
+    }
+
+    /**
+     * play note
+     * @param args
+     */
+    playNote (args) {
+        this._peripheral.coconutPlayNote(args.NOTE, args.OCTAVE, args.SHARP, args.BEAT);
+        return Promise.resolve();
+    }
+
+    /**
+     * rest beat
+     * @param args
+     */
+    restBeat (args) {
+        this._peripheral.coconutRestBeat(args.BEAT_REST);
+        return Promise.resolve();
+    }
+
+    /**
+     * play note with RGB LED
+     * @param args
+     * @returns {Promise<void>}
+     */
+    playNoteColor (args) {
+        this._peripheral.coconutPlayNoteColor(args.NOTE, args.OCTAVE, args.SHARP, args.BEAT, args.DIRECTION_RGB, args.LED_COLOR);
+        return Promise.resolve();
+    }
+
+    /**
+     * change beat
+     * @param args
+     */
+    changeBeat (args) {
+        this._peripheral.coconutChangeBeat(args.BEAT_CHANGE);
+        return Promise.resolve();
+    }
+
+    /**
+     * read line tracer (left or right)
+     * @param args
+     */
+    getLineTracer (args) {
+        this._peripheral.coconutGetLineTracer(args.DIRECTION_LR);
+        return Promise.resolve();
+    }
+
+    /**
+     * line tracer detection check
+     * @param args
+     */
+    isLineDetected (args) {
+        this._peripheral.coconutIsLineDetected(args.DIRECTION_LRB, args.DETECT);
+        return Promise.resolve();
+    }
+
+    /**
+     * get line tracers decetion
+     */
+    getLineTracers () {
+        this._peripheral.coconutGetLineTracers();
+        return Promise.resolve();
+    }
+
+    /**
+     * run command until line-tracer detect black line
+     * @param args
+     * @returns {Promise<void>}
+     */
+    lineTracerCmd (args) {
+        this._peripheral.coconutLineTracerCmd(args.COMMAND);
+        return Promise.resolve();
+    }
+
+    /**
+     * read IR Distance sensor
+     * @param args
+     * @returns {Promise<void>}
+     */
+    getDistance (args) {
+        this._peripheral.coconutGetDistance(args.DIRECTION_LR);
+        return Promise.resolve();
+    }
+
+    /**
+     * IR distacne sensor detecting check
+     * @param args
+     */
+    isDetectObstacle (args) {
+        this._peripheral.coconutIsDetectObstacle(args.DIRECTION_LRB, args.DETECT);
+        return Promise.resolve();
+    }
+
+    /**
+     * IR distance sensor detecting check (all sensors)
+     * @returns {Promise<void>}
+     */
+    isDetectObstacles () {
+        this._peripheral.coconutIsDetectObstacles();
+        return Promise.resolve();
+    }
+
+    /**
+     * led matrix on
+     * @param args
+     */
+    ledMatrixOn (args) {
+        this._peripheral.coconutLedMatrixOn(args.ON_OFF, args.ROW, args.COL);
+        return Promise.resolve();
+    }
+
+    /**
+     * turn on all LED Matrix
+     */
+    ledMatrixOnAll () {
+        this._peripheral.coconutLedMatrixOnAll();
+        return Promise.resolve();
+    }
+
+    /**
+     * LED Matrix clear all
+     */
+    ledMatrixClear () {
+        this._peripheral.coconutLedMatrixClear();
+        return Promise.resolve();
+    }
+
+    /**
+     * show number on LED Matrix
+     * @param args
+     */
+    showLedMatrixNumber (args) {
+        this._peripheral.showLedMatrixNumber(args.NUMBER);
         return Promise.resolve();
     }
 

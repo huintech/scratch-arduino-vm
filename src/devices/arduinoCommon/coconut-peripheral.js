@@ -66,6 +66,36 @@ const Colors = {
     Red: 2, Green: 3, Blue: 4, Yellow: 5, Cyan: 6, Magenta: 7
 };
 
+// 박자: 음표, 쉼표 동일
+/**
+ * 박자: 음표, 쉼표 동일
+ * @type {{Zero: number, original: number, "Dotted eighth": number, "Dotted half": number, "Dotted sixteenth": number, Whole: number, Double: number, Eighth: number, "Thirty-second": number, Half: number, "Dotted quarter": number, "Dotted thirty-second": number, Quater: number, Sixteenth: number}}
+ */
+const Beats = {
+    'Half': 500, 'Quater': 250, 'Eighth': 125, 'Sixteenth': 63, 'Thirty-second': 32,
+    'Whole': 1000, 'Dotted half': 750, 'Dotted quarter': 375, 'Dotted eighth': 188,
+    'Dotted sixteenth': 95, 'Dotted thirty-second': 48, 'Double': 2000, 'Zero': 0,
+    'original': 0
+};
+
+/**
+ * check if detected
+ * @type {{No: number, Yes: number}}
+ */
+const Detects = { Yes: 1, No: 0 };
+
+/**
+ * line-tracer commands
+ * @type {{"Turn left": number, "Turn right": number}}
+ */
+const Commands = { 'Turn left': 3, 'Turn right': 4 };
+
+/**
+ * led matrix on/off values
+ * @type {{Off: number, On: number}}
+ */
+const OnOffs = {'On': 1, 'Off': 0};
+
 /**
  * Manage communication with a Arduino peripheral over a Scratch Arduino Link client socket.
  */
@@ -539,7 +569,7 @@ class CoconutPeripheral{
     /**
      * @brief 모듈 실행
      */
-    coconutRunPackage () {
+    _runPackage () {
         let bytes = [0xff, 0x55, 0, 0, 2];
 
         for (let i = 0; i < arguments.length; i++) {
@@ -588,7 +618,7 @@ class CoconutPeripheral{
         console.log(`isConnected : ${this.isConnected()}`);
 
         if (this.isConnected()) {
-            const datas = this.coconutRunPackage(Sensors.Motor, 0, direction, speed);
+            const datas = this._runPackage(Sensors.Motor, 0, direction, speed);
 
             console.log(`move motors datas : ${datas}`);
 
@@ -621,7 +651,7 @@ class CoconutPeripheral{
         console.log(`isConnected : ${this.isConnected()}`);
 
         if (this.isConnected()) {
-            const datas = this.coconutRunPackage(Sensors.Motor, 0, direction, speed);
+            const datas = this._runPackage(Sensors.Motor, 0, direction, speed);
 
             console.log(`turn motors datas : ${datas}`);
 
@@ -646,7 +676,7 @@ class CoconutPeripheral{
 
         if (this.isConnected()) {
             // sensor, seq, dir, speed, degree, time
-            const datas = this.coconutRunPackage(Sensors.Motor, 3, direction, speed, this.short2array(sec));
+            const datas = this._runPackage(Sensors.Motor, 3, direction, speed, this._short2array(sec));
 
             console.log(`move motors datas : ${datas}`);
 
@@ -674,7 +704,7 @@ class CoconutPeripheral{
 
         if (this.isConnected()) {
             // sensor, seq, dir, speed, degree, time
-            const datas = this.coconutRunPackage(Sensors.Motor, 3, direction, speed, this.short2array(sec));
+            const datas = this._runPackage(Sensors.Motor, 3, direction, speed, this._short2array(sec));
 
             console.log(`turn motors datas : ${datas}`);
 
@@ -682,7 +712,7 @@ class CoconutPeripheral{
         }
     }
 
-    short2array (short) {
+    _short2array (short) {
         // Create a 2-byte array (16 bits) using an Int16Array
         const byteArray = new Int16Array(1);
         byteArray[0] = short;
@@ -699,7 +729,7 @@ class CoconutPeripheral{
      * stop coconut motor
      */
     coconutStopMotor () {
-        const datas = this.coconutRunPackage(Sensors.Motor, 1);
+        const datas = this._runPackage(Sensors.Motor, 1);
 
         console.log(`stop motors datas : ${datas}`);
 
@@ -729,7 +759,7 @@ class CoconutPeripheral{
         const speed = 60;
 
         // deviceid, seq, direction, speed, color
-        const datas = this.coconutRunPackage(Sensors.Motor, 5, direction, speed, color);
+        const datas = this._runPackage(Sensors.Motor, 5, direction, speed, color);
 
         console.log(`moveMotorColors datas : ${datas}`);
 
@@ -750,7 +780,7 @@ class CoconutPeripheral{
         if (typeof direction === 'string') direction = Directions[direction];
 
         // runPackage(devices["Motor"], 10, direction, cm);
-        const datas = this.coconutRunPackage(Sensors.Motor, 10, direction, cm);
+        const datas = this._runPackage(Sensors.Motor, 10, direction, cm);
 
         console.log(`moveGoCm datas : ${datas}`);
 
@@ -772,7 +802,7 @@ class CoconutPeripheral{
         // if (typeof direction === 'string') direction = Directions[direction];
 
         // runPackage(devices["Motor"], 11, direction, short2array(degree));
-        const datas = this.coconutRunPackage(Sensors.Motor, 11, direction, this.short2array(degree));
+        const datas = this._runPackage(Sensors.Motor, 11, direction, this._short2array(degree));
 
         console.log(`TurnMotorDegrees datas : ${datas}`);
 
@@ -794,7 +824,7 @@ class CoconutPeripheral{
         if (typeof color === 'string') color = Colors[color];
 
         // runPackage(devices["RGBled"], 0, direction, color);
-        const datas = this.coconutRunPackage(Sensors.RGBled, 0, direction, color);
+        const datas = this._runPackage(Sensors.RGBled, 0, direction, color);
 
         console.log(`RGBon datas : ${datas}`);
 
@@ -814,7 +844,7 @@ class CoconutPeripheral{
         if (typeof direction === 'string') direction = Directions[direction];
 
         // runPackage(devices["RGBled"], 1, direction, 0);
-        const datas = this.coconutRunPackage(Sensors.RGBled, 1, direction);
+        const datas = this._runPackage(Sensors.RGBled, 1, direction);
 
         console.log(`RGBoff datas : ${datas}`);
 
@@ -836,7 +866,7 @@ class CoconutPeripheral{
         if (typeof color === 'string') color = Colors[color];
 
         // runPackage(devices["RGBled"], 1, direction, color);
-        const datas = this.coconutRunPackage(Sensors.RGBled, 1, direction, color);
+        const datas = this._runPackage(Sensors.RGBled, 1, direction, color);
 
         console.log(`RGBoffColor datas : ${datas}`);
 
@@ -861,12 +891,14 @@ class CoconutPeripheral{
         console.log(`typeof sec ${typeof sec}`);
 
         // 시간이 정수가 아니거나 0보다 작을 경우 0으로 변경
+        if (typeof sec == 'string') sec = Number(sec);
         if (typeof sec !== 'number') sec = 0;
-        else if (sec < 0) sec = 0;
-        else sec *= 1000; // ms 변환
+        if (sec < 0) sec = 0;
+
+        sec *= 1000; // ms 변환
 
         // runPackage(devices["RGBled"], 3, direction, color, short2array(sec));
-        const datas = this.coconutRunPackage(Sensors.RGBled, 3, direction, color, this.short2array(sec));
+        const datas = this._runPackage(Sensors.RGBled, 3, direction, color, this._short2array(sec));
 
         console.log(`RGBonTime datas : ${datas}`);
 
@@ -877,6 +909,367 @@ class CoconutPeripheral{
             this.send(datas);
         }
     }
+
+    /**
+     * @brief   버저 제어
+     * @details
+     * @param   seq     순번 (0: 연주, 1: 박자쉬기, 2: 음표 연주)
+     * @param   tone    주파수
+     * @param   beat    박자
+     * @param   note    음표
+     */
+    buzzerControl (seq, tone, beat) {
+        //if (typeof tone == "string") tone = tones[tone];
+        if (typeof beat == "string") beat = Beats[beat];
+
+        return this._runPackage(Sensors.Buzzer, seq, this._short2array(tone), this._short2array(beat));
+    }
+
+    /**
+     * buzzer on
+     */
+    coconutBeeps () {
+        const datas = this.buzzerControl(0, 262, 50);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * buzzer on for some seconds
+     * @param sec
+     */
+    coconutPlayBuzzerTimes (sec) {
+        // 시간이 정수가 아니거나 0보다 작을 경우 0으로 변경
+        if (typeof sec !== 'number') sec = 0.6;
+        if (sec < 0) sec = 0.6;
+
+        sec *= 1000; // ms 변환
+
+        // buzzerControl(0, 262, sec);
+        const datas = this.buzzerControl(0, 262, sec);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * buzzer on frequency for some seconds
+     * @param freq frequency
+     * @param sec seconds
+     */
+    coconutPlayBuzzerFreqs (freq, sec) {
+        console.log(`typeof freq ${typeof freq} sec ${typeof sec}`);
+
+        // 시간이 정수가 아니거나 0보다 작을 경우 0으로 변경
+        if (typeof sec == 'string') sec = Number(sec);
+        if (typeof sec !== 'number') sec = 0.6;
+        if (sec < 0) sec = 0.6;
+
+        sec = 1000 * sec;  // milliseconds 변환
+
+        // 주파수가 숫자가 아니거나 0보다 작을 경우 300hz로 고정
+        if (typeof freq == 'string') freq = Number(freq);
+        if (typeof freq != 'number') freq = 300;
+        if (freq < 0) freq = 300;
+
+        // this.buzzerControl(0, freq, sec);
+        const datas = this.buzzerControl(0, freq, sec);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * buzzer off
+     */
+    coconutBuzzerOff () {
+        const datas = this.buzzerControl(0, 0, 0);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * play note
+     * @param note
+     * @param octave
+     * @param sharp
+     * @param beat
+     */
+    coconutPlayNote (note, octave, sharp, beat) {
+        // note 에서 `NOTE_` 다음 문자열만 추출
+        note = this._getNote(note);
+
+        // 계이름 + 옥타브
+        // var tone = note.concat(octave);
+
+        //if (typeof note == "string") tone = tones[tone];
+        if (typeof beat == 'string') beat = Beats[beat];
+        if (typeof octave == 'string') octave = Number(octave);
+
+        // note ascii 코드로 변환하여 전송
+        // runPackage(devices["Buzzer"], 4, note.charCodeAt(0), octave, sharp.charCodeAt(0), short2array(beat));
+        const datas = this._runPackage(Sensors.Buzzer, 4, note.charCodeAt(0), octave, sharp.charCodeAt(0), this._short2array(beat));
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * @brief   음계 문자 추출
+     * @param   note    음계 (eg. NOTE_C)
+     */
+    _getNote (note) {
+        // note 에서 `NOTE_` 다음 문자열만 추출
+        const arrNote = note.split("_");
+
+        return arrNote[1];
+    }
+
+    /**
+     * beat rest
+     * @param beat
+     */
+    coconutRestBeat (beat) {
+        if (typeof beat == "string") {
+            // Half_rest 에서 `_` 앞 문자열만 추출하여 박자 설정
+            const arrBeat = beat.split("_", 1);
+            beat = Beats[arrBeat];
+        }
+
+        // buzzerControl(1, 0, beat);
+        const datas = this.buzzerControl(1, 0, beat);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * @brief   버저 tone+octave 음을 beat 박자로 실행시 LED 켜기
+     * @param   note
+     * @param   octave
+     * @param   sharp       올림표/내림표 (-:0, #:1, b:2)
+     * @param   beat
+     * @param   direction   Left:1, Right:2, All: 0
+     * @param   color       1: Red, 2: Green, 3: Blue, default: Red
+     */
+    coconutPlayNoteColor (note, octave, sharp, beat, direction, color) {
+        // note 에서 `NOTE_` 다음 문자열만 추출
+        note = this._getNote(note);
+
+        if (typeof beat == "string") beat = Beats[beat];
+        if (typeof direction == "string") direction = Directions[direction];
+        if (typeof color == "string") color = Colors[color];
+        if (typeof octave == "string") octave = Number(octave);
+
+        const datas = this._runPackage(Sensors.Buzzer, 5, note.charCodeAt(0), octave, sharp.charCodeAt(0), this._short2array(beat), direction, color);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * change beat
+     * @param beat
+     */
+    coconutChangeBeat (beat) {
+        if (typeof beat == "string") beat = Beats[beat];
+
+        const datas = this._runPackage(Sensors.Buzzer, 7, this._short2array(beat));
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * @brief   센서값 읽기
+     *
+     */
+    _getPackage() {
+        // var nextID = arguments[0];
+        let len = arguments.length;
+
+        console.log(`len = ${arguments.length}`);
+
+        let bytes = [0xff, 0x55];
+        bytes.push(len+2);
+        bytes.push(0);
+        bytes.push(1);
+
+        for (let i= 0; i < len; i++) {
+            bytes.push(arguments[i]);
+        }//for
+
+        // device.send(bytes);
+        return bytes;
+    } //function getPackage
+
+    /**
+     * read line tracer
+     * @param direction
+     */
+    coconutGetLineTracer (direction) {
+        if (typeof direction == "string") direction = Directions[direction];
+
+        const datas = this._getPackage(Sensors.Linetracer, 0, direction);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * line tracer detection check
+     * @param direction
+     * @param detect
+     */
+    coconutIsLineDetected (direction, detect) {
+        if (typeof direction == "string") direction = Directions[direction];
+        if (typeof detect == "string") detect = Detects[detect];
+
+        // getPackage(nextID, devices["Linetracer"], 1, direction, detectCond);
+
+        const datas = this._getPackage(Sensors.Linetracer, 1, direction, detect);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * get line tracers detection
+     */
+    coconutGetLineTracers () {
+        const datas = this._getPackage(Sensors.Linetracer, 4);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * run command until line-tracer detect black line
+     * @param cmd
+     */
+    coconutLineTracerCmd (cmd) {
+        if (typeof cmd == "string") cmd = Commands[cmd];
+        // runPackage(devices["Linetracer"], 5, cmd);
+        const datas = this._runPackage(Sensors.Linetracer, 5, cmd);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * read IR Distance sensor
+     * @param direction
+     */
+    coconutGetDistance (direction) {
+        if (typeof direction == "string") direction = Directions[direction];
+
+        // getPackage(nextID, devices["IRdistance"], 0, direction);
+        const datas = this._getPackage(Sensors.IRdistance, 0, direction);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * IR distance sensor detecting check
+     * @param direction
+     * @param detect
+     */
+    coconutIsDetectObstacle (direction, detect) {
+        if (typeof direction == "string") direction = Directions[direction];
+        if (typeof detect == "string") detect = Detects[detect];
+
+        // getPackage(nextID, devices["Linetracer"], 1, direction, detectCond);
+
+        const datas = this._getPackage(Sensors.IRdistance, 1, direction, detect);
+
+        if (this.isConnected()) {
+            this.send(datas);
+            // return Promise.resolve();
+        }
+    }
+
+    /**
+     * all IR distance sensor detecting check
+     */
+    coconutIsDetectObstacles () {
+        const datas = this._getPackage(Sensors.IRdistance, 2);
+
+        if (this.isConnected()) {
+            this.send(datas);
+            // return Promise.resolve();
+        }
+    }
+
+    /**
+     * led matrix on
+     * @param on
+     * @param row
+     * @param col
+     */
+    coconutLedMatrixOn (on, row, col) {
+        if (typeof on == "string") on = OnOffs[on];
+        if ((typeof row == "string") && (row == 'Both')) row = 0;
+        if ((typeof col == "string") && (col == 'Both')) col = 0;
+
+        // runPackage(devices["LedMatrix"], 0, row, col, onOff);
+        const datas = this._runPackage(Sensors.LedMatrix, 0, row, col, on);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * turn on all LED Matrix
+     */
+    coconutLedMatrixOnAll () {
+        const datas = this._runPackage(Sensors.LedMatrix, 6);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * LED Matrix clear all
+     */
+    coconutLedMatrixClear () {
+        const datas = this._runPackage(Sensors.LedMatrix, 5);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * show number on LED Matrix
+     * @param num
+     */
+    showLedMatrixNumber (num) {
+        // runPackage(devices["LedMatrix"], 1, code);
+        const datas = this._runPackage(Sensors.LedMatrix, 1, num);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
 }
 
 module.exports = CoconutPeripheral;
