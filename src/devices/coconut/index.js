@@ -152,9 +152,9 @@ const SharpValues = { NONE: '-', SHARP: '#', FLAT: 'b' };
  * @type {{QUATER: string, HALF: string, DOT_QUATER: string, DOT_8TH: string, DOT_HALF: string, DOT_16TH: string, THIRTYH_2ND: string, WHOLE: string, EIGHTH: string, SIXTEENTH: string, DOT_32ND: string}}
  */
 const BeatValues = {
-    HALF: 'Half', QUATER: 'Quater', EIGHTH: 'Eighth', SIXTEENTH: 'Sixteenth',
-    THIRTYH_2ND: 'Thirty-second', WHOLE: 'Whole',
-    DOT_HALF: 'Dotted half', DOT_QUATER: 'Dotted quarter',
+    HALF: 'Half', QUARTER: 'Quarter', EIGHTH: 'Eighth', SIXTEENTH: 'Sixteenth',
+    THIRTY_2ND: 'Thirty-second', WHOLE: 'Whole',
+    DOT_HALF: 'Dotted half', DOT_QUARTER: 'Dotted quarter',
     DOT_8TH: 'Dotted eighth', DOT_16TH: 'Dotted sixteenth',
     DOT_32ND: 'Dotted thirty-second', ORIGINAL: 'original'
 }
@@ -164,7 +164,7 @@ const BeatValues = {
  * @type {{QUATER: string, HALF: string, WHOLE: string, EIGHTH: string, SIXTEENTH: string}}
  */
 const BeatRestValues = {
-    HALF: "Half_rest", QUATER: "Quater_rest", EIGHTH: "Eighth_rest",
+    HALF: "Half_rest", QUARTER: "Quarter_rest", EIGHTH: "Eighth_rest",
     SIXTEENTH: "Sixteenth_rest", WHOLE: "Whole_rest"
 };
 
@@ -222,17 +222,17 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.dir_forward',
+                    id: 'coconut.dirMenu.forward',
                     default: 'Forward',
-                    description: 'move forward'
+                    description: 'forward direction'
                 }),
                 value: DirectionValues.FORWARD
             },
             {
                 text: formatMessage({
-                    id: 'coconut.dir_backward',
+                    id: 'coconut.dirMenu.backward',
                     default: 'Backward',
-                    description: 'move backward'
+                    description: 'backward direction'
                 }),
                 value: DirectionValues.BACKWARD
             }
@@ -248,17 +248,17 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.dir_left',
+                    id: 'coconut.dirMenu.left',
                     default: 'Left',
-                    description: 'turn left'
+                    description: 'left direction'
                 }),
                 value: DirectionValues.LEFT
             },
             {
                 text: formatMessage({
-                    id: 'coconut.dir_right',
+                    id: 'coconut.dirMenu.right',
                     default: 'Right',
-                    description: 'turn right'
+                    description: 'right direction'
                 }),
                 value: DirectionValues.RIGHT
             }
@@ -274,7 +274,7 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.color_red',
+                    id: 'coconut.colorMenu.red',
                     default: 'Red',
                     description: 'Red color'
                 }),
@@ -282,7 +282,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.color_green',
+                    id: 'coconut.colorMenu.green',
                     default: 'Green',
                     description: 'Green color'
                 }),
@@ -290,7 +290,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.color_blue',
+                    id: 'coconut.colorMenu.blue',
                     default: 'Blue',
                     description: 'Blue color'
                 }),
@@ -298,7 +298,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.color_yellow',
+                    id: 'coconut.colorMenu.yellow',
                     default: 'Yellow',
                     description: 'Yellow color'
                 }),
@@ -306,7 +306,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.color_cyan',
+                    id: 'coconut.colorMenu.cyan',
                     default: 'Cyan',
                     description: 'Cyan color'
                 }),
@@ -314,7 +314,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.color_magenta',
+                    id: 'coconut.colorMenu.magenta',
                     default: 'Magenta',
                     description: 'Magenta color'
                 }),
@@ -322,7 +322,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.color_white',
+                    id: 'coconut.colorMenu.white',
                     default: 'White',
                     description: 'White color'
                 }),
@@ -386,7 +386,7 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.dir_left',
+                    id: 'coconut.dirMenu.left',
                     default: 'Left',
                     description: 'left direction'
                 }),
@@ -394,7 +394,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.dir_right',
+                    id: 'coconut.dirMenu.right',
                     default: 'Right',
                     description: 'right direction'
                 }),
@@ -402,7 +402,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.dir_both',
+                    id: 'coconut.dirMenu.both',
                     default: 'Both',
                     description: 'left and right direction'
                 }),
@@ -419,7 +419,7 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.note_c',
+                    id: 'coconut.noteMenu.c',
                     default: 'NOTE_C',
                     description: 'note c'
                 }),
@@ -427,7 +427,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.note_d',
+                    id: 'coconut.noteMenu.d',
                     default: 'NOTE_D',
                     description: 'note d'
                 }),
@@ -435,7 +435,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.note_e',
+                    id: 'coconut.noteMenu.e',
                     default: 'NOTE_E',
                     description: 'note e'
                 }),
@@ -443,7 +443,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.note_f',
+                    id: 'coconut.noteMenu.f',
                     default: 'NOTE_F',
                     description: 'note F'
                 }),
@@ -451,7 +451,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.note_g',
+                    id: 'coconut.noteMenu.g',
                     default: 'NOTE_G',
                     description: 'note G'
                 }),
@@ -459,7 +459,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.note_a',
+                    id: 'coconut.noteMenu.a',
                     default: 'NOTE_A',
                     description: 'note a'
                 }),
@@ -467,7 +467,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.note_b',
+                    id: 'coconut.noteMenu.b',
                     default: 'NOTE_B',
                     description: 'note b'
                 }),
@@ -510,7 +510,7 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.normal_note',
+                    id: 'coconut.sharpMenu.none',
                     default: '-',
                     description: 'normal none'
                 }),
@@ -518,7 +518,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.sharp_note',
+                    id: 'coconut.sharpMenu.sharp',
                     default: '#',
                     description: 'sharp note'
                 }),
@@ -526,7 +526,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.flat_note',
+                    id: 'coconut.sharpMenu.flat',
                     default: 'b',
                     description: 'flat note'
                 }),
@@ -543,7 +543,7 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.beat_half',
+                    id: 'coconut.beatMenu.half',
                     default: BeatValues.HALF,
                     description: 'half beat'
                 }),
@@ -551,15 +551,15 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_quater',
-                    default: BeatValues.QUATER,
-                    description: 'quater beat'
+                    id: 'coconut.beatMenu.quarter',
+                    default: BeatValues.QUARTER,
+                    description: 'quarter beat'
                 }),
-                value: BeatValues.QUATER
+                value: BeatValues.QUARTER
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_8th',
+                    id: 'coconut.beatMenu.8th',
                     default: BeatValues.EIGHTH,
                     description: 'Eighth beat'
                 }),
@@ -567,7 +567,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_16th',
+                    id: 'coconut.beatMenu.16th',
                     default: BeatValues.SIXTEENTH,
                     description: 'Sixteenth beat'
                 }),
@@ -575,7 +575,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_32nd',
+                    id: 'coconut.beatMenu.32nd',
                     default: BeatValues.THIRTY_2ND,
                     description: 'Thirty-second beat'
                 }),
@@ -583,7 +583,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_whole',
+                    id: 'coconut.beatMenu.whole',
                     default: BeatValues.WHOLE,
                     description: 'Whole beat'
                 }),
@@ -591,7 +591,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_dot_half',
+                    id: 'coconut.beatMenu.dot_half',
                     default: BeatValues.DOT_HALF,
                     description: 'Dotted half beat'
                 }),
@@ -599,15 +599,15 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_dot_quarter',
-                    default: BeatValues.DOT_QUATER,
+                    id: 'coconut.beatMenu.dot_quarter',
+                    default: BeatValues.DOT_QUARTER,
                     description: 'Dotted quarter beat'
                 }),
-                value: BeatValues.DOT_QUATER
+                value: BeatValues.DOT_QUARTER
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_dot_8th',
+                    id: 'coconut.beatMenu.dot_8th',
                     default: BeatValues.DOT_8TH,
                     description: 'Dotted eighth beat'
                 }),
@@ -615,7 +615,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_dot_16th',
+                    id: 'coconut.beatMenu.dot_16th',
                     default: BeatValues.DOT_16TH,
                     description: 'Dotted sixteenth beat'
                 }),
@@ -623,7 +623,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_dot_32th',
+                    id: 'coconut.beatMenu.dot_32nd',
                     default: BeatValues.DOT_32ND,
                     description: 'Dotted thirty-second beat'
                 }),
@@ -640,7 +640,7 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.beat_half_rest',
+                    id: 'coconut.beatRestMenu.half',
                     default: BeatRestValues.HALF,
                     description: 'half rest beat'
                 }),
@@ -648,15 +648,15 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_quater_rest',
-                    default: BeatRestValues.QUATER,
-                    description: 'quater rest beat'
+                    id: 'coconut.beatRestMenu.quarter',
+                    default: BeatRestValues.QUARTER,
+                    description: 'quarter rest beat'
                 }),
-                value: BeatRestValues.QUATER
+                value: BeatRestValues.QUARTER
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_8th_rest',
+                    id: 'coconut.beatRestMenu.8th',
                     default: BeatRestValues.EIGHTH,
                     description: 'eighth rest beat'
                 }),
@@ -664,7 +664,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_16th_rest',
+                    id: 'coconut.beatRestMenu.16th',
                     default: BeatRestValues.SIXTEENTH,
                     description: 'sixteenth rest beat'
                 }),
@@ -672,7 +672,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_whole_rest',
+                    id: 'coconut.beatRestMenu.whole',
                     default: BeatRestValues.WHOLE,
                     description: 'whole rest beat'
                 }),
@@ -690,7 +690,7 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.beat_half',
+                    id: 'coconut.beatMenu.half',
                     default: BeatValues.HALF,
                     description: 'half beat'
                 }),
@@ -698,15 +698,15 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_quater',
-                    default: BeatValues.QUATER,
+                    id: 'coconut.beatMenu.quarter',
+                    default: BeatValues.QUARTER,
                     description: 'quater beat'
                 }),
-                value: BeatValues.QUATER
+                value: BeatValues.QUARTER
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_8th',
+                    id: 'coconut.beatMenu.8th',
                     default: BeatValues.EIGHTH,
                     description: 'Eighth beat'
                 }),
@@ -714,7 +714,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_16th',
+                    id: 'coconut.beatMenu.16th',
                     default: BeatValues.SIXTEENTH,
                     description: 'Sixteenth beat'
                 }),
@@ -722,7 +722,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_32nd',
+                    id: 'coconut.beatMenu.32nd',
                     default: BeatValues.THIRTY_2ND,
                     description: 'Thirty-second beat'
                 }),
@@ -730,7 +730,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_whole',
+                    id: 'coconut.beatMenu.whole',
                     default: BeatValues.WHOLE,
                     description: 'Whole beat'
                 }),
@@ -738,7 +738,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_dot_half',
+                    id: 'coconut.beatMenu.dot_half',
                     default: BeatValues.DOT_HALF,
                     description: 'Dotted half beat'
                 }),
@@ -746,15 +746,15 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_dot_quarter',
-                    default: BeatValues.DOT_QUATER,
+                    id: 'coconut.beatMenu.dot_quarter',
+                    default: BeatValues.DOT_QUARTER,
                     description: 'Dotted quarter beat'
                 }),
-                value: BeatValues.DOT_QUATER
+                value: BeatValues.DOT_QUARTER
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_dot_8th',
+                    id: 'coconut.beatMenu.dot_8th',
                     default: BeatValues.DOT_8TH,
                     description: 'Dotted eighth beat'
                 }),
@@ -762,7 +762,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_dot_16th',
+                    id: 'coconut.beatMenu.dot_16th',
                     default: BeatValues.DOT_16TH,
                     description: 'Dotted sixteenth beat'
                 }),
@@ -770,7 +770,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_dot_32th',
+                    id: 'coconut.beatMenu.dot_32nd',
                     default: BeatValues.DOT_32ND,
                     description: 'Dotted thirty-second beat'
                 }),
@@ -778,7 +778,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.beat_original',
+                    id: 'coconut.beatMenu.original',
                     default: BeatValues.ORIGINAL,
                     description: 'original beat'
                 }),
@@ -795,7 +795,7 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.detect_yes',
+                    id: 'coconut.detectMenu.yes',
                     default: DetectValues.YES,
                     description: 'detected'
                 }),
@@ -803,7 +803,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.detect_no',
+                    id: 'coconut.detectMenu.no',
                     default: DetectValues.NO,
                     description: 'not detected'
                 }),
@@ -820,7 +820,7 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.command_left',
+                    id: 'coconut.commandMenu.turnLeft',
                     default: CommandValues.LEFT,
                     description: 'turn left'
                 }),
@@ -828,7 +828,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.command_right',
+                    id: 'coconut.commandMenu.turnRight',
                     default: CommandValues.RIGHT,
                     description: 'turn right'
                 }),
@@ -845,7 +845,7 @@ class CoconutDevice {
         return [
             {
                 text: formatMessage({
-                    id: 'coconut.on',
+                    id: 'coconut.onMenu.on',
                     default: OnOffValues.ON,
                     description: 'turn on'
                 }),
@@ -853,7 +853,7 @@ class CoconutDevice {
             },
             {
                 text: formatMessage({
-                    id: 'coconut.off',
+                    id: 'coconut.onMenu.off',
                     default: OnOffValues.OFF,
                     description: 'turn off'
                 }),
@@ -999,6 +999,391 @@ class CoconutDevice {
             {
                 text: '9',
                 value: 9
+            }
+        ];
+    }
+
+    /**
+     * english small letter menu
+     * @constructor
+     */
+    get SMALL_LETTER_MENU () {
+        return [
+            {
+                text: 'a',
+                value: 0
+            },
+            {
+                text: 'b',
+                value: 1
+            },
+            {
+                text: 'c',
+                value: 2
+            },
+            {
+                text: 'd',
+                value: 3
+            },
+            {
+                text: 'e',
+                value: 4
+            },
+            {
+                text: 'f',
+                value: 5
+            },
+            {
+                text: 'g',
+                value: 6
+            },
+            {
+                text: 'h',
+                value: 7
+            },
+            {
+                text: 'i',
+                value: 8
+            },
+            {
+                text: 'j',
+                value: 9
+            },
+            {
+                text: 'k',
+                value: 10
+            },
+            {
+                text: 'l',
+                value: 11
+            },
+            {
+                text: 'm',
+                value: 12
+            },
+            {
+                text: 'n',
+                value: 13
+            },
+            {
+                text: 'o',
+                value: 14
+            },
+            {
+                text: 'p',
+                value: 15
+            },
+            {
+                text: 'q',
+                value: 16
+            },
+            {
+                text: 'r',
+                value: 17
+            },
+            {
+                text: 's',
+                value: 18
+            },
+            {
+                text: 't',
+                value: 19
+            },
+            {
+                text: 'u',
+                value: 20
+            },
+            {
+                text: 'v',
+                value: 21
+            },
+            {
+                text: 'w',
+                value: 22
+            },
+            {
+                text: 'x',
+                value: 23
+            },
+            {
+                text: 'y',
+                value: 24
+            },
+            {
+                text: 'z',
+                value: 25
+            }
+        ];
+    }
+
+    /**
+     * english capital letter menu
+     * @returns {[{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]}
+     * @constructor
+     */
+    get CAPITAL_LETTER_MENU () {
+        return [
+            {
+                text: 'A',
+                value: 0
+            },
+            {
+                text: 'B',
+                value: 1
+            },
+            {
+                text: 'C',
+                value: 2
+            },
+            {
+                text: 'D',
+                value: 3
+            },
+            {
+                text: 'E',
+                value: 4
+            },
+            {
+                text: 'F',
+                value: 5
+            },
+            {
+                text: 'G',
+                value: 6
+            },
+            {
+                text: 'H',
+                value: 7
+            },
+            {
+                text: 'I',
+                value: 8
+            },
+            {
+                text: 'J',
+                value: 9
+            },
+            {
+                text: 'K',
+                value: 10
+            },
+            {
+                text: 'L',
+                value: 11
+            },
+            {
+                text: 'M',
+                value: 12
+            },
+            {
+                text: 'N',
+                value: 13
+            },
+            {
+                text: 'O',
+                value: 14
+            },
+            {
+                text: 'P',
+                value: 15
+            },
+            {
+                text: 'Q',
+                value: 16
+            },
+            {
+                text: 'R',
+                value: 17
+            },
+            {
+                text: 'S',
+                value: 18
+            },
+            {
+                text: 'T',
+                value: 19
+            },
+            {
+                text: 'U',
+                value: 20
+            },
+            {
+                text: 'V',
+                value: 21
+            },
+            {
+                text: 'W',
+                value: 22
+            },
+            {
+                text: 'X',
+                value: 23
+            },
+            {
+                text: 'Y',
+                value: 24
+            },
+            {
+                text: 'Z',
+                value: 25
+            }
+        ];
+    }
+
+    /**
+     * korean letter menu
+     * @returns {[{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]}
+     * @constructor
+     */
+    get KR_LETTER_MENU () {
+        // TODO: id로 선언, 한글 추가
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.ga',
+                    default: 'ga',
+                    description: 'korean ga'
+                }),
+                value: 0
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.na',
+                    default: 'na',
+                    description: 'korean na'
+                }),
+                value: 1
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.da',
+                    default: 'da',
+                    description: 'korean da'
+                }),
+                value: 2
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.la',
+                    default: 'la',
+                    description: 'korean la'
+                }),
+                value: 3
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.ma',
+                    default: 'ma',
+                    description: 'korean ma'
+                }),
+                value: 4
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.ba',
+                    default: 'ba',
+                    description: 'korean ba'
+                }),
+                value: 5
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.sa',
+                    default: 'sa',
+                    description: 'korean sa'
+                }),
+                value: 6
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.aa',
+                    default: 'aa',
+                    description: 'korean aa'
+                }),
+                value: 7
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.ja',
+                    default: 'ja',
+                    description: 'korean ja'
+                }),
+                value: 8
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.cha',
+                    default: 'cha',
+                    description: 'korean cha'
+                }),
+                value: 9
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.ka',
+                    default: 'ka',
+                    description: 'korean ka'
+                }),
+                value: 10
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.ta',
+                    default: 'ta',
+                    description: 'korean ta'
+                }),
+                value: 11
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.pa',
+                    default: 'pa',
+                    description: 'korean pa'
+                }),
+                value: 12
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.krLetterMenu.ha',
+                    default: 'ha',
+                    description: 'korean ha'
+                }),
+                value: 13
+            }
+        ];
+    }
+
+    /**
+     * 3-Axis Accelerometer Axis menu
+     * @returns {[{text: string, value: number},{text: string, value: number},{text: string, value: number}]}
+     * @constructor
+     */
+    get ACC_AXIS_MENU () {
+        // TODO: id 추가, 한글 번역 추가
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.axisMenu.x',
+                    default: 'X-Axis',
+                    description: 'X-Axis'
+                }),
+                value: 1
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.axisMenu.y',
+                    default: 'Y-Axis',
+                    description: 'Y-Axis'
+                }),
+                value: 2
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.axisMenu.z',
+                    default: 'Z-Axis',
+                    description: 'Z-Axis'
+                }),
+                value: 3
             }
         ];
     }
@@ -1353,9 +1738,9 @@ class CoconutDevice {
             {
                 id: 'coconut',
                 name: formatMessage({
-                    id: 'coconut.category.name',
-                    default: 'Coconut',
-                    description: 'The name of the arduino device pin category'
+                    id: 'coconut.category.coconutS',
+                    default: 'Coconut-S',
+                    description: 'The name of the coconut device pin category'
                 }),
                 color1: '#009297',
                 // color1: '#004B4C',
@@ -1364,9 +1749,9 @@ class CoconutDevice {
                     // 코코넛/코코넛-S 블럭
                     // [앞으로/뒤로] 움직이기
                     {
-                        opcode: 'moveMotors',
+                        opcode: 'moveMotor',
                         text: formatMessage({
-                            id: 'coconut.moveMotors',
+                            id: 'coconut.moveMotor',
                             default: 'move [DIRECTION_FB]',
                             description: 'move forward or backward'
                         }),
@@ -1380,9 +1765,9 @@ class CoconutDevice {
                         }
                     },
                     {
-                        opcode: 'turnMotors',
+                        opcode: 'turnMotor',
                         text: formatMessage({
-                            id: 'coconut.turnMotors',
+                            id: 'coconut.turnMotor',
                             default: 'turn [DIRECTION_LR]',
                             description: 'turn left or right'
                         }),
@@ -1397,9 +1782,9 @@ class CoconutDevice {
                     },
                     // 정지
                     {
-                        opcode: 'stopMotors',
+                        opcode: 'stopMotor',
                         text: formatMessage({
-                            id: 'coconut.stopMotors',
+                            id: 'coconut.stopMotor',
                             default: 'stop motor',
                             description: 'stop motor'
                         }),
@@ -1407,11 +1792,11 @@ class CoconutDevice {
                     },
                     '---',
                     {
-                        opcode: 'moveGoTimes',
+                        opcode: 'moveGoTime',
                         text: formatMessage({
-                            id: 'coconut.moveGoTimes',
+                            id: 'coconut.moveGoTime',
                             default: 'move [DIRECTION_FB] for [TIME_SEC] second(s)',
-                            description: 'move forward(backward) for specific times'
+                            description: 'move motor for the entered time'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -1427,11 +1812,11 @@ class CoconutDevice {
                         }
                     },
                     {
-                        opcode: 'turnMotorTimes',
+                        opcode: 'turnMotorTime',
                         text: formatMessage({
-                            id: 'coconut.turnMotorTimes',
+                            id: 'coconut.turnMotorTime',
                             default: 'turn [DIRECTION_LR] for [TIME_SEC] second(s)',
-                            description: 'turn left(right) for specific times'
+                            description: 'turn motor for the entered time'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -1447,11 +1832,11 @@ class CoconutDevice {
                         }
                     },
                     {
-                        opcode: 'moveMotorColors',
+                        opcode: 'moveMotorColor',
                         text: formatMessage({
-                            id: 'coconut.moveMotorColors',
+                            id: 'coconut.moveMotorColor',
                             default: 'turn [DIRECTION_LR] RGB [LED_COLOR]',
-                            description: 'turn on RGB LED for turning motor'
+                            description: 'Turn on RGB LED while rotating motor'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -1489,11 +1874,11 @@ class CoconutDevice {
                         }
                     },
                     {
-                        opcode: 'turnMotorDegrees',
+                        opcode: 'turnMotorDegree',
                         text: formatMessage({
-                            id: 'coconut.turnMotorDegrees',
+                            id: 'coconut.turnMotorDegree',
                             default: 'turn [DIRECTION_LR] to [DEGREE] degrees',
-                            description: 'Move by the entered distance'
+                            description: 'turn motor by the entered angle'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -1511,9 +1896,9 @@ class CoconutDevice {
                     },
                     '---',
                     {
-                        opcode: 'rgbOns',
+                        opcode: 'rgbOn',
                         text: formatMessage({
-                            id: 'coconut.rgbOns',
+                            id: 'coconut.rgbOn',
                             default: 'turn on RGB [DIRECTION_LRB] [LED_COLOR]',
                             description: 'Turn on RGB LED'
                         }),
@@ -1532,9 +1917,9 @@ class CoconutDevice {
                         }
                     },
                     {
-                        opcode: 'rgbOffs',
+                        opcode: 'rgbOff',
                         text: formatMessage({
-                            id: 'coconut.rgbOffs',
+                            id: 'coconut.rgbOff',
                             default: 'turn off RGB [DIRECTION_LRB]',
                             description: 'Turn off RGB LED'
                         }),
@@ -1548,9 +1933,9 @@ class CoconutDevice {
                         }
                     },
                     {
-                        opcode: 'rgbOffColors',
+                        opcode: 'rgbOffColor',
                         text: formatMessage({
-                            id: 'coconut.rgbOffColors',
+                            id: 'coconut.rgbOffColor',
                             default: 'turn off RGB [DIRECTION_LRB] [LED_COLOR]',
                             description: 'Turn off RGB LED '
                         }),
@@ -1569,9 +1954,9 @@ class CoconutDevice {
                         }
                     },
                     {
-                        opcode: 'rgbOnTimes',
+                        opcode: 'rgbOnTime',
                         text: formatMessage({
-                            id: 'coconut.rgbOnTimes',
+                            id: 'coconut.rgbOnTime',
                             default: 'turn on RGB [DIRECTION_LRB] [LED_COLOR] for [TIME_SEC] second(s)',
                             description: 'Turn off RGB LED '
                         }),
@@ -1595,18 +1980,18 @@ class CoconutDevice {
                     },
                     '---',
                     {
-                        opcode: 'beeps',
+                        opcode: 'beep',
                         text: formatMessage({
-                            id: 'coconut.beeps',
+                            id: 'coconut.beep',
                             default: 'buzzer on',
                             description: 'buzzer on'
                         }),
                         blockType: BlockType.COMMAND,
                     },
                     {
-                        opcode: 'playBuzzerTimes',
+                        opcode: 'playBuzzerTime',
                         text: formatMessage({
-                            id: 'coconut.playBuzzerTimes',
+                            id: 'coconut.playBuzzerTime',
                             default: 'play buzzer for [TIME_SEC] second(s)',
                             description: 'buzzer on for some seconds'
                         }),
@@ -1619,9 +2004,9 @@ class CoconutDevice {
                         }
                     },
                     {
-                        opcode: 'playBuzzerFreqs',
+                        opcode: 'playBuzzerFreq',
                         text: formatMessage({
-                            id: 'coconut.playBuzzerFreqs',
+                            id: 'coconut.playBuzzerFreq',
                             default: 'play buzzer on frequency [N_FREQUENCY] Hz for [TIME_SEC] second(s)',
                             description: 'buzzer on frequency for some seconds'
                         }),
@@ -1697,7 +2082,7 @@ class CoconutDevice {
                         opcode: 'playNoteColor',
                         text: formatMessage({
                             id: 'coconut.playNoteColor',
-                            default: 'play buzzer on note [NOTE] octave [OCTAVE] [SHARP] beat [BEAT] RGB [DIRECTION_RGB] [LED_COLOR]',
+                            default: 'play buzzer on note [NOTE] octave [OCTAVE] [SHARP] beat [BEAT] RGB [DIRECTION_LRB] [LED_COLOR]',
                             description: 'play note with RGB LED'
                         }),
                         blockType: BlockType.COMMAND,
@@ -1722,9 +2107,9 @@ class CoconutDevice {
                                 menu: 'BeatMenu',
                                 defaultValue: BeatValues.HALF
                             },
-                            DIRECTION_RGB: {
+                            DIRECTION_LRB: {
                                 type: ArgumentType.STRING,
-                                menu: 'DirectionRGBMenu',
+                                menu: 'DirectionLRBMenu',
                                 defaultValue: DirectionValues.BOTH
                             },
                             LED_COLOR: {
@@ -1789,9 +2174,9 @@ class CoconutDevice {
                         }
                     },
                     {
-                        opcode: 'getLineTracers',
+                        opcode: 'getLineTracersDetect',
                         text: formatMessage({
-                            id: 'coconut.getLineTracers',
+                            id: 'coconut.getLineTracersDetect',
                             default: 'line tracer detection',
                             description: 'line trace detection result'
                         }),
@@ -1918,6 +2303,89 @@ class CoconutDevice {
                             NUMBER: {
                                 type: ArgumentType.NUMBER,
                                 menu: 'NumberMenu',
+                                defaultValue: 1
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'showLedMatrixSmall',
+                        text: formatMessage({
+                            id: 'coconut.showLedMatrixSmall',
+                            default: 'shows small letter [SMALL_LETTER] on LED Matrix',
+                            description: 'shows small letter on LED Matrix'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            SMALL_LETTER: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'SmallLetterMenu',
+                                defaultValue: 0
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'showLedMatrixCapital',
+                        text: formatMessage({
+                            id: 'coconut.showLedMatrixCapital',
+                            default: 'shows capital letter [CAPITAL_LETTER] on LED Matrix',
+                            description: 'shows capital letter on LED Matrix'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            CAPITAL_LETTER: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'CapitalLetterMenu',
+                                defaultValue: 0
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'showLedMatrixKorean',
+                        text: formatMessage({
+                            id: 'coconut.showLedMatrixKorean',
+                            default: 'shows Korean letter [KR_LETTER] on LED Matrix',
+                            description: 'shows Korean letter on LED Matrix'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            KR_LETTER: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'KRLetterMenu',
+                                defaultValue: 0
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'getLightSensor',
+                        text: formatMessage({
+                            id: 'coconut.getLightSensor',
+                            default: 'light sensor',
+                            description: 'read value of light sensor'
+                        }),
+                        blockType: BlockType.REPORTER
+                    },
+                    {
+                        opcode: 'getTemperature',
+                        text: formatMessage({
+                            id: 'coconut.getTemperature',
+                            default: 'temperature',
+                            description: 'read value of temperature sensor'
+                        }),
+                        blockType: BlockType.REPORTER
+                    },
+                    {
+                        opcode: 'getAccelerometer',
+                        text: formatMessage({
+                            id: 'coconut.getAccelerometer',
+                            default: '3-Axis Accelerometer [ACC_AXIS] angle',
+                            description: 'read value of 3-Axis Accelerometer'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            ACC_AXIS: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'AccAxisMenu',
                                 defaultValue: 1
                             }
                         }
@@ -2134,6 +2602,18 @@ class CoconutDevice {
                     NumberMenu: {
                         items: this.NUMBER_MENU
                     },
+                    SmallLetterMenu: {
+                        items: this.SMALL_LETTER_MENU
+                    },
+                    CapitalLetterMenu: {
+                        items: this.CAPITAL_LETTER_MENU
+                    },
+                    KRLetterMenu: {
+                        items: this.KR_LETTER_MENU
+                    },
+                    AccAxisMenu: {
+                        items: this.ACC_AXIS_MENU
+                    },
                     pins: {
                         items: this.PINS_MENU
                     },
@@ -2161,69 +2641,79 @@ class CoconutDevice {
         ];
     }
 
-    // TODO: 호출 함수(로직 추가 전)
+    // TODO: promise() 추가요
     /**
      * move forward or backward
      * @param args
      * @returns {Promise<void>}
      */
-    moveMotors (args) {
-        console.log(`moveMotors... ${args.DIRECTION_FB}`);
+    moveMotor (args) {
+        console.log(`moveMotor... ${args.DIRECTION_FB}`);
 
-        this._peripheral.coconutMoveMotors(args.DIRECTION_FB);
+        this._peripheral.moveMotor(args.DIRECTION_FB);
         return Promise.resolve();
     }
 
-    turnMotors (args) {
+    /**
+     * turn motor
+     * @param args
+     * @returns {Promise<void>}
+     */
+    turnMotor (args) {
         console.log(`turn motors ${args.DIRECTION_LR}`);
 
-        this._peripheral.coconutTurnMotors(args.DIRECTION_LR);
-        return Promise.resolve();
-    }
-
-    /**
-     *
-     * @param args
-     * @returns {Promise<void>}
-     */
-    moveGoTimes (args) {
-        console.log(`move go times ${args.DIRECTION_FB} ${args.TIME_SEC} secs`);
-
-        // let sec = args.TIME_SEC;
-
-        this._peripheral.coconutMoveGoTimes(args.DIRECTION_FB, args.TIME_SEC);
-        return Promise.resolve();
-    }
-
-    /**
-     * coconut turn motor for specific times (left or right)
-     * @param args
-     * @returns {Promise<void>}
-     */
-    turnMotorTimes (args) {
-        console.log(`turn motor for times ${args.DIRECTION_LR} ${args.TIME_SEC} secs`);
-
-        // let sec = args.TIME_SEC;
-
-        this._peripheral.coconutTurnMotorTimes(args.DIRECTION_LR, args.TIME_SEC);
+        this._peripheral.turnMotor(args.DIRECTION_LR);
         return Promise.resolve();
     }
 
     /**
      * stop motor
      */
-    stopMotors () {
+    stopMotor () {
         console.log('stop motor');
-        this._peripheral.coconutStopMotor();
+        this._peripheral.stopMotor();
         return Promise.resolve();
     }
 
-    moveMotorColors (args) {
+    /**
+     * Move the motor for the entered time
+     * @param args
+     * @returns {Promise<void>}
+     */
+    moveGoTime (args) {
+        console.log(`move go times ${args.DIRECTION_FB} ${args.TIME_SEC} secs`);
+
+        // let sec = args.TIME_SEC;
+
+        this._peripheral.moveGoTime(args.DIRECTION_FB, args.TIME_SEC);
+        return Promise.resolve();
+    }
+
+    /**
+     * Turn motor for the entered time
+     * @param args
+     * @returns {Promise<void>}
+     */
+    turnMotorTime (args) {
+        console.log(`turn motor for times ${args.DIRECTION_LR} ${args.TIME_SEC} secs`);
+
+        // let sec = args.TIME_SEC;
+
+        this._peripheral.turnMotorTime(args.DIRECTION_LR, args.TIME_SEC);
+        return Promise.resolve();
+    }
+
+    /**
+     * Turn on RGB LED while rotating motor
+     * @param args
+     * @returns {Promise<void>}
+     */
+    moveMotorColor (args) {
         console.log(`turn on RGB ${args.LED_COLOR} for turing ${args.DIRECTION_LR}`);
 
         // let sec = args.TIME_SEC;
 
-        this._peripheral.coconutMoveMotorColors(args.DIRECTION_LR, args.LED_COLOR);
+        this._peripheral.moveMotorColor(args.DIRECTION_LR, args.LED_COLOR);
         return Promise.resolve();
     }
 
@@ -2235,19 +2725,19 @@ class CoconutDevice {
     moveGoCm (args) {
         console.log(`move ${args.DIRECTION_FB} by distance ${args.N_CM}`);
 
-        this._peripheral.coconutMoveGoCm(args.DIRECTION_FB, args.N_CM);
+        this._peripheral.moveGoCm(args.DIRECTION_FB, Cast.toNumber(args.N_CM));
         return Promise.resolve();
     }
 
     /**
-     * turn motor by degree
+     * turn motor by the entered angle
      * @param args
      * @returns {Promise<void>}
      */
-    turnMotorDegrees (args) {
+    turnMotorDegree (args) {
         console.log(`turn ${args.DIRECTION_LR} by degree ${args.DEGREE}`);
 
-        this._peripheral.coconutTurnMotorDegrees(args.DIRECTION_LR, args.DEGREE);
+        this._peripheral.turnMotorDegree(args.DIRECTION_LR, args.DEGREE);
         return Promise.resolve();
     }
 
@@ -2255,10 +2745,10 @@ class CoconutDevice {
      * Turn on RGB LED
      * @param args
      */
-    rgbOns (args) {
-        console.log(`turn on ${args.DIRECTION_RGB} by color ${args.LED_COLOR}`);
+    rgbOn (args) {
+        console.log(`turn on ${args.DIRECTION_LRB} by color ${args.LED_COLOR}`);
 
-        this._peripheral.coconutRGBOns(args.DIRECTION_RGB, args.LED_COLOR);
+        this._peripheral.rgbOn(args.DIRECTION_LRB, args.LED_COLOR);
         return Promise.resolve();
     }
 
@@ -2267,10 +2757,10 @@ class CoconutDevice {
      * @param args
      * @returns {Promise<void>}
      */
-    rgbOffs (args) {
-        console.log(`turn off ${args.DIRECTION_RGB} RGB LED`);
+    rgbOff (args) {
+        console.log(`turn off ${args.DIRECTION_LRB} RGB LED`);
 
-        this._peripheral.coconutRGBOffs(args.DIRECTION_RGB);
+        this._peripheral.rgbOff(args.DIRECTION_LRB);
         return Promise.resolve();
     }
 
@@ -2278,10 +2768,10 @@ class CoconutDevice {
      * turn off RGB LED
      * @param args
      */
-    rgbOffColors (args) {
-        console.log(`turn off ${args.DIRECTION_RGB} RGB LED ${args.LED_COLOR}`);
+    rgbOffColor (args) {
+        console.log(`turn off ${args.DIRECTION_LRB} RGB LED ${args.LED_COLOR}`);
 
-        this._peripheral.coconutRGBOffColors(args.DIRECTION_RGB, args.LED_COLOR);
+        this._peripheral.rgbOffColor(args.DIRECTION_LRB, args.LED_COLOR);
         return Promise.resolve();
     }
 
@@ -2290,10 +2780,10 @@ class CoconutDevice {
      * @param args
      * @returns {Promise<void>}
      */
-    rgbOnTimes (args) {
-        console.log(`turn off ${args.DIRECTION_RGB} RGB LED ${args.LED_COLOR} ${args.TIME_SEC} secs`);
+    rgbOnTime (args) {
+        console.log(`turn off ${args.DIRECTION_LRB} RGB LED ${args.LED_COLOR} ${args.TIME_SEC} secs`);
 
-        this._peripheral.coconutRGBOnTimes(args.DIRECTION_RGB, args.LED_COLOR, args.TIME_SEC);
+        this._peripheral.rgbOnTime(args.DIRECTION_LRB, args.LED_COLOR, args.TIME_SEC);
         return Promise.resolve();
     }
 
@@ -2301,8 +2791,8 @@ class CoconutDevice {
      * buzzer on
      * @returns {Promise<void>}
      */
-    beeps () {
-        this._peripheral.coconutBeeps();
+    beep () {
+        this._peripheral.beep();
         return Promise.resolve();
     }
 
@@ -2310,10 +2800,10 @@ class CoconutDevice {
      * buzzer on for some seconds
      * @param args
      */
-    playBuzzerTimes (args) {
+    playBuzzerTime (args) {
         // console.log(`turn off ${args.DIRECTION_RGB} RGB LED ${args.LED_COLOR} ${args.TIME_SEC} secs`);
 
-        this._peripheral.coconutPlayBuzzerTimes(args.TIME_SEC);
+        this._peripheral.playBuzzerTime(Cast.toNumber(args.TIME_SEC));
         return Promise.resolve();
     }
 
@@ -2321,10 +2811,10 @@ class CoconutDevice {
      * buzzer on frequency for some seconds
      * @param args
      */
-    playBuzzerFreqs (args) {
+    playBuzzerFreq (args) {
         console.log(`buzzer on freq ${args.N_FREQUENCY} Hz  ${args.TIME_SEC} secs`);
 
-        this._peripheral.coconutPlayBuzzerFreqs(args.N_FREQUENCY, args.TIME_SEC);
+        this._peripheral.playBuzzerFreq(args.N_FREQUENCY, args.TIME_SEC);
         return Promise.resolve();
     }
 
@@ -2361,7 +2851,7 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     playNoteColor (args) {
-        this._peripheral.coconutPlayNoteColor(args.NOTE, args.OCTAVE, args.SHARP, args.BEAT, args.DIRECTION_RGB, args.LED_COLOR);
+        this._peripheral.coconutPlayNoteColor(args.NOTE, args.OCTAVE, args.SHARP, args.BEAT, args.DIRECTION_LRB, args.LED_COLOR);
         return Promise.resolve();
     }
 
@@ -2395,7 +2885,7 @@ class CoconutDevice {
     /**
      * get line tracers decetion
      */
-    getLineTracers () {
+    getLineTracersDetect () {
         this._peripheral.coconutGetLineTracers();
         return Promise.resolve();
     }
@@ -2469,6 +2959,64 @@ class CoconutDevice {
      */
     showLedMatrixNumber (args) {
         this._peripheral.showLedMatrixNumber(args.NUMBER);
+        return Promise.resolve();
+    }
+
+    /**
+     * show english small letter
+     * @param args
+     * @returns {Promise<void>}
+     */
+    showLedMatrixSmall (args) {
+        this._peripheral.showLedMatrixSmall(args.SMALL_LETTER);
+        return Promise.resolve();
+    }
+
+    /**
+     * show english capital letter
+     * @param args
+     * @returns {Promise<void>}
+     */
+    showLedMatrixCapital (args) {
+        this._peripheral.showLedMatrixCapital(args.CAPITAL_LETTER);
+        return Promise.resolve();
+    }
+
+    /**
+     * show korean letter on LED matrix
+     * @param args
+     * @returns {Promise<void>}
+     */
+    showLedMatrixKorean (args) {
+        this._peripheral.showLedMatrixKorean(args.KR_LETTER);
+        return Promise.resolve();
+    }
+
+    /**
+     * read light sensor
+     */
+    getLightSensor () {
+        this._peripheral.getLightSensor();
+        return Promise.resolve();
+    }
+
+    /**
+     * read temperature sensor
+     */
+    getTemperature () {
+        this._peripheral.getTemperature();
+        return Promise.resolve();
+    }
+
+    /**
+     * read 3-Axis Accelerometer
+     * @param args
+     * @returns {Promise<void>}
+     */
+    getAccelerometer (args) {
+        console.log(`axis ${args.ACC_AXIS}`);
+
+        this._peripheral.getAccelerometer(args.ACC_AXIS);
         return Promise.resolve();
     }
 

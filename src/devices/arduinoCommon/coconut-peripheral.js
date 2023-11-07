@@ -72,7 +72,7 @@ const Colors = {
  * @type {{Zero: number, original: number, "Dotted eighth": number, "Dotted half": number, "Dotted sixteenth": number, Whole: number, Double: number, Eighth: number, "Thirty-second": number, Half: number, "Dotted quarter": number, "Dotted thirty-second": number, Quater: number, Sixteenth: number}}
  */
 const Beats = {
-    'Half': 500, 'Quater': 250, 'Eighth': 125, 'Sixteenth': 63, 'Thirty-second': 32,
+    'Half': 500, 'Quarter': 250, 'Eighth': 125, 'Sixteenth': 63, 'Thirty-second': 32,
     'Whole': 1000, 'Dotted half': 750, 'Dotted quarter': 375, 'Dotted eighth': 188,
     'Dotted sixteenth': 95, 'Dotted thirty-second': 48, 'Double': 2000, 'Zero': 0,
     'original': 0
@@ -95,6 +95,43 @@ const Commands = { 'Turn left': 3, 'Turn right': 4 };
  * @type {{Off: number, On: number}}
  */
 const OnOffs = {'On': 1, 'Off': 0};
+
+/**
+ * english small letter
+ * @type {{a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number, p: number, q: number, r: number, s: number, t: number, u: number, v: number, w: number, x: number, y: number, z: number}}
+ */
+const SmallLetters = {
+    "a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6,
+    "h": 7, "i": 8, "j": 9, "k": 10, "l": 11, "m": 12, "n": 13,
+    "o": 14, "p": 15, "q": 16, "r": 17, "s": 18, "t": 19, "u": 20,
+    "v": 21, "w": 22, "x": 23, "y": 24, "z": 25
+};
+
+/**
+ * english capital letter
+ * @type {{A: number, B: number, C: number, D: number, E: number, F: number, G: number, H: number, I: number, J: number, K: number, L: number, M: number, N: number, O: number, P: number, Q: number, R: number, S: number, T: number, U: number, V: number, W: number, X: number, Y: number, Z: number}}
+ */
+const CapitalLetters = {
+    "A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6,
+    "H": 7, "I": 8, "J": 9, "K": 10, "L": 11, "M": 12, "N": 13,
+    "O": 14, "P": 15, "Q": 16, "R": 17, "S": 18, "T": 19, "U": 20,
+    "V": 21, "W": 22, "X": 23, "Y": 24, "Z": 25
+};
+
+/**
+ * Korean letter
+ * @type {{aa: number, ta: number, sa: number, pa: number, na: number, ma: number, la: number, ka: number, ja: number, ha: number, ga: number, da: number, cha: number, ba: number}}
+ */
+const KoreanLetters = {
+    "ga": 0, "na": 1, "da": 2, "la": 3, "ma": 4, "ba": 5, "sa": 6,
+    "aa": 7, "ja": 8, "cha": 9, "ka": 10, "ta": 11, "pa": 12, "ha": 13
+};
+
+/**
+ * 3-Axis Accelerometer
+ * @type {{"X-Axis": number, "Z-Axis": number, "Y-Axis": number}}
+ */
+const Axises = { "X-Axis": 1, "Y-Axis": 2, "Z-Axis": 3 };
 
 /**
  * Manage communication with a Arduino peripheral over a Scratch Arduino Link client socket.
@@ -595,7 +632,7 @@ class CoconutPeripheral{
      * @param direction
      * @returns {Promise<unknown>}
      */
-    coconutMoveMotors (direction) {
+    moveMotor (direction) {
         if (typeof direction === 'string') direction = Directions[direction];
         const speed = 60;
 
@@ -643,7 +680,7 @@ class CoconutPeripheral{
      * coconut turn motor
      * @param direction left or right
      */
-    coconutTurnMotors (direction) {
+    turnMotor (direction) {
         if (typeof direction === 'string') direction = Directions[direction];
         const speed = 60;
 
@@ -660,11 +697,11 @@ class CoconutPeripheral{
     }
 
     /**
-     *
+     * Move the motor for the entered time
      * @param direction
      * @param sec
      */
-    coconutMoveGoTimes (direction, sec) {
+    moveGoTime (direction, sec) {
         if (typeof direction === 'string') direction = Directions[direction];
         // let sec = args.TIME_SEC;
 
@@ -688,11 +725,11 @@ class CoconutPeripheral{
     }
 
     /**
-     *
+     * Turn motor for the entered time
      * @param direction
      * @param sec
      */
-    coconutTurnMotorTimes (direction, sec) {
+    turnMotorTime (direction, sec) {
         if (typeof direction === 'string') direction = Directions[direction];
         // let sec = args.TIME_SEC;
 
@@ -728,7 +765,7 @@ class CoconutPeripheral{
     /**
      * stop coconut motor
      */
-    coconutStopMotor () {
+    stopMotor () {
         const datas = this._runPackage(Sensors.Motor, 1);
 
         console.log(`stop motors datas : ${datas}`);
@@ -749,11 +786,11 @@ class CoconutPeripheral{
     }
 
     /**
-     * Rotate the motor while turning on the RGB LED
+     * Turn on RGB LED while rotating motor
      * @param direction LEFT, RIGHT
      * @param color Red, Blue, Green, Yellow, Cyan, Magenta, White
      */
-    coconutMoveMotorColors (direction, color) {
+    moveMotorColor (direction, color) {
         if (typeof direction === 'string') direction = Directions[direction];
         if (typeof color === 'string') color = Colors[color];
         const speed = 60;
@@ -776,7 +813,7 @@ class CoconutPeripheral{
      * @param direction
      * @param cm
      */
-    coconutMoveGoCm (direction, cm) {
+    moveGoCm (direction, cm) {
         if (typeof direction === 'string') direction = Directions[direction];
 
         // runPackage(devices["Motor"], 10, direction, cm);
@@ -793,11 +830,11 @@ class CoconutPeripheral{
     }
 
     /**
-     * turn motor by degree
+     * turn motor by the entered angle
      * @param direction
      * @param degree
      */
-    coconutTurnMotorDegrees (direction, degree) {
+    turnMotorDegree (direction, degree) {
         if (typeof direction === 'string') direction = Directions[direction];
         // if (typeof direction === 'string') direction = Directions[direction];
 
@@ -819,7 +856,7 @@ class CoconutPeripheral{
      * @param direction
      * @param color
      */
-    coconutRGBOns (direction, color) {
+    rgbOn (direction, color) {
         if (typeof direction === 'string') direction = Directions[direction];
         if (typeof color === 'string') color = Colors[color];
 
@@ -840,7 +877,7 @@ class CoconutPeripheral{
      * turn off RGB LED direction
      * @param direction
      */
-    coconutRGBOffs (direction) {
+    rgbOff (direction) {
         if (typeof direction === 'string') direction = Directions[direction];
 
         // runPackage(devices["RGBled"], 1, direction, 0);
@@ -861,7 +898,7 @@ class CoconutPeripheral{
      * @param direction
      * @param color
      */
-    coconutRGBOffColors (direction, color) {
+    rgbOffColor (direction, color) {
         if (typeof direction === 'string') direction = Directions[direction];
         if (typeof color === 'string') color = Colors[color];
 
@@ -884,7 +921,7 @@ class CoconutPeripheral{
      * @param color
      * @param sec
      */
-    coconutRGBOnTimes (direction, color, sec) {
+    rgbOnTime (direction, color, sec) {
         if (typeof direction === 'string') direction = Directions[direction];
         if (typeof color === 'string') color = Colors[color];
 
@@ -928,7 +965,7 @@ class CoconutPeripheral{
     /**
      * buzzer on
      */
-    coconutBeeps () {
+    beep () {
         const datas = this.buzzerControl(0, 262, 50);
 
         if (this.isConnected()) {
@@ -940,7 +977,7 @@ class CoconutPeripheral{
      * buzzer on for some seconds
      * @param sec
      */
-    coconutPlayBuzzerTimes (sec) {
+    playBuzzerTime (sec) {
         // 시간이 정수가 아니거나 0보다 작을 경우 0으로 변경
         if (typeof sec !== 'number') sec = 0.6;
         if (sec < 0) sec = 0.6;
@@ -960,7 +997,7 @@ class CoconutPeripheral{
      * @param freq frequency
      * @param sec seconds
      */
-    coconutPlayBuzzerFreqs (freq, sec) {
+    playBuzzerFreq (freq, sec) {
         console.log(`typeof freq ${typeof freq} sec ${typeof sec}`);
 
         // 시간이 정수가 아니거나 0보다 작을 경우 0으로 변경
@@ -1270,6 +1307,88 @@ class CoconutPeripheral{
         }
     }
 
+    /**
+     * show english small letter
+     * @param letter
+     */
+    showLedMatrixSmall (letter) {
+        if (typeof letter == 'string') letter = SmallLetters[letter];
+
+        const datas = this._runPackage(Sensors.LedMatrix, 2, letter);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * show english capital letter
+     * @param letter
+     */
+    showLedMatrixCapital (letter) {
+        if (typeof letter == 'string') letter = CapitalLetters[letter];
+
+        const datas = this._runPackage(Sensors.LedMatrix, 3, letter);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * show korean letter on LED Matrix
+     * @param letter
+     */
+    showLedMatrixKorean (letter) {
+        if (typeof letter == 'string') letter = KoreanLetters[letter];
+
+        const datas = this._runPackage(Sensors.LedMatrix, 4, letter);
+
+        if (this.isConnected()) {
+            this.send(datas);
+        }
+    }
+
+    /**
+     * read light sensor
+     */
+    getLightSensor () {
+        const datas = this._getPackage(Sensors.LightSensor, 0);
+
+        if (this.isConnected()) {
+            this.send(datas);
+            // return Promise.resolve();
+        }
+    }
+
+    /**
+     * read temperature sensor
+     */
+    getTemperature () {
+        const datas = this._getPackage(Sensors.Temperature, 0);
+
+        if (this.isConnected()) {
+            this.send(datas);
+            // return Promise.resolve();
+        }
+    }
+
+    /**
+     * read 3-Axis Accelerometer sensor
+     * @param axis
+     */
+    getAccelerometer (axis) {
+        console.log(`typeof axis ${typeof axis}`);
+        // if (typeof axis == 'string') axis = Axises[axis];
+        if (typeof axis == 'string') axis = Number(axis);
+
+        const datas = this._getPackage(Sensors.Accelerometer, 0, axis);
+
+        if (this.isConnected()) {
+            this.send(datas);
+            // return Promise.resolve();
+        }
+    }
 }
 
 module.exports = CoconutPeripheral;
