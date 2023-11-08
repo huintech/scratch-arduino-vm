@@ -7,7 +7,6 @@ const ProgramModeType = require('../../extension-support/program-mode-type');
 const Cast = require('../../util/cast');
 const log = require('../../util/log');
 
-const ArduinoPeripheral = require('../arduinoCommon/arduino-peripheral');
 const CoconutPeripheral = require('../arduinoCommon/coconut-peripheral');
 
 /**

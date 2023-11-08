@@ -136,7 +136,7 @@ const Axises = { "X-Axis": 1, "Y-Axis": 2, "Z-Axis": 3 };
 /**
  * Manage communication with a Arduino peripheral over a Scratch Arduino Link client socket.
  */
-class CoconutPeripheral{
+class CoconutPeripheral {
 
     /**
      * Construct a Arduino communication object.
@@ -344,6 +344,8 @@ class CoconutPeripheral{
      * @private
      */
     _startHeartbeat () {
+        console.log(`_startHeartbeat realtimemode= ${this._runtime.getCurrentIsRealtimeMode()} firmata= ${this._firmata}`);
+
         if (this._runtime.getCurrentIsRealtimeMode()) {
             // eslint-disable-next-line no-negated-condition
             if (!this._firmata) {
@@ -435,8 +437,9 @@ class CoconutPeripheral{
         console.log(`write reset protocol : ff 55 02 00 04`);
         this._serialport.write([0xff, 0x55, 0x02, 0x00, 0x04]);
 
-	    console.log(`_startHeartbeat`);
+	    // console.log(`_startHeartbeat`);
         this._startHeartbeat();
+        this._isFirmataConnected = true;
 
         this._runtime.on(this._runtime.constructor.PROGRAM_MODE_UPDATE, this._handleProgramModeUpdate);
         this._runtime.on(this._runtime.constructor.PERIPHERAL_UPLOAD_SUCCESS, this._startHeartbeat);
@@ -450,6 +453,7 @@ class CoconutPeripheral{
     _onMessage (base64) {
         // parse data
         const data = Base64Util.base64ToUint8Array(base64);
+        console.log(`_onMessage: data = ${data}`);
         this._firmata.onReciveData(data);
     }
 
@@ -651,16 +655,22 @@ class CoconutPeripheral{
         // };
 
         // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        console.log(`isReady : ${this.isReady()}`);
-        console.log(`isConnected : ${this.isConnected()}`);
+        // console.log(`isReady : ${this.isReady()}`);
+        // console.log(`isConnected : ${this.isConnected()}`);
 
-        if (this.isConnected()) {
-            const datas = this._runPackage(Sensors.Motor, 0, direction, speed);
+        const datas = this._runPackage(Sensors.Motor, 0, direction, speed);
+        console.log(`move motors datas : ${datas}`);
+        this.send(datas);
 
-            console.log(`move motors datas : ${datas}`);
-
-            this.send(datas);
-        }
+        // TODO: promise 추가
+        return new Promise(resolve => {
+            this._firmata.moveMotor(Sensors.Motor, 0, direction, speed, value => {
+                resolve(value);
+            });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        });
 
         // if (this.isReady()) {
         //     // const speed = 60;

@@ -19,7 +19,7 @@ const ANALOG_MESSAGE = 0xE0;
 const CAPABILITY_QUERY = 0x6B;
 const CAPABILITY_RESPONSE = 0x6C;
 const DIGITAL_MESSAGE = 0x90;
-const END_SYSEX = 0xF7;
+const END_SYSEX = 0xF7 // 0x0A;
 const EXTENDED_ANALOG = 0x6F;
 const I2C_CONFIG = 0x78;
 const I2C_REPLY = 0x77;
@@ -58,13 +58,21 @@ const SERIAL_REPLY = 0x40;
 // const SERIAL_CLOSE = 0x50;
 // const SERIAL_FLUSH = 0x60;
 // const SERIAL_LISTEN = 0x70;
-const START_SYSEX = 0xF0;
+const START_SYSEX = 0xF0; // 0xFF; //
 const STEPPER = 0x72;
 const ACCELSTEPPER = 0x62;
 const STRING_DATA = 0x71;
 const SYSTEM_RESET = 0xFF;
 
 const MAX_PIN_COUNT = 128;
+
+// coconut protocol
+const ACTION_RUN = 0x02;
+const ACTION_GET = 0x01;
+const DEV_MOTOR = 0x1a;
+const MOTOR_CMD_0 = 0x00;
+
+const MOTOR_RESPONSE = 0x1a;
 
 const symbolSendOneWireSearch = Symbol('sendOneWireSearch');
 const symbolSendOneWireRequest = Symbol('sendOneWireRequest');
@@ -679,6 +687,11 @@ class Firmata extends Emitter {
         this.settings = settings;
         this.digitalPortQueue = 0x0000;
 
+        // 수신 데이터 처리
+        this._isParseStart = false;
+        this._isParseStartIndex = 0;
+        this._sendBuffer = [];
+
         // if we have not received the version within the allotted
         // time specified by the reportVersionTimeout (user or default),
         // then send an explicit request for it.
@@ -739,8 +752,198 @@ class Firmata extends Emitter {
         });
     }
 
+    /**
+     * receive data event handler
+     * @param data
+     */
     onReciveData (data) {
-        console.log(`data : ${data}`);
+        console.log(`onreciveData data= ${data} len= ${data.length}`);
+        console.log(`typeof data ${typeof data}`);
+        console.log(`${[...data]}`);
+        console.log(`buffer len= ${this.buffer.length}`);
+
+        if (this.buffer.length > 30) this.buffer.length = 0;
+
+        // run type
+        if ((data.length === 4) && (data === [0xff, 0x55, 0x0d, 0x0a])) {
+            console.log(`RUN type..`);
+            console.log(`send buffer= ${this._sendBuffer}`);
+            this.buffer.length = 0;
+
+            // const handler = SYSEX_RESPONSE[this.buffer[1]];
+            //     console.log(`handler = ${handler}`);
+        }
+        else {
+            for (let i = 0; i < data.length; i++) {
+                const byte = data[i];
+                // we dont want to push 0 as the first byte on our buffer
+                if (this.buffer.length === 0 && byte === 0) {
+                    continue;
+                }
+                else {
+                    this.buffer.push(byte);
+
+                    if (this.buffer.length >= 2) {
+                        const start1 = this.buffer[this.buffer.length - 2];
+                        const start2 = this.buffer[this.buffer.length - 1];
+
+                        // start bit is 0xff55
+                        if ((start1 === 0xff) && (start2 === 0x55)) {
+                            this._isParseStart = true;
+                            this._isParseStartIndex = this.buffer.length - 2;
+                        }
+
+                        // end bit is 0x0d0a
+                        if ((start1 === 0xd) && (start2 === 0xa) && this._isParseStart) {
+                            this._isParseStart = false;
+
+                            let position = this._isParseStartIndex + 2;
+                            let extId = this.buffer[position];
+                            position++;
+                            let type = this.buffer[position];
+                            position++;
+
+                            // data type check
+                            let value;
+                            switch (type) {
+                                case 1:
+                                    value = this.buffer[position];
+                                    position++;
+                                    break;
+                                case 2:
+                                    value = this._readFloat(this.buffer, position);
+                                    position += 4;
+                                    if ((value < -255) || (value > 1023)) value = 0;
+                                    break;
+                                case 3:
+                                    value = this._readShort(this.buffer, position);
+                                    position += 2;
+                                    break;
+                                case 4:
+                                    let lv = this.buffer[position];
+                                    position++;
+                                    value = this._readString(this.buffer, position, lv);
+                                    break;
+                                case 5:
+                                    value = this._readDouble(this.buffer, position);
+                                    position += 4;
+                                    break;
+                            }
+
+                            // if (type <= 5) {
+                            //     if (values[extId] != undefined) {
+                            //
+                            //     }
+                            // }
+
+                            // 보드에 다음 중 하나가 활성화된 이전 실행의 기존 활동이 있을 수 있습니다.
+                            //
+                            //    - ANALOG_MESSAGE
+                            //    - SERIAL_READ
+                            //    - I2C_REQUEST, CONTINUOUS_READ
+                            //
+                            // 이는 핸드셰이크가 발생하기 전에 전송 "open"에서 이러한 메시지를 수신한다는 의미입니다.
+                            // REPORT_VERSION 메시지가 수신된 후에만 이 버퍼를 처리할 것이라고 주장해야 합니다.
+                            // 그렇지 않으면 프로그램이 "hanging 멈추는" 모습을 보일 것입니다.
+                            //
+                            // _after_REPORT_VERSION까지 이 데이터로 아무 것도 할 수 없으므로 삭제합니다.
+                            this.buffer.length = 0;
+                        }
+                    }
+
+                    // const first = this.buffer[0];
+                    // const last = this.buffer[this.buffer.length - 1];
+                    //
+                    // // [START_SYSEX, ... END_SYSEX]
+                    // if (first === START_SYSEX && last === END_SYSEX) {
+                    //
+                    //     const handler = SYSEX_RESPONSE[this.buffer[1]];
+                    //     console.log(`handler = ${handler}`);
+                    //
+                    //     // Ensure a valid SYSEX_RESPONSE handler exists
+                    //     // Only process these AFTER the REPORT_VERSION
+                    //     // message has been received and processed.
+                    //     if (handler && this.versionReceived) {
+                    //         handler(this);
+                    //     }
+                    //
+                    //     // 보드에 다음 중 하나가 활성화된 이전 실행의 기존 활동이 있을 수 있습니다.
+                    //     //
+                    //     //    - ANALOG_MESSAGE
+                    //     //    - SERIAL_READ
+                    //     //    - I2C_REQUEST, CONTINUOUS_READ
+                    //     //
+                    //     // 이는 핸드셰이크가 발생하기 전에 전송 "open"에서 이러한 메시지를 수신한다는 의미입니다.
+                    //     // REPORT_VERSION 메시지가 수신된 후에만 이 버퍼를 처리할 것이라고 주장해야 합니다.
+                    //     // 그렇지 않으면 프로그램이 "hanging 멈추는" 모습을 보일 것입니다.
+                    //     //
+                    //     // _after_REPORT_VERSION까지 이 데이터로 아무 것도 할 수 없으므로 삭제합니다.
+                    //     this.buffer.length = 0;
+                    //
+                    // } else if (first === START_SYSEX && (this.buffer.length > 0)) {
+                    //     // we have a new command after an incomplete sysex command
+                    //     const currByte = data[i];
+                    //     if (currByte > 0x7F) {
+                    //         this.buffer.length = 0;
+                    //         this.buffer.push(currByte);
+                    //     }
+                    // } else {
+                    //     // eslint-disable-next-line no-lonely-if
+                    //     if (first !== START_SYSEX) {
+                    //         // Check if data gets out of sync: first byte in buffer
+                    //         // must be a valid response if not START_SYSEX
+                    //         // Identify response on first byte
+                    //         const response = first < START_SYSEX ? (first & START_SYSEX) : first;
+                    //
+                    //         // Check if the first byte is possibly
+                    //         // a valid MIDI_RESPONSE (handler)
+                    //         /* istanbul ignore else */
+                    //         if (response !== REPORT_VERSION &&
+                    //             response !== ANALOG_MESSAGE &&
+                    //             response !== DIGITAL_MESSAGE) {
+                    //             // If not valid, then we received garbage and can discard
+                    //             // whatever bytes have been been queued.
+                    //             this.buffer.length = 0;
+                    //         }
+                    //     }
+                    // }
+                    //
+                    // // There are 3 bytes in the buffer and the first is not START_SYSEX:
+                    // // Might have a MIDI Command
+                    // if (this.buffer.length === 3 && first !== START_SYSEX) {
+                    //     // response bytes under 0xF0 we have a multi byte operation
+                    //     const response = first < START_SYSEX ? (first & START_SYSEX) : first;
+                    //
+                    //     /* istanbul ignore else */
+                    //     if (MIDI_RESPONSE[response]) {
+                    //         // It's ok that this.versionReceived will be set to
+                    //         // true every time a valid MIDI_RESPONSE is received.
+                    //         // This condition is necessary to ensure that REPORT_VERSION
+                    //         // is called first.
+                    //         if (this.versionReceived || first === REPORT_VERSION) {
+                    //             this.versionReceived = true;
+                    //             MIDI_RESPONSE[response](this);
+                    //         }
+                    //         this.buffer.length = 0;
+                    //     } else {
+                    //         // A bad serial read must have happened.
+                    //         // Reseting the buffer will allow recovery.
+                    //         this.buffer.length = 0;
+                    //     }
+                    // }
+                }
+            }
+        }
+
+
+    }
+
+    /**
+     * receive data handler backup
+     * @param data
+     */
+    onReciveDataBak (data) {
+        console.log(`recv : ${data}`);
         for (let i = 0; i < data.length; i++) {
             const byte = data[i];
             // we dont want to push 0 as the first byte on our buffer
@@ -753,9 +956,11 @@ class Firmata extends Emitter {
                 const last = this.buffer[this.buffer.length - 1];
 
                 // [START_SYSEX, ... END_SYSEX]
-                if (first === START_SYSEX && last === END_SYSEX) {
+                if (first === 0xff && last === 0x0a) {
+                    // if (first === START_SYSEX && last === END_SYSEX) {
 
                     const handler = SYSEX_RESPONSE[this.buffer[1]];
+                    console.log(`handler = ${handler}`);
 
                     // Ensure a valid SYSEX_RESPONSE handler exists
                     // Only process these AFTER the REPORT_VERSION
@@ -2377,49 +2582,6 @@ class Firmata extends Emitter {
         writeToTransport(this, [SYSTEM_RESET]);
     }
 
-    // common function
-    /**
-     * @brief 모듈 실행
-     */
-    coconutRunPackage () {
-        let bytes = [0xff, 0x55, 0, 0, 2];
-
-        for (let i= 0; i < arguments.length; i++) {
-            if (arguments[i].constructor == "[class Array]") {
-                bytes = bytes.concat(arguments[i]);
-            }
-            else {
-                bytes.push(arguments[i]);
-            }
-        } //for
-
-        bytes[2] = bytes.length - 3;  // data length
-        console.log(`package bytes array: ${bytes}`);
-        // 장치에 ArrayBuffer data 전송
-        // device.send(bytes);
-        return bytes;
-    } //function
-
-    // ------ coconut blocks ------
-    coconutMoveMotors (options, callback) {
-        const {
-            motor,
-            index,
-            direction,
-            speed
-        } = options;
-
-        let datas = this.coconutRunPackage(motor, index, direction, speed);
-
-        console.log(`moveMotors : options : ${JSON.stringify(options)}`);
-        console.log(`moveMotors : datas : ${JSON.stringify(datas)}`);
-
-        // writeToTransport(this, datas);
-        writeToTransport(this, [0xff, 0x55, 0x06, 0x00, 0x02, 0x1a, 0x00, 0x03, 0x3c]);
-
-        // this.once(`coconut-move-motors`, callback);
-    }
-
     /**
      * Firmata.isAcceptablePort Determines if a `port` object (from SerialPort.list())
      * is a valid Arduino (or similar) device.
@@ -2465,6 +2627,53 @@ class Firmata extends Emitter {
         }
 
         return decoded;
+    }
+
+    // ------ coconut blocks ------
+
+    /**
+     * @brief 모듈 실행
+     */
+    _runPackage () {
+        let bytes = [0xff, 0x55, 0, 0, 2];
+
+        for (let i = 0; i < arguments.length; i++) {
+            // console.log(`type: ${arguments[i].constructor}, val= ${arguments[i]}`);
+            // console.log(`type: ${(typeof arguments[i])}, val= ${arguments[i]}`);
+            // if (arguments[i].constructor == '[class Array]') {
+            if (typeof arguments[i] == 'object') {
+                bytes = bytes.concat(arguments[i]);
+            } else {
+                bytes.push(arguments[i]);
+            }
+        } // for
+
+        bytes[2] = bytes.length - 3; // data length
+        // console.log(`package bytes array: ${bytes}, length ${bytes.length}`);
+        // 장치에 ArrayBuffer data 전송
+        // device.send(bytes);
+        return bytes;
+    } // function
+
+    moveMotor(motor, index, direction, speed, callback) {
+        // const {
+        //     motor,
+        //     index,
+        //     direction,
+        //     speed
+        // } = options;
+
+        let datas = this._runPackage(motor, index, direction, speed);
+        //
+        // // console.log(`moveMotors : options : ${JSON.stringify(options)}`);
+        // console.log(`moveMotor :  ${JSON.stringify(datas)}`);
+        //
+        // // writeToTransport(this, datas);
+        this._sendBuffer = datas;
+        writeToTransport(this, datas);
+        // this.removeAllListeners(`analog-read-${pin}`);
+        this.once(`coconut-move-motor`, callback);
+        // this.once(`coconut-move-motors`, callback);
     }
 }
 
