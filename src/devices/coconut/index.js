@@ -2596,7 +2596,7 @@ class CoconutDevice {
                         items: this.ROW_MENU
                     },
                     ColMenu: {
-                       items: this.COL_MENU
+                        items: this.COL_MENU
                     },
                     NumberMenu: {
                         items: this.NUMBER_MENU

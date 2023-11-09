@@ -19,7 +19,7 @@ const ANALOG_MESSAGE = 0xE0;
 const CAPABILITY_QUERY = 0x6B;
 const CAPABILITY_RESPONSE = 0x6C;
 const DIGITAL_MESSAGE = 0x90;
-const END_SYSEX = 0xF7 // 0x0A;
+const END_SYSEX = 0xF7; // 0x0A;
 const EXTENDED_ANALOG = 0x6F;
 const I2C_CONFIG = 0x78;
 const I2C_REPLY = 0x77;
@@ -67,10 +67,10 @@ const SYSTEM_RESET = 0xFF;
 const MAX_PIN_COUNT = 128;
 
 // coconut protocol
-const ACTION_RUN = 0x02;
-const ACTION_GET = 0x01;
+// const ACTION_RUN= 0x02;
+// const ACTION_GET = 0x01;
 // const DEV_MOTOR = 0x1a;
-const MOTOR_CMD_0 = 0x00;
+// const MOTOR_CMD_0 = 0x00;
 
 /**
  * motor response
@@ -580,42 +580,42 @@ const SYSEX_RESPONSE = {
      * @param board
      */
     [MOTOR_RESPONSE] (board) {
-         // console.log(`EVENT : motor response...`);
-         console.log(`EVENT : send buffer= ${board._sendBuffer}`);
-         // console.log(`typeof cmd ${typeof board._sendBuffer[6]}`);
+        // console.log(`EVENT : motor response...`);
+        console.log(`EVENT : send buffer= ${board._sendBuffer}`);
+        // console.log(`typeof cmd ${typeof board._sendBuffer[6]}`);
 
         let _direction;
 
         // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
         // ff 55 04 00 02 1a(26) 01 / stop motor
         switch (board._sendBuffer[6]) {
-            case MOTOR_CMD.MOVE:
-                _direction = board._sendBuffer[7];
-                console.log(`handler : move-motor-${_direction}`);
-                // board.emit(`move-motor-${_direction}`, true);
-                board.emit(`move-motor-${_direction}`);
-                break;
-            case MOTOR_CMD.STOP:
-                console.log(`handler : stop-motor`);
-                board.emit('stop-motor');
-                break;
-            case MOTOR_CMD.TIME:
-                _direction = board._sendBuffer[7];
-                console.log(`handler : move-motor-time-${_direction}`);
-                board.emit(`move-motor-time-${_direction}`, true);
-                break;
-            case MOTOR_CMD.RGB:
-                console.log(`handler : move-motor-rgb`);
-                board.emit('move-motor-rgb');
-                break;
-            case MOTOR_CMD.CM:
-                console.log(`handler : move-motor-cm`);
-                board.emit('move-motor-cm');
-                break;
-            case MOTOR_CMD.DEGREE:
-                console.log(`handler : move-motor-degree`);
-                board.emit('move-motor-degree');
-                break;
+        case MOTOR_CMD.MOVE:
+            _direction = board._sendBuffer[7];
+            console.log(`handler : move-motor-${_direction}`);
+            // board.emit(`move-motor-${_direction}`, true);
+            board.emit(`move-motor-${_direction}`);
+            break;
+        case MOTOR_CMD.STOP:
+            console.log(`handler : stop-motor`);
+            board.emit('stop-motor');
+            break;
+        case MOTOR_CMD.TIME:
+            _direction = board._sendBuffer[7];
+            console.log(`handler : move-motor-time-${_direction}`);
+            board.emit(`move-motor-time-${_direction}`, true);
+            break;
+        case MOTOR_CMD.RGB:
+            console.log(`handler : move-motor-rgb`);
+            board.emit('move-motor-rgb');
+            break;
+        case MOTOR_CMD.CM:
+            console.log(`handler : move-motor-cm`);
+            board.emit('move-motor-cm');
+            break;
+        case MOTOR_CMD.DEGREE:
+            console.log(`handler : move-motor-degree`);
+            board.emit('move-motor-degree');
+            break;
         }
 
     },
@@ -635,33 +635,33 @@ const SYSEX_RESPONSE = {
         // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
         // ff 55 04 00 02 1a(26) 01 / stop motor
         switch (command) {
-            case LINE_TRACER_CMD.GET_RAW:
-                // _direction = board._sendBuffer[7];
-                const value = getSensorValue(board.buffer);
-                console.log(`handler : line-tracer-${command}`);
-                board.emit(`line-tracer-${command}`, value);
-                break;
-            case LINE_TRACER_CMD.DETECT_SINGLE:
-                console.log(`handler : stop-motor`);
-                board.emit('stop-motor');
-                break;
-            case LINE_TRACER_CMD.FOLLOW:
-                _direction = board._sendBuffer[7];
-                console.log(`handler : move-motor-time-${_direction}`);
-                board.emit(`move-motor-time-${_direction}`, true);
-                break;
-            case LINE_TRACER_CMD.DETECT_INT:
-                console.log(`handler : move-motor-rgb`);
-                board.emit('move-motor-rgb');
-                break;
-            case LINE_TRACER_CMD.TURN_BLACK:
-                console.log(`handler : move-motor-cm`);
-                board.emit('move-motor-cm');
-                break;
-            case LINE_TRACER_CMD.DETECT_SINGLE2:
-                console.log(`handler : move-motor-degree`);
-                board.emit('move-motor-degree');
-                break;
+        case LINE_TRACER_CMD.GET_RAW:
+            // _direction = board._sendBuffer[7];
+            const value = getSensorValue(board.buffer);
+            console.log(`handler : line-tracer-${command}`);
+            board.emit(`line-tracer-${command}`, value);
+            break;
+        case LINE_TRACER_CMD.DETECT_SINGLE:
+            console.log(`handler : stop-motor`);
+            board.emit('stop-motor');
+            break;
+        case LINE_TRACER_CMD.FOLLOW:
+            _direction = board._sendBuffer[7];
+            console.log(`handler : move-motor-time-${_direction}`);
+            board.emit(`move-motor-time-${_direction}`, true);
+            break;
+        case LINE_TRACER_CMD.DETECT_INT:
+            console.log(`handler : move-motor-rgb`);
+            board.emit('move-motor-rgb');
+            break;
+        case LINE_TRACER_CMD.TURN_BLACK:
+            console.log(`handler : move-motor-cm`);
+            board.emit('move-motor-cm');
+            break;
+        case LINE_TRACER_CMD.DETECT_SINGLE2:
+            console.log(`handler : move-motor-degree`);
+            board.emit('move-motor-degree');
+            break;
         }
     }
 };
@@ -669,49 +669,49 @@ const SYSEX_RESPONSE = {
 const parseShort = (a, b) => a << 8 | b << 0;
 
 const readShort = function (arr, position) {
-    let s = [arr[position], arr[position+1]];
+    const s = [arr[position], arr[position + 1]];
     return parseShort(s);
-} //function
+}; // function
 
 const parseFloat = function (data) {
     // var data =  [64, 226, 157, 10];
 
-// Create a buffer
-    let buf = new ArrayBuffer(4);
-// Create a data view of it
-    let view = new DataView(buf);
+    // Create a buffer
+    const buf = new ArrayBuffer(4);
+    // Create a data view of it
+    const view = new DataView(buf);
 
-// set bytes
-    data.forEach(function (b, i) {
+    // set bytes
+    data.forEach((b, i) => {
         view.setUint8(i, b);
     });
 
-// Read the bits as a float; note that by doing this, we're implicitly
-// converting it from a 32-bit float into JavaScript's native 64-bit double
-    let num = view.getFloat32(0);
-// Done
+    // Read the bits as a float; note that by doing this, we're implicitly
+    // converting it from a 32-bit float into JavaScript's native 64-bit double
+    const num = view.getFloat32(0);
+    // Done
     console.log(num);
     return num;
-}
+};
 
 const readFloat = function (arr, position) {
-    const f = [arr[position], arr[position+1], arr[position+2], arr[position+3]];
+    const f = [arr[position], arr[position + 1], arr[position + 2], arr[position + 3]];
     return parseFloat(f);
-} //function
+}; // function
 
 
 const readDouble = function (arr, position) {
     return readFloat(arr, position);
-}//function
+};// function
 
 const readString = function (arr, position, len) {
-    let value = "";
-    for (let ii=0; ii<len; ii++) {
-        value += String.fromCharCode(arr[ii+position]);
-    }//for
+    let value = '';
+    for (let ii = 0; ii < len; ii++) {
+        value += String.fromCharCode(arr[ii + position]);
+    }// for
 
     return value;
-}//function
+};// function
 
 /**
  * read sensor value
@@ -720,42 +720,42 @@ const readString = function (arr, position, len) {
  */
 const getSensorValue = function (data) {
     let position = 2;
-    let extId = data[position];
+    const extId = data[position];
     position++;
-    let type = data[position];
+    const type = data[position];
     position++;
 
     // data type check
     let value;
     switch (type) {
-        case 1:
-            value = data[position];
-            position++;
-            break;
-        case 2:
-            value = readFloat(data, position);
-            position += 4;
-            if ((value < -255) || (value > 1023)) value = 0;
-            break;
-        case 3:
-            value = readShort(data, position);
-            position += 2;
-            break;
-        case 4:
-            let lv = data[position];
-            position++;
-            value = readString(data, position, lv);
-            break;
-        case 5:
-            value = readDouble(data, position);
-            position += 4;
-            break;
+    case 1:
+        value = data[position];
+        position++;
+        break;
+    case 2:
+        value = readFloat(data, position);
+        position += 4;
+        if ((value < -255) || (value > 1023)) value = 0;
+        break;
+    case 3:
+        value = readShort(data, position);
+        position += 2;
+        break;
+    case 4:
+        const lv = data[position];
+        position++;
+        value = readString(data, position, lv);
+        break;
+    case 5:
+        value = readDouble(data, position);
+        position += 4;
+        break;
     }
 
     console.log(`type= ${type} value=${value}`);
 
     return value;
-}
+};
 
 /**
  * @class The Board object represents an arduino board.
@@ -968,6 +968,7 @@ class Firmata extends Emitter {
      * @param data
      */
     onReciveData (data) {
+        // eslint-disable-next-line no-console
         console.log(`onreciveData data= ${data} len= ${data.length}`);
         // console.log(`typeof data ${typeof data}`);
         // console.log(`${[...data]}`);
@@ -977,200 +978,195 @@ class Firmata extends Emitter {
 
         for (let i = 0; i < data.length; i++) {
             const byte = data[i];
-            // we dont want to push 0 as the first byte on our buffer
-            // if (this.buffer.length === 0 && byte === 0) {
-            //     continue;
-            // }
-            // else {
-                this.buffer.push(byte);
+            this.buffer.push(byte);
 
-                if (this.buffer.length >= 2) {
-                    const start1 = this.buffer[this.buffer.length - 2];
-                    const start2 = this.buffer[this.buffer.length - 1];
+            if (this.buffer.length >= 2) {
+                const start1 = this.buffer[this.buffer.length - 2];
+                const start2 = this.buffer[this.buffer.length - 1];
 
-                    // start bit is 0xff55
-                    if (!this._isParseStart) {
-                        if ((start1 === 0xff) && (start2 === 0x55)) {
-                            this._isParseStart = true;
-                            this._isParseStartIndex = this.buffer.length - 2;
-                            this.buffer.length = 0;
-                            this.buffer[0] = start1;
-                            this.buffer[1] = start2;
-                        }
-                        // else {
-                        //     this.buffer.length = 0;
-                        // }
-                    }
-
-
-                    // console.log(`this.buffer= ${this.buffer}`);
-
-                    // end bit is 0x0d0a
-                    if (this._isParseStart && (start1 === 0xd) && (start2 === 0xa)) {
-                        this._isParseStart = false;
-
-                        // console.log(`len= ${this.buffer.length} this.buffer= ${this.buffer}`);
-
-                        // run type response [ff, 55, 0d, 0a]
-                        if ((this.buffer.length === 4) && (this.buffer[0] === 0xff && this.buffer[1] === 0x55)) {
-                            // console.log(`RUN type..`);
-                            console.log(`send buffer= ${this._sendBuffer}`);
-
-                            const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
-                            if (handler) handler(this);
-                            // console.log(`handler = ${handler}`);
-
-                            // this.buffer.length = 0;
-                        }
-                        // get type response
-                        else {
-                            console.log(`GET type...`);
-
-                            let position = this._isParseStartIndex + 2;
-                            let extId = this.buffer[position];
-                            position++;
-                            let type = this.buffer[position];
-                            position++;
-
-                            // data type check
-                            let value;
-                            switch (type) {
-                                case 1:
-                                    value = this.buffer[position];
-                                    position++;
-                                    break;
-                                case 2:
-                                    value = this._readFloat(this.buffer, position);
-                                    position += 4;
-                                    if ((value < -255) || (value > 1023)) value = 0;
-                                    break;
-                                case 3:
-                                    value = this._readShort(this.buffer, position);
-                                    position += 2;
-                                    break;
-                                case 4:
-                                    let lv = this.buffer[position];
-                                    position++;
-                                    value = this._readString(this.buffer, position, lv);
-                                    break;
-                                case 5:
-                                    value = this._readDouble(this.buffer, position);
-                                    position += 4;
-                                    break;
-                            }
-
-                            console.log(`type= ${type} value=${value}`);
-
-                            const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
-                            if (handler) handler(this);
-                        }
-
-                        console.log(`this.buffer= ${this.buffer}`);
-
-                        // if (type <= 5) {
-                        //     if (values[extId] != undefined) {
-                        //
-                        //     }
-                        // }
-
-                        // 보드에 다음 중 하나가 활성화된 이전 실행의 기존 활동이 있을 수 있습니다.
-                        //
-                        //    - ANALOG_MESSAGE
-                        //    - SERIAL_READ
-                        //    - I2C_REQUEST, CONTINUOUS_READ
-                        //
-                        // 이는 핸드셰이크가 발생하기 전에 전송 "open"에서 이러한 메시지를 수신한다는 의미입니다.
-                        // REPORT_VERSION 메시지가 수신된 후에만 이 버퍼를 처리할 것이라고 주장해야 합니다.
-                        // 그렇지 않으면 프로그램이 "hanging 멈추는" 모습을 보일 것입니다.
-                        //
-                        // _after_REPORT_VERSION까지 이 데이터로 아무 것도 할 수 없으므로 삭제합니다.
+                // start bit is 0xff55
+                if (!this._isParseStart) {
+                    if ((start1 === 0xff) && (start2 === 0x55)) {
+                        this._isParseStart = true;
+                        this._isParseStartIndex = this.buffer.length - 2;
                         this.buffer.length = 0;
+                        this.buffer[0] = start1;
+                        this.buffer[1] = start2;
                     }
-
-
+                    // else {
+                    //     this.buffer.length = 0;
+                    // }
                 }
 
-                // const first = this.buffer[0];
-                // const last = this.buffer[this.buffer.length - 1];
-                //
-                // // [START_SYSEX, ... END_SYSEX]
-                // if (first === START_SYSEX && last === END_SYSEX) {
-                //
-                //     const handler = SYSEX_RESPONSE[this.buffer[1]];
-                //     console.log(`handler = ${handler}`);
-                //
-                //     // Ensure a valid SYSEX_RESPONSE handler exists
-                //     // Only process these AFTER the REPORT_VERSION
-                //     // message has been received and processed.
-                //     if (handler && this.versionReceived) {
-                //         handler(this);
-                //     }
-                //
-                //     // 보드에 다음 중 하나가 활성화된 이전 실행의 기존 활동이 있을 수 있습니다.
-                //     //
-                //     //    - ANALOG_MESSAGE
-                //     //    - SERIAL_READ
-                //     //    - I2C_REQUEST, CONTINUOUS_READ
-                //     //
-                //     // 이는 핸드셰이크가 발생하기 전에 전송 "open"에서 이러한 메시지를 수신한다는 의미입니다.
-                //     // REPORT_VERSION 메시지가 수신된 후에만 이 버퍼를 처리할 것이라고 주장해야 합니다.
-                //     // 그렇지 않으면 프로그램이 "hanging 멈추는" 모습을 보일 것입니다.
-                //     //
-                //     // _after_REPORT_VERSION까지 이 데이터로 아무 것도 할 수 없으므로 삭제합니다.
-                //     this.buffer.length = 0;
-                //
-                // } else if (first === START_SYSEX && (this.buffer.length > 0)) {
-                //     // we have a new command after an incomplete sysex command
-                //     const currByte = data[i];
-                //     if (currByte > 0x7F) {
-                //         this.buffer.length = 0;
-                //         this.buffer.push(currByte);
-                //     }
-                // } else {
-                //     // eslint-disable-next-line no-lonely-if
-                //     if (first !== START_SYSEX) {
-                //         // Check if data gets out of sync: first byte in buffer
-                //         // must be a valid response if not START_SYSEX
-                //         // Identify response on first byte
-                //         const response = first < START_SYSEX ? (first & START_SYSEX) : first;
-                //
-                //         // Check if the first byte is possibly
-                //         // a valid MIDI_RESPONSE (handler)
-                //         /* istanbul ignore else */
-                //         if (response !== REPORT_VERSION &&
-                //             response !== ANALOG_MESSAGE &&
-                //             response !== DIGITAL_MESSAGE) {
-                //             // If not valid, then we received garbage and can discard
-                //             // whatever bytes have been been queued.
-                //             this.buffer.length = 0;
-                //         }
-                //     }
-                // }
-                //
-                // // There are 3 bytes in the buffer and the first is not START_SYSEX:
-                // // Might have a MIDI Command
-                // if (this.buffer.length === 3 && first !== START_SYSEX) {
-                //     // response bytes under 0xF0 we have a multi byte operation
-                //     const response = first < START_SYSEX ? (first & START_SYSEX) : first;
-                //
-                //     /* istanbul ignore else */
-                //     if (MIDI_RESPONSE[response]) {
-                //         // It's ok that this.versionReceived will be set to
-                //         // true every time a valid MIDI_RESPONSE is received.
-                //         // This condition is necessary to ensure that REPORT_VERSION
-                //         // is called first.
-                //         if (this.versionReceived || first === REPORT_VERSION) {
-                //             this.versionReceived = true;
-                //             MIDI_RESPONSE[response](this);
-                //         }
-                //         this.buffer.length = 0;
-                //     } else {
-                //         // A bad serial read must have happened.
-                //         // Reseting the buffer will allow recovery.
-                //         this.buffer.length = 0;
-                //     }
-                // }
+
+                // console.log(`this.buffer= ${this.buffer}`);
+
+                // end bit is 0x0d0a
+                if (this._isParseStart && (start1 === 0xd) && (start2 === 0xa)) {
+                    this._isParseStart = false;
+
+                    // console.log(`len= ${this.buffer.length} this.buffer= ${this.buffer}`);
+
+                    // run type response [ff, 55, 0d, 0a]
+                    if ((this.buffer.length === 4) && (this.buffer[0] === 0xff && this.buffer[1] === 0x55)) {
+                        // console.log(`RUN type..`);
+                        console.log(`send buffer= ${this._sendBuffer}`);
+
+                        const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
+                        if (handler) handler(this);
+                        // console.log(`handler = ${handler}`);
+
+                        // this.buffer.length = 0;
+                    }
+                    // get type response
+                    else {
+                        console.log(`GET type...`);
+
+                        let position = this._isParseStartIndex + 2;
+                        const extId = this.buffer[position];
+                        position++;
+                        const type = this.buffer[position];
+                        position++;
+
+                        // data type check
+                        let value;
+                        switch (type) {
+                        case 1:
+                            value = this.buffer[position];
+                            position++;
+                            break;
+                        case 2:
+                            value = this._readFloat(this.buffer, position);
+                            position += 4;
+                            if ((value < -255) || (value > 1023)) value = 0;
+                            break;
+                        case 3:
+                            value = this._readShort(this.buffer, position);
+                            position += 2;
+                            break;
+                        case 4:
+                            const lv = this.buffer[position];
+                            position++;
+                            value = this._readString(this.buffer, position, lv);
+                            break;
+                        case 5:
+                            value = this._readDouble(this.buffer, position);
+                            position += 4;
+                            break;
+                        }
+
+                        console.log(`type= ${type} value=${value}`);
+
+                        const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
+                        if (handler) handler(this);
+                    }
+
+                    console.log(`this.buffer= ${this.buffer}`);
+
+                    // if (type <= 5) {
+                    //     if (values[extId] != undefined) {
+                    //
+                    //     }
+                    // }
+
+                    // 보드에 다음 중 하나가 활성화된 이전 실행의 기존 활동이 있을 수 있습니다.
+                    //
+                    //    - ANALOG_MESSAGE
+                    //    - SERIAL_READ
+                    //    - I2C_REQUEST, CONTINUOUS_READ
+                    //
+                    // 이는 핸드셰이크가 발생하기 전에 전송 "open"에서 이러한 메시지를 수신한다는 의미입니다.
+                    // REPORT_VERSION 메시지가 수신된 후에만 이 버퍼를 처리할 것이라고 주장해야 합니다.
+                    // 그렇지 않으면 프로그램이 "hanging 멈추는" 모습을 보일 것입니다.
+                    //
+                    // _after_REPORT_VERSION까지 이 데이터로 아무 것도 할 수 없으므로 삭제합니다.
+                    this.buffer.length = 0;
+                }
+
+
             }
+
+            // const first = this.buffer[0];
+            // const last = this.buffer[this.buffer.length - 1];
+            //
+            // // [START_SYSEX, ... END_SYSEX]
+            // if (first === START_SYSEX && last === END_SYSEX) {
+            //
+            //     const handler = SYSEX_RESPONSE[this.buffer[1]];
+            //     console.log(`handler = ${handler}`);
+            //
+            //     // Ensure a valid SYSEX_RESPONSE handler exists
+            //     // Only process these AFTER the REPORT_VERSION
+            //     // message has been received and processed.
+            //     if (handler && this.versionReceived) {
+            //         handler(this);
+            //     }
+            //
+            //     // 보드에 다음 중 하나가 활성화된 이전 실행의 기존 활동이 있을 수 있습니다.
+            //     //
+            //     //    - ANALOG_MESSAGE
+            //     //    - SERIAL_READ
+            //     //    - I2C_REQUEST, CONTINUOUS_READ
+            //     //
+            //     // 이는 핸드셰이크가 발생하기 전에 전송 "open"에서 이러한 메시지를 수신한다는 의미입니다.
+            //     // REPORT_VERSION 메시지가 수신된 후에만 이 버퍼를 처리할 것이라고 주장해야 합니다.
+            //     // 그렇지 않으면 프로그램이 "hanging 멈추는" 모습을 보일 것입니다.
+            //     //
+            //     // _after_REPORT_VERSION까지 이 데이터로 아무 것도 할 수 없으므로 삭제합니다.
+            //     this.buffer.length = 0;
+            //
+            // } else if (first === START_SYSEX && (this.buffer.length > 0)) {
+            //     // we have a new command after an incomplete sysex command
+            //     const currByte = data[i];
+            //     if (currByte > 0x7F) {
+            //         this.buffer.length = 0;
+            //         this.buffer.push(currByte);
+            //     }
+            // } else {
+            //     // eslint-disable-next-line no-lonely-if
+            //     if (first !== START_SYSEX) {
+            //         // Check if data gets out of sync: first byte in buffer
+            //         // must be a valid response if not START_SYSEX
+            //         // Identify response on first byte
+            //         const response = first < START_SYSEX ? (first & START_SYSEX) : first;
+            //
+            //         // Check if the first byte is possibly
+            //         // a valid MIDI_RESPONSE (handler)
+            //         /* istanbul ignore else */
+            //         if (response !== REPORT_VERSION &&
+            //             response !== ANALOG_MESSAGE &&
+            //             response !== DIGITAL_MESSAGE) {
+            //             // If not valid, then we received garbage and can discard
+            //             // whatever bytes have been been queued.
+            //             this.buffer.length = 0;
+            //         }
+            //     }
+            // }
+            //
+            // // There are 3 bytes in the buffer and the first is not START_SYSEX:
+            // // Might have a MIDI Command
+            // if (this.buffer.length === 3 && first !== START_SYSEX) {
+            //     // response bytes under 0xF0 we have a multi byte operation
+            //     const response = first < START_SYSEX ? (first & START_SYSEX) : first;
+            //
+            //     /* istanbul ignore else */
+            //     if (MIDI_RESPONSE[response]) {
+            //         // It's ok that this.versionReceived will be set to
+            //         // true every time a valid MIDI_RESPONSE is received.
+            //         // This condition is necessary to ensure that REPORT_VERSION
+            //         // is called first.
+            //         if (this.versionReceived || first === REPORT_VERSION) {
+            //             this.versionReceived = true;
+            //             MIDI_RESPONSE[response](this);
+            //         }
+            //         this.buffer.length = 0;
+            //     } else {
+            //         // A bad serial read must have happened.
+            //         // Reseting the buffer will allow recovery.
+            //         this.buffer.length = 0;
+            //     }
+            // }
+        }
         // }
 
     }
@@ -2878,7 +2874,7 @@ class Firmata extends Emitter {
             // console.log(`type: ${arguments[i].constructor}, val= ${arguments[i]}`);
             // console.log(`type: ${(typeof arguments[i])}, val= ${arguments[i]}`);
             // if (arguments[i].constructor == '[class Array]') {
-            if (typeof arguments[i] == 'object') {
+            if (typeof arguments[i] === 'object') {
                 bytes = bytes.concat(arguments[i]);
             } else {
                 bytes.push(arguments[i]);
@@ -2900,7 +2896,7 @@ class Firmata extends Emitter {
      * @param speed
      * @param callback
      */
-    moveMotor(motor, cmd, direction, speed, callback) {
+    moveMotor (motor, cmd, direction, speed, callback) {
         // const {
         //     motor,
         //     index,
@@ -2908,7 +2904,7 @@ class Firmata extends Emitter {
         //     speed
         // } = options;
 
-        let datas = this._runPackage(motor, cmd, direction, speed);
+        const datas = this._runPackage(motor, cmd, direction, speed);
         //
         // // console.log(`moveMotors : options : ${JSON.stringify(options)}`);
         // console.log(`moveMotor :  ${JSON.stringify(datas)}`);
@@ -2929,7 +2925,7 @@ class Firmata extends Emitter {
      * @param callback
      */
     stopMotor (motor, index, callback) {
-        let datas = this._runPackage(motor, index);
+        const datas = this._runPackage(motor, index);
         //
         // // console.log(`moveMotors : options : ${JSON.stringify(options)}`);
         // console.log(`moveMotor :  ${JSON.stringify(datas)}`);
@@ -2951,7 +2947,7 @@ class Firmata extends Emitter {
      * @param callback
      */
     turnMotor (motor, cmd, direction, speed, callback) {
-        let datas = this._runPackage(motor, cmd, direction, speed);
+        const datas = this._runPackage(motor, cmd, direction, speed);
         //
         // // console.log(`moveMotors : options : ${JSON.stringify(options)}`);
         // console.log(`moveMotor :  ${JSON.stringify(datas)}`);
@@ -2966,6 +2962,7 @@ class Firmata extends Emitter {
 
     /**
      * convert integer to 2 byte array
+     // eslint-disable-next-line valid-jsdoc
      * @param short
      * @returns {number[]}
      * @private
@@ -3006,24 +3003,24 @@ class Firmata extends Emitter {
      * @brief   센서값 읽기
      *
      */
-    _getPackage() {
+    _getPackage () {
         // var nextID = arguments[0];
-        let len = arguments.length;
+        const len = arguments.length;
 
         console.log(`len = ${arguments.length}`);
 
-        let bytes = [0xff, 0x55];
-        bytes.push(len+2);
+        const bytes = [0xff, 0x55];
+        bytes.push(len + 2);
         bytes.push(0);
         bytes.push(1);
 
-        for (let i= 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             bytes.push(arguments[i]);
-        }//for
+        }// for
 
         // device.send(bytes);
         return bytes;
-    } //function getPackage
+    } // function getPackage
 
     /**
      * read line tracer
