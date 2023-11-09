@@ -2649,8 +2649,8 @@ class CoconutDevice {
     moveMotor (args) {
         console.log(`moveMotor... ${args.DIRECTION_FB}`);
 
-        this._peripheral.moveMotor(args.DIRECTION_FB);
-        return Promise.resolve();
+        return this._peripheral.moveMotor(args.DIRECTION_FB);
+        // return Promise.resolve();
     }
 
     /**
@@ -2662,7 +2662,7 @@ class CoconutDevice {
         console.log(`turn motors ${args.DIRECTION_LR}`);
 
         this._peripheral.turnMotor(args.DIRECTION_LR);
-        return Promise.resolve();
+        // return Promise.resolve();
     }
 
     /**
@@ -2670,8 +2670,8 @@ class CoconutDevice {
      */
     stopMotor () {
         console.log('stop motor');
-        this._peripheral.stopMotor();
-        return Promise.resolve();
+        return this._peripheral.stopMotor();
+        // return Promise.resolve();
     }
 
     /**
@@ -2680,12 +2680,12 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     moveGoTime (args) {
-        console.log(`move go times ${args.DIRECTION_FB} ${args.TIME_SEC} secs`);
+        console.log(`move ${args.DIRECTION_FB} for ${args.TIME_SEC} secs`);
 
         // let sec = args.TIME_SEC;
 
-        this._peripheral.moveGoTime(args.DIRECTION_FB, args.TIME_SEC);
-        return Promise.resolve();
+        return this._peripheral.moveGoTime(args.DIRECTION_FB, args.TIME_SEC);
+        // return Promise.resolve();
     }
 
     /**
@@ -2699,7 +2699,7 @@ class CoconutDevice {
         // let sec = args.TIME_SEC;
 
         this._peripheral.turnMotorTime(args.DIRECTION_LR, args.TIME_SEC);
-        return Promise.resolve();
+        // return Promise.resolve();
     }
 
     /**
@@ -2868,8 +2868,8 @@ class CoconutDevice {
      * @param args
      */
     getLineTracer (args) {
-        this._peripheral.coconutGetLineTracer(args.DIRECTION_LR);
-        return Promise.resolve();
+        return this._peripheral.getLineTracer(args.DIRECTION_LR);
+        // return Promise.resolve();
     }
 
     /**

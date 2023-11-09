@@ -57,6 +57,19 @@ const Sensors = {
     LedMatrix: 27 // 0x1b
 };
 
+/**
+ * Motor command
+ * @type {{MOVE: number, STOP: number, CM: number, DEGREE: number, RGB: number}}
+ */
+const MOTOR_CMD = {
+    MOVE: 0x00,
+    STOP: 0x01,
+    TIME: 0x03,
+    RGB: 0x05,
+    CM: 0x0A,
+    DEGREE: 0x0B
+};
+
 const Directions = {
     Both: 0, Left: 1, Right: 2, Forward: 3, Backward: 4
 };
@@ -330,7 +343,7 @@ class CoconutPeripheral {
     send (message) {
         if (!this.isConnected()) return;
 
-        console.log(`send to coconut: heartbeat ${JSON.stringify(message)}`);
+        console.log(`send to coconut: ${JSON.stringify(message)}`);
 
         // const data = Base64Util.uint8ArrayToBase64(message);
         // this._serialport.write(data);
@@ -660,12 +673,13 @@ class CoconutPeripheral {
 
         const datas = this._runPackage(Sensors.Motor, 0, direction, speed);
         console.log(`move motors datas : ${datas}`);
-        this.send(datas);
+        // this.send(datas);
 
         // TODO: promise 추가
         return new Promise(resolve => {
             this._firmata.moveMotor(Sensors.Motor, 0, direction, speed, value => {
                 resolve(value);
+                console.log(`resolve : ${value}`);
             });
             // window.setTimeout(() => {
             //     resolve();
@@ -694,16 +708,66 @@ class CoconutPeripheral {
         if (typeof direction === 'string') direction = Directions[direction];
         const speed = 60;
 
+        // console.log(`isReady : ${this.isReady()}`);
+        // console.log(`isConnected : ${this.isConnected()}`);
+
+        // if (this.isConnected()) {
+        //     const datas = this._runPackage(Sensors.Motor, 0, direction, speed);
+        //
+        //     console.log(`turn motors datas : ${datas}`);
+        //
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.turnMotor(Sensors.Motor, 0, direction, speed, value => {
+                resolve(value);
+                console.log(`resolve : ${value}`);
+            });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        });
+    }
+
+    /**
+     * stop coconut motor
+     */
+    stopMotor () {
+        const datas = this._runPackage(Sensors.Motor, 1);
+
+        console.log(`stop motors datas : ${datas}`);
+
+        // console.log(`_peripheral : ${JSON.stringify(options)}`);
         console.log(`isReady : ${this.isReady()}`);
-        console.log(`isConnected : ${this.isConnected()}`);
 
-        if (this.isConnected()) {
-            const datas = this._runPackage(Sensors.Motor, 0, direction, speed);
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
 
-            console.log(`turn motors datas : ${datas}`);
+        // TODO: promise 추가
+        return new Promise(resolve => {
+            this._firmata.stopMotor(Sensors.Motor, 1, value => {
+                resolve(value);
+                console.log(`resolve : ${value}`);
+            });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        });
+    }
 
-            this.send(datas);
-        }
+    _short2array (short) {
+        // Create a 2-byte array (16 bits) using an Int16Array
+        const byteArray = new Int16Array(1);
+        byteArray[0] = short;
+
+        // Convert the Int16Array to a regular byte array (Uint8Array)
+        const byteView = new Uint8Array(byteArray.buffer);
+
+        console.log(`short ${short} => bytes ${JSON.stringify(byteView)}`);
+
+        return Array.from(byteView);
     }
 
     /**
@@ -717,18 +781,32 @@ class CoconutPeripheral {
 
         // 시간이 0보다 작으면 양수로 변환
         if (sec < 0) sec = -sec;
+
         sec = 1000 * sec; // ms 변환
 
         const speed = 60;
 
-        if (this.isConnected()) {
-            // sensor, seq, dir, speed, degree, time
-            const datas = this._runPackage(Sensors.Motor, 3, direction, speed, this._short2array(sec));
+        // if (this.isConnected()) {
+        //     // sensor, seq, dir, speed, degree, time
+        //     const datas = this._runPackage(Sensors.Motor, 3, direction, speed, this._short2array(sec));
+        //
+        //     console.log(`move motors datas : ${datas}`);
+        //
+        //     this.send(datas);
+        // }
 
-            console.log(`move motors datas : ${datas}`);
-
-            this.send(datas);
-        }
+        return new Promise(resolve => {
+            this._firmata.moveGoTime(Sensors.Motor, MOTOR_CMD.TIME, direction, speed, sec, value => {
+                resolve(value);
+                // console.log(`resolve : ${value}`);
+            });
+            // window.setTimeout(() => {
+            //      resolve();
+            // }, sec);
+        }).then(result => {
+            // console.log(result);
+            console.log(`resolve : ${result}`);
+        });
 
         // seq, direction, speed, degree, time
         // runPackage(devices["Motor"], 3, direction, speed, short2array(sec));
@@ -749,50 +827,24 @@ class CoconutPeripheral {
 
         const speed = 60;
 
-        if (this.isConnected()) {
-            // sensor, seq, dir, speed, degree, time
-            const datas = this._runPackage(Sensors.Motor, 3, direction, speed, this._short2array(sec));
+        // if (this.isConnected()) {
+        //     // sensor, seq, dir, speed, degree, time
+        //     const datas = this._runPackage(Sensors.Motor, 3, direction, speed, this._short2array(sec));
+        //
+        //     console.log(`turn motors datas : ${datas}`);
+        //
+        //     this.send(datas);
+        // }
 
-            console.log(`turn motors datas : ${datas}`);
-
-            this.send(datas);
-        }
-    }
-
-    _short2array (short) {
-        // Create a 2-byte array (16 bits) using an Int16Array
-        const byteArray = new Int16Array(1);
-        byteArray[0] = short;
-
-        // Convert the Int16Array to a regular byte array (Uint8Array)
-        const byteView = new Uint8Array(byteArray.buffer);
-
-        console.log(`short ${short} => bytes ${JSON.stringify(byteView)}`);
-
-        return Array.from(byteView);
-    }
-
-    /**
-     * stop coconut motor
-     */
-    stopMotor () {
-        const datas = this._runPackage(Sensors.Motor, 1);
-
-        console.log(`stop motors datas : ${datas}`);
-
-        // const options = {
-        //     sensor: Sensors.Motor,
-        //     index: 0,
-        //     direction: direction,
-        //     speed: 60
-        // };
-
-        // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        console.log(`isReady : ${this.isReady()}`);
-
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        return new Promise(resolve => {
+            this._firmata.moveGoTime(Sensors.Motor, MOTOR_CMD.TIME, direction, speed, sec, value => {
+                resolve(value);
+                console.log(`resolve : ${value}`);
+            });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        });
     }
 
     /**
@@ -1164,14 +1216,24 @@ class CoconutPeripheral {
      * read line tracer
      * @param direction
      */
-    coconutGetLineTracer (direction) {
+    getLineTracer (direction) {
         if (typeof direction == "string") direction = Directions[direction];
 
-        const datas = this._getPackage(Sensors.Linetracer, 0, direction);
+        // const datas = this._getPackage(Sensors.Linetracer, 0, direction);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        return new Promise(resolve => {
+            this._firmata.getLineTracer(Sensors.Linetracer, 0, direction, value => {
+                resolve(value);
+                console.log(`resolve : ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FrimataReadTimeout);
+        });
     }
 
     /**
