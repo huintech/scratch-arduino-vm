@@ -67,17 +67,45 @@ const SYSTEM_RESET = 0xFF;
 const MAX_PIN_COUNT = 128;
 
 // coconut protocol
-// const ACTION_RUN= 0x02;
-// const ACTION_GET = 0x01;
 // const DEV_MOTOR = 0x1a;
 // const MOTOR_CMD_0 = 0x00;
 
 /**
- * motor response
+ * coconut response ID
  * @type {number}
  */
+const BUZZER= 0x03;
+const BUZZER_RESPONSE = 0x03;
 const MOTOR_RESPONSE = 0x1A;
+const RGB_RESPONSE = 0x19;
 const LINE_TRACER_RESPONSE = 0x07;
+
+/**
+ * action type
+ * @type {{GET: number, RUN: number, RESET: number}}
+ */
+const ACTION = {
+    GET: 0x01,
+    RUN: 0x02,
+    RESET: 0x04
+};
+
+/**
+ * sensor ID in Coconut
+ * @type {{IRdistance: number, LineTracer: number, Temperature: number, Motor: number, LedMatrix: number, Accelerometer: number, Buzzer: number, IR: number, RGBled: number, LightSensor: number}}
+ */
+// const SENSOR = {
+//     LightSensor: 14,
+//     Accelerometer: 18,
+//     Temperature: 21,
+//     Buzzer: 3,
+//     IRdistance: 5,
+//     LineTracer: 7,
+//     IR: 9,
+//     RGBled: 25,
+//     Motor: 26,
+//     LedMatrix: 27 // 0x1b
+// };
 
 /**
  * Motor command
@@ -90,6 +118,32 @@ const MOTOR_CMD = {
     RGB: 0x05,
     CM: 0x0A,
     DEGREE: 0x0B
+};
+
+/**
+ * RGB LED command
+ * @type {{ON_TIME: number, RAINBOW: number, ON_COLOR: number, OFF: number}}
+ */
+const RGB_CMD = {
+    ON_COLOR: 0x00,
+    OFF: 0x01,
+    ON_TIME: 0x03,
+    RAINBOW: 0x04
+}
+
+/**
+ * Buzzer command
+ * @type {{}}
+ */
+const BUZZER_CMD = {
+    ON: 0x00,
+    REST_BEAT: 0x01,
+    NOTE: 0x02,
+    NOTE_RGB: 0x03,
+    NOTE_BEAT: 0x04,
+    NOTE_BEAT_RGB: 0x05,
+    MELODY: 0x06,
+    CHANGE_BEAT: 0x08
 };
 
 /**
@@ -584,40 +638,160 @@ const SYSEX_RESPONSE = {
         console.log(`EVENT : send buffer= ${board._sendBuffer}`);
         // console.log(`typeof cmd ${typeof board._sendBuffer[6]}`);
 
-        let _direction;
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        let direction;
 
         // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
         // ff 55 04 00 02 1a(26) 01 / stop motor
-        switch (board._sendBuffer[6]) {
+        switch (command) {
+            // 전/후진, 좌/우회전
         case MOTOR_CMD.MOVE:
-            _direction = board._sendBuffer[7];
-            console.log(`handler : move-motor-${_direction}`);
+            direction = board._sendBuffer[7];
+            console.log(`handler : move-motor-${direction}`);
             // board.emit(`move-motor-${_direction}`, true);
-            board.emit(`move-motor-${_direction}`);
+            board.emit(`move-motor-${direction}`);
             break;
+            // 정지
         case MOTOR_CMD.STOP:
             console.log(`handler : stop-motor`);
             board.emit('stop-motor');
             break;
+            // 전/후진/좌/우회전 + 시간
         case MOTOR_CMD.TIME:
-            _direction = board._sendBuffer[7];
-            console.log(`handler : move-motor-time-${_direction}`);
-            board.emit(`move-motor-time-${_direction}`, true);
+            direction = board._sendBuffer[7];
+            console.log(`handler : move-motor-time-${direction}`);
+            board.emit(`move-motor-time-${direction}`, true);
             break;
+            // 전/후진/좌/우회전 + RGB
         case MOTOR_CMD.RGB:
-            console.log(`handler : move-motor-rgb`);
-            board.emit('move-motor-rgb');
+            console.log(`handler : motor-rgb-{direction}-{rgb}`);
+            direction = board._sendBuffer[7];
+            const color = board._sendBuffer[9];
+            board.emit(`motor-rgb-${direction}-${color}`);
             break;
         case MOTOR_CMD.CM:
-            console.log(`handler : move-motor-cm`);
-            board.emit('move-motor-cm');
+            console.log(`handler : motor-cm-{direction}`);
+            direction = board._sendBuffer[7];
+            board.emit(`motor-cm-${direction}`, true);
             break;
         case MOTOR_CMD.DEGREE:
-            console.log(`handler : move-motor-degree`);
-            board.emit('move-motor-degree');
+            direction = board._sendBuffer[7];
+            console.log(`handler : motor-degree-${direction}`);
+            board.emit(`motor-degree-${direction}`, true);
             break;
         }
 
+    },
+    /**
+     * Handles a RGB LED response and emits the 'rgb-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [RGB_RESPONSE] (board) {
+        console.log(`EVENT : RGB`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+        let direction;
+        let color;
+        let error;
+
+        if (action !== 0x02) {
+            error = `Error: invalid response`;
+        }
+
+        // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
+        // ff 55 04 00 02 1a(26) 01 / stop motor
+        switch (command) {
+            // RGB on
+            case RGB_CMD.ON_COLOR:
+                direction = board._sendBuffer[7];
+                color = board._sendBuffer[8];
+                console.log(`handler : rgb-on-${direction}-${color}`);
+                // board.emit(`move-motor-${_direction}`, true);
+
+                if (error) {
+                    board.emit(`rgb-on-${direction}-${color}`, error);
+                } else {
+                    board.emit(`rgb-on-${direction}-${color}`);
+                }
+                break;
+            // RGB off
+            case RGB_CMD.OFF:
+                direction = board._sendBuffer[7];
+                color = board._sendBuffer[8];
+                console.log(`handler : rgb-off-${direction}-${color}`);
+
+                if (error) {
+                    board.emit(`rgb-off-${direction}-${color}`, error);
+                } else {
+                    board.emit(`rgb-off-${direction}-${color}`);
+                }
+                break;
+            case RGB_CMD.ON_TIME:
+                direction = board._sendBuffer[7];
+                color = board._sendBuffer[8];
+                console.log(`handler : rgb-time-${direction}-${color}`);
+
+                const msg = (error) ? error : true;
+                board.emit(`rgb-time-${direction}-${color}`, msg);
+                break;
+        }
+    },
+    /**
+     * Handles a Buzzer response and emits the 'buzzer-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [BUZZER_RESPONSE] (board) {
+        console.log(`EVENT : BUZZER`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+        let direction;
+        let color;
+        let error;
+
+        if (action !== ACTION.RUN) {
+            error = `Error: invalid response`;
+        }
+
+        // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
+        // ff 55 04 00 02 1a(26) 01 / stop motor
+        switch (command) {
+            // buzzer on
+            case BUZZER_CMD.ON: {
+                // direction = board._sendBuffer[7];
+                // color = board._sendBuffer[8];
+                console.log(`handler : buzzer-{on|time|freq|off}`);
+                // board.emit(`move-motor-${_direction}`, true);
+
+                const freq = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+                const duration = `${board._sendBuffer[9]}${board._sendBuffer[10]}`;
+
+                const msg = (error) ? error: true;
+                board.emit(`buzzer-on`, msg);
+                board.emit(`buzzer-time-${freq}-${duration}`, msg); // buzzer + frequency + duration
+                board.emit(`buzzer-freq-${freq}-${duration}`, msg); // buzzer + frequency + duration
+                board.emit(`buzzer-off-${freq}-${duration}`, msg); // buzzer + frequency + duration
+                break;
+            }
+            case BUZZER_CMD.NOTE_BEAT: {
+                // direction = board._sendBuffer[7];
+                // color = board._sendBuffer[8];
+                console.log(`handler : buzzer-note-{note}-{octave}-{sharp}`);
+                const note = board._sendBuffer[7];
+                const octave = board._sendBuffer[8];
+                const sharp = board._sendBuffer[9];
+
+                const msg = (error) ? error: true;
+                board.emit(`buzzer-note-${note}-${octave}-${sharp}`, msg);
+                break;
+            }
+
+        }
     },
     /**
      * Handles a Line-tracer response and emits the 'line-tracer-' + n event where n is command of the block parameter
@@ -639,6 +813,7 @@ const SYSEX_RESPONSE = {
             // _direction = board._sendBuffer[7];
             const value = getSensorValue(board.buffer);
             console.log(`handler : line-tracer-${command}`);
+            console.log(`value= ${value}`);
             board.emit(`line-tracer-${command}`, value);
             break;
         case LINE_TRACER_CMD.DETECT_SINGLE:
@@ -972,7 +1147,7 @@ class Firmata extends Emitter {
         console.log(`onreciveData data= ${data} len= ${data.length}`);
         // console.log(`typeof data ${typeof data}`);
         // console.log(`${[...data]}`);
-        console.log(`buffer len= ${this.buffer.length}`);
+        // console.log(`buffer len= ${this.buffer.length}`);
 
         if (this.buffer.length > 30) this.buffer.length = 0;
 
@@ -998,7 +1173,6 @@ class Firmata extends Emitter {
                     // }
                 }
 
-
                 // console.log(`this.buffer= ${this.buffer}`);
 
                 // end bit is 0x0d0a
@@ -1012,54 +1186,57 @@ class Firmata extends Emitter {
                         // console.log(`RUN type..`);
                         console.log(`send buffer= ${this._sendBuffer}`);
 
-                        const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
-                        if (handler) handler(this);
+                        // const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
+                        // if (handler) handler(this);
                         // console.log(`handler = ${handler}`);
 
                         // this.buffer.length = 0;
                     }
                     // get type response
                     else {
-                        console.log(`GET type...`);
+                        // console.log(`GET type...`);
 
-                        let position = this._isParseStartIndex + 2;
-                        const extId = this.buffer[position];
-                        position++;
-                        const type = this.buffer[position];
-                        position++;
+                        // let position = this._isParseStartIndex + 2;
+                        // const extId = this.buffer[position];
+                        // position++;
+                        // const type = this.buffer[position];
+                        // position++;
 
                         // data type check
-                        let value;
-                        switch (type) {
-                        case 1:
-                            value = this.buffer[position];
-                            position++;
-                            break;
-                        case 2:
-                            value = this._readFloat(this.buffer, position);
-                            position += 4;
-                            if ((value < -255) || (value > 1023)) value = 0;
-                            break;
-                        case 3:
-                            value = this._readShort(this.buffer, position);
-                            position += 2;
-                            break;
-                        case 4:
-                            const lv = this.buffer[position];
-                            position++;
-                            value = this._readString(this.buffer, position, lv);
-                            break;
-                        case 5:
-                            value = this._readDouble(this.buffer, position);
-                            position += 4;
-                            break;
-                        }
+                        // let value;
+                        // switch (type) {
+                        // case 1:
+                        //     value = this.buffer[position];
+                        //     position++;
+                        //     break;
+                        // case 2:
+                        //     value = this._readFloat(this.buffer, position);
+                        //     position += 4;
+                        //     if ((value < -255) || (value > 1023)) value = 0;
+                        //     break;
+                        // case 3:
+                        //     value = this._readShort(this.buffer, position);
+                        //     position += 2;
+                        //     break;
+                        // case 4:
+                        //     const lv = this.buffer[position];
+                        //     position++;
+                        //     value = this._readString(this.buffer, position, lv);
+                        //     break;
+                        // case 5:
+                        //     value = this._readDouble(this.buffer, position);
+                        //     position += 4;
+                        //     break;
+                        // }
+                        //
+                        // console.log(`type= ${type} value=${value}`);
 
-                        console.log(`type= ${type} value=${value}`);
-
-                        const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
-                        if (handler) handler(this);
+                        // const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
+                        // if (handler) handler(this);
                     }
+
+                    const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
+                    if (handler) handler(this);
 
                     console.log(`this.buffer= ${this.buffer}`);
 
@@ -2961,6 +3138,24 @@ class Firmata extends Emitter {
     }
 
     /**
+     * Turn on RGB LED while rotating the motor
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param color
+     * @param callback
+     */
+    moveMotorColor (sensor, cmd, direction, speed, color, callback) {
+        const datas = this._runPackage(sensor, cmd, direction, speed, color);
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+        // this.removeAllListeners(`analog-read-${pin}`);
+        this.once(`motor-rgb-${direction}-${color}`, callback);
+    }
+
+
+    /**
      * convert integer to 2 byte array
      // eslint-disable-next-line valid-jsdoc
      * @param short
@@ -2997,6 +3192,211 @@ class Firmata extends Emitter {
 
         this.removeAllListeners(`move-motor-time-${direction}`);
         this.once(`move-motor-time-${direction}`, callback);
+    }
+
+    /**
+     * Move by the entered distance
+     * @param motor
+     * @param cmd
+     * @param direction
+     * @param cm
+     * @param callback
+     */
+    moveGoCm (motor, cmd, direction, cm, callback) {
+        const datas = this._runPackage(motor, cmd, direction, cm);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`motor-cm-${direction}`);
+        this.once(`motor-cm-${direction}`, callback);
+    }
+
+    /**
+     *
+     * @param motor
+     * @param cmd
+     * @param direction
+     * @param degree
+     * @param callback
+     */
+    turnMotorDegree (motor, cmd, direction, degree, callback) {
+        const datas = this._runPackage(motor, cmd, direction, this._short2array(degree));
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`motor-cm-${direction}`);
+        this.once(`motor-degree-${direction}`, callback);
+    }
+
+    /**
+     * turn on RGB LED
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param color
+     * @param callback
+     */
+    rgbOn (sensor, cmd, direction, color, callback) {
+        const datas = this._runPackage(sensor, RGB_CMD.ON_COLOR, direction, color);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`motor-cm-${direction}`);
+        this.once(`rgb-on-${direction}-${color}`, callback);
+    }
+
+    /**
+     * turn off RGB LED
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param color - 0: none
+     * @param callback
+     */
+    rgbOff (sensor, cmd, direction, color, callback) {
+        const datas = this._runPackage(sensor, RGB_CMD.OFF, direction, color);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`motor-cm-${direction}`);
+        this.once(`rgb-off-${direction}-${color}`, callback);
+    }
+
+    /**
+     * turn on RGB LED for entered time
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param color
+     * @param ms    millisecond
+     * @param callback
+     */
+    rgbOnTime (sensor, cmd, direction, color, ms, callback) {
+        const datas = this._runPackage(sensor, 3, direction, color, this._short2array(ms));
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`rgb-time-${direction}-${color}`);
+        this.once(`rgb-time-${direction}-${color}`, callback);
+    }
+
+    /**
+     * @brief   버저 제어
+     * @details
+     * @param   seq     순번 (0: 연주, 1: 박자쉬기, 2: 음표 연주)
+     * @param   tone    주파수
+     * @param   beat    박자
+     */
+    _buzzerControl (seq, tone, beat) {
+        //if (typeof tone == "string") tone = tones[tone];
+        if (typeof beat == "string") beat = Beats[beat];
+
+        return this._runPackage(Sensors.Buzzer, seq, this._short2array(tone), this._short2array(beat));
+    }
+
+    /**
+     * beep
+     * @param sensor
+     * @param cmd
+     * @param tone
+     * @param beat
+     * @param callback
+     */
+    beep (sensor, cmd, tone, beat, callback) {
+        // const datas = this._buzzerControl(0, 262, 50);
+        const datas =  this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-on`);
+        this.once(`buzzer-on`, callback);
+    }
+
+    /**
+     * The buzzer sounds for the entered time.
+     * @param sensor
+     * @param cmd
+     * @param tone
+     * @param beat
+     * @param callback
+     */
+    playBuzzerTime (sensor, cmd, tone, beat, callback) {
+        const datas =  this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+        this._sendBuffer = datas.slice();
+        const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-time-${freq}-${duration}`);
+        this.once(`buzzer-time-${freq}-${duration}`, callback);
+    }
+
+    /**
+     * The buzzer sounds at the entered frequency for the entered time.
+     * @param sensor
+     * @param cmd
+     * @param tone
+     * @param beat
+     * @param callback
+     */
+    playBuzzerFreq (sensor, cmd, tone, beat, callback) {
+        const datas =  this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+        this._sendBuffer = datas.slice();
+        const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-freq-${freq}-${duration}`);
+        this.once(`buzzer-freq-${freq}-${duration}`, callback);
+    }
+
+    /**
+     * buzzer off
+     * @param sensor
+     * @param cmd
+     * @param tone
+     * @param beat
+     * @param callback
+     */
+    buzzerOff (sensor, cmd, tone, beat, callback) {
+        const datas =  this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+        this._sendBuffer = datas.slice();
+        const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-off-${freq}-${duration}`);
+        this.once(`buzzer-off-${freq}-${duration}`, callback);
+    }
+
+    /**
+     * play note
+     * @param sensor
+     * @param cmd
+     * @param note
+     * @param octave
+     * @param sharp
+     * @param beat
+     * @param callback
+     */
+    playNote (sensor, cmd, note, octave, sharp, beat, callback) {
+        const datas = this._runPackage(sensor, cmd, note, octave, sharp, this._short2array(beat));
+        this._sendBuffer = datas.slice();
+        // const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        // const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-note-${note}-${octave}-${sharp}`);
+        this.once(`buzzer-note-${note}-${octave}-${sharp}`, callback);
     }
 
     /**

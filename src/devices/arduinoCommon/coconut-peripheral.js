@@ -43,14 +43,17 @@ const Mode = {
     InputPullup: 'INPUT_PULLUP'
 };
 
-// sesor id
+/**
+ * sensor ID in Coconut
+ * @type {{IRdistance: number, LineTracer: number, Temperature: number, Motor: number, LedMatrix: number, Accelerometer: number, Buzzer: number, IR: number, RGBled: number, LightSensor: number}}
+ */
 const Sensors = {
     LightSensor: 14,
     Accelerometer: 18,
     Temperature: 21,
     Buzzer: 3,
     IRdistance: 5,
-    Linetracer: 7,
+    LineTracer: 7,
     IR: 9,
     RGBled: 25,
     Motor: 26,
@@ -70,16 +73,29 @@ const MOTOR_CMD = {
     DEGREE: 0x0B
 };
 
+/**
+ * motor default speed
+ * @type {number}
+ */
+const MotorSpeed = 60;
+
+/**
+ * Direction values
+ * @type {{Left: number, Backward: number, Right: number, Forward: number, Both: number}}
+ */
 const Directions = {
     Both: 0, Left: 1, Right: 2, Forward: 3, Backward: 4
 };
 
+/**
+ * color values
+ * @type {{Red: number, White: number, Cyan: number, Blue: number, Yellow: number, Magenta: number, Black: number, Green: number}}
+ */
 const Colors = {
     Black: 0, White: 1,
     Red: 2, Green: 3, Blue: 4, Yellow: 5, Cyan: 6, Magenta: 7
 };
 
-// 박자: 음표, 쉼표 동일
 /**
  * 박자: 음표, 쉼표 동일
  * @type {{Zero: number, original: number, "Dotted eighth": number, "Dotted half": number, "Dotted sixteenth": number, Whole: number, Double: number, Eighth: number, "Thirty-second": number, Half: number, "Dotted quarter": number, "Dotted thirty-second": number, Quater: number, Sixteenth: number}}
@@ -452,6 +468,7 @@ class CoconutPeripheral {
 
 	    // console.log(`_startHeartbeat`);
         this._startHeartbeat();
+        // TODO: heart beat 추후 삭제, firmata connection 은 시리얼포트 연결되면 true 로 반환
         this._isFirmataConnected = true;
 
         this._runtime.on(this._runtime.constructor.PROGRAM_MODE_UPDATE, this._handleProgramModeUpdate);
@@ -848,26 +865,36 @@ class CoconutPeripheral {
     }
 
     /**
-     * Turn on RGB LED while rotating motor
+     * Turn on RGB LED while rotating the motor
      * @param direction LEFT, RIGHT
      * @param color Red, Blue, Green, Yellow, Cyan, Magenta, White
      */
     moveMotorColor (direction, color) {
         if (typeof direction === 'string') direction = Directions[direction];
         if (typeof color === 'string') color = Colors[color];
-        const speed = 60;
+        // const speed = 60;
 
         // deviceid, seq, direction, speed, color
-        const datas = this._runPackage(Sensors.Motor, 5, direction, speed, color);
-
-        console.log(`moveMotorColors datas : ${datas}`);
+        // const datas = this._runPackage(Sensors.Motor, 5, direction, MotorSpeed, color);
+        //
+        // console.log(`moveMotorColors datas : ${datas}`);
 
         // console.log(`_peripheral : ${JSON.stringify(options)}`);
         console.log(`isReady : ${this.isReady()}`);
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.moveMotorColor(Sensors.Motor, MOTOR_CMD.RGB, direction, MotorSpeed, color, value => {
+                resolve(value);
+                console.log(`resolve : ${value}`);
+            });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        });
     }
 
     /**
@@ -879,16 +906,29 @@ class CoconutPeripheral {
         if (typeof direction === 'string') direction = Directions[direction];
 
         // runPackage(devices["Motor"], 10, direction, cm);
-        const datas = this._runPackage(Sensors.Motor, 10, direction, cm);
+        // const datas = this._runPackage(Sensors.Motor, 10, direction, cm);
 
-        console.log(`moveGoCm datas : ${datas}`);
+        // console.log(`moveGoCm datas : ${datas}`);
 
         // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        console.log(`isReady : ${this.isReady()}`);
+        // console.log(`isReady : ${this.isReady()}`);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        return new Promise(resolve => {
+            this._firmata.moveGoCm(Sensors.Motor, MOTOR_CMD.CM, direction, cm, value => {
+                resolve(value);
+                // console.log(`resolve : ${value}`);
+            });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        }).then(result => {
+            // console.log(result);
+            console.log(`resolve : ${result}`);
+        });
     }
 
     /**
@@ -901,16 +941,29 @@ class CoconutPeripheral {
         // if (typeof direction === 'string') direction = Directions[direction];
 
         // runPackage(devices["Motor"], 11, direction, short2array(degree));
-        const datas = this._runPackage(Sensors.Motor, 11, direction, this._short2array(degree));
+        // const datas = this._runPackage(Sensors.Motor, 11, direction, this._short2array(degree));
 
-        console.log(`TurnMotorDegrees datas : ${datas}`);
+        // console.log(`TurnMotorDegrees datas : ${datas}`);
 
         // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        console.log(`isReady : ${this.isReady()}`);
+        // console.log(`isReady : ${this.isReady()}`);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        return new Promise(resolve => {
+            this._firmata.turnMotorDegree(Sensors.Motor, MOTOR_CMD.DEGREE, direction, degree, value => {
+                resolve(value);
+                console.log(`resolve : ${value}`);
+            });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        }).then(result => {
+            // console.log(result);
+            console.log(`resolve : ${result}`);
+        });
     }
 
     /**
@@ -925,14 +978,24 @@ class CoconutPeripheral {
         // runPackage(devices["RGBled"], 0, direction, color);
         const datas = this._runPackage(Sensors.RGBled, 0, direction, color);
 
-        console.log(`RGBon datas : ${datas}`);
+        console.log(`rgbOn datas : ${datas}`);
 
         // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        console.log(`isReady : ${this.isReady()}`);
+        // console.log(`isReady : ${this.isReady()}`);
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.rgbOn(Sensors.RGBled, 0, direction, color, value => {
+                resolve(value);
+                console.log(`resolve : ${value}`);
+            });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        });
     }
 
     /**
@@ -943,20 +1006,28 @@ class CoconutPeripheral {
         if (typeof direction === 'string') direction = Directions[direction];
 
         // runPackage(devices["RGBled"], 1, direction, 0);
-        const datas = this._runPackage(Sensors.RGBled, 1, direction);
+        // const datas = this._runPackage(Sensors.RGBled, 1, direction);
 
-        console.log(`RGBoff datas : ${datas}`);
+        // console.log(`RGBoff datas : ${datas}`);
+        //
+        // console.log(`isReady : ${this.isReady()}`);
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
 
-        // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        console.log(`isReady : ${this.isReady()}`);
-
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        return new Promise(resolve => {
+            this._firmata.rgbOff(Sensors.RGBled, 1, direction, 0, value => {
+                resolve(value);
+                console.log(`resolve : ${value}`);
+            });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        });
     }
 
     /**
-     * turn off RGB LED
+     * turn off selected RGB LED
      * @param direction
      * @param color
      */
@@ -965,20 +1036,30 @@ class CoconutPeripheral {
         if (typeof color === 'string') color = Colors[color];
 
         // runPackage(devices["RGBled"], 1, direction, color);
-        const datas = this._runPackage(Sensors.RGBled, 1, direction, color);
+        // const datas = this._runPackage(Sensors.RGBled, 1, direction, color);
+        //
+        // console.log(`RGBoffColor datas : ${datas}`);
+        //
+        // // console.log(`_peripheral : ${JSON.stringify(options)}`);
+        // console.log(`isReady : ${this.isReady()}`);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
 
-        console.log(`RGBoffColor datas : ${datas}`);
-
-        // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        console.log(`isReady : ${this.isReady()}`);
-
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        return new Promise(resolve => {
+            this._firmata.rgbOff(Sensors.RGBled, 1, direction, color, value => {
+                resolve(value);
+                console.log(`resolve : ${value}`);
+            });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        });
     }
 
     /**
-     * turn on RGB LED
+     * turn on RGB LED for entered time
      * @param direction
      * @param color
      * @param sec
@@ -987,7 +1068,7 @@ class CoconutPeripheral {
         if (typeof direction === 'string') direction = Directions[direction];
         if (typeof color === 'string') color = Colors[color];
 
-        console.log(`typeof sec ${typeof sec}`);
+        // console.log(`typeof sec ${typeof sec}`);
 
         // 시간이 정수가 아니거나 0보다 작을 경우 0으로 변경
         if (typeof sec == 'string') sec = Number(sec);
@@ -997,16 +1078,29 @@ class CoconutPeripheral {
         sec *= 1000; // ms 변환
 
         // runPackage(devices["RGBled"], 3, direction, color, short2array(sec));
-        const datas = this._runPackage(Sensors.RGBled, 3, direction, color, this._short2array(sec));
+        // const datas = this._runPackage(Sensors.RGBled, 3, direction, color, this._short2array(sec));
 
-        console.log(`RGBonTime datas : ${datas}`);
+        // console.log(`RGBonTime datas : ${datas}`);
 
-        // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        console.log(`isReady : ${this.isReady()}`);
+        // console.log(`isReady : ${this.isReady()}`);
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        return new Promise(resolve => {
+            this._firmata.rgbOnTime(Sensors.RGBled, 3, direction, color, sec, value => {
+                resolve(value);
+                // console.log(`resolve : ${value}`);
+            });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        }).then(result => {
+            if (result !== true) {
+                resolve();
+            }
+            console.log(`resolve : ${result}`);
+        });
     }
 
     /**
@@ -1015,9 +1109,8 @@ class CoconutPeripheral {
      * @param   seq     순번 (0: 연주, 1: 박자쉬기, 2: 음표 연주)
      * @param   tone    주파수
      * @param   beat    박자
-     * @param   note    음표
      */
-    buzzerControl (seq, tone, beat) {
+    _buzzerControl (seq, tone, beat) {
         //if (typeof tone == "string") tone = tones[tone];
         if (typeof beat == "string") beat = Beats[beat];
 
@@ -1028,15 +1121,28 @@ class CoconutPeripheral {
      * buzzer on
      */
     beep () {
-        const datas = this.buzzerControl(0, 262, 50);
+        // const datas = this._buzzerControl(0, 262, 50);
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        // sensor, cmd, tone, beat
+        const options = [Sensors.Buzzer, 0, 262, 50];
+
+        return new Promise(resolve => {
+            this._firmata.beep(...options, value => {
+                resolve(value);
+            });
+            window.setTimeout(result => {
+                resolve();
+                console.log(`resolve : ${result}`);
+            }, 50);
+        });
     }
 
     /**
-     * buzzer on for some seconds
+     * The buzzer sounds at the entered frequency for the entered time.
      * @param sec
      */
     playBuzzerTime (sec) {
@@ -1047,11 +1153,24 @@ class CoconutPeripheral {
         sec *= 1000; // ms 변환
 
         // buzzerControl(0, 262, sec);
-        const datas = this.buzzerControl(0, 262, sec);
+        // const datas = this._buzzerControl(0, 262, sec);
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // sensor, cmd, tone, beat
+        const options = [Sensors.Buzzer, 0, 262, sec];
+
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.playBuzzerTime(...options, value => {
+                resolve(value);
+            });
+            window.setTimeout(result => {
+                resolve();
+                console.log(`resolve : ${result}`);
+            }, sec);
+        });
     }
 
     /**
@@ -1060,7 +1179,7 @@ class CoconutPeripheral {
      * @param sec seconds
      */
     playBuzzerFreq (freq, sec) {
-        console.log(`typeof freq ${typeof freq} sec ${typeof sec}`);
+        // console.log(`typeof freq ${typeof freq} sec ${typeof sec}`);
 
         // 시간이 정수가 아니거나 0보다 작을 경우 0으로 변경
         if (typeof sec == 'string') sec = Number(sec);
@@ -1075,22 +1194,52 @@ class CoconutPeripheral {
         if (freq < 0) freq = 300;
 
         // this.buzzerControl(0, freq, sec);
-        const datas = this.buzzerControl(0, freq, sec);
+        // const datas = this._buzzerControl(0, freq, sec);
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        const options = [Sensors.Buzzer, 0, freq, sec];
+
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.playBuzzerFreq(...options, value => {
+                resolve(value);
+            });
+            window.setTimeout(result => {
+                resolve();
+                console.log(`resolve : ${result}`);
+            }, sec);
+        });
     }
 
     /**
      * buzzer off
      */
-    coconutBuzzerOff () {
-        const datas = this.buzzerControl(0, 0, 0);
+    buzzerOff () {
+        const options = [Sensors.Buzzer, 0, 0, 0];
+        // const datas = this._buzzerControl(0, 0, 0);
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.buzzerOff(...options, value => {
+                // resolve(value);
+                if (value !== true) {
+                    resolve(value);
+                }
+                else {
+                    resolve();
+                }
+                console.log(`resolve= ${value}`);
+            });
+            // window.setTimeout(result => {
+            //     resolve();
+            //     console.log(`resolve : ${result}`);
+            // }, sec);
+        });
     }
 
     /**
@@ -1100,7 +1249,7 @@ class CoconutPeripheral {
      * @param sharp
      * @param beat
      */
-    coconutPlayNote (note, octave, sharp, beat) {
+    playNote (note, octave, sharp, beat) {
         // note 에서 `NOTE_` 다음 문자열만 추출
         note = this._getNote(note);
 
@@ -1109,15 +1258,34 @@ class CoconutPeripheral {
 
         //if (typeof note == "string") tone = tones[tone];
         if (typeof beat == 'string') beat = Beats[beat];
-        if (typeof octave == 'string') octave = Number(octave);
+        // if (typeof octave == 'string') octave = Number(octave);
+
+        const options = [Sensors.Buzzer, 4, note.charCodeAt(0), octave, sharp.charCodeAt(0), beat];
 
         // note ascii 코드로 변환하여 전송
         // runPackage(devices["Buzzer"], 4, note.charCodeAt(0), octave, sharp.charCodeAt(0), short2array(beat));
-        const datas = this._runPackage(Sensors.Buzzer, 4, note.charCodeAt(0), octave, sharp.charCodeAt(0), this._short2array(beat));
+        // const datas = this._runPackage(Sensors.Buzzer, 4, note.charCodeAt(0), octave, sharp.charCodeAt(0), this._short2array(beat));
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.playNote(...options, value => {
+                // resolve(value);
+                if (value !== true) {
+                    resolve(value);
+                }
+                else {
+                    resolve();
+                }
+                console.log(`resolve= ${value}`);
+            });
+            // window.setTimeout(result => {
+            //     resolve();
+            //     console.log(`resolve : ${result}`);
+            // }, sec);
+        });
     }
 
     /**
@@ -1143,7 +1311,7 @@ class CoconutPeripheral {
         }
 
         // buzzerControl(1, 0, beat);
-        const datas = this.buzzerControl(1, 0, beat);
+        const datas = this._buzzerControl(1, 0, beat);
 
         if (this.isConnected()) {
             this.send(datas);
@@ -1226,7 +1394,7 @@ class CoconutPeripheral {
         // }
 
         return new Promise(resolve => {
-            this._firmata.getLineTracer(Sensors.Linetracer, 0, direction, value => {
+            this._firmata.getLineTracer(Sensors.LineTracer, 0, direction, value => {
                 resolve(value);
                 console.log(`resolve : ${value}`);
             });
@@ -1247,7 +1415,7 @@ class CoconutPeripheral {
 
         // getPackage(nextID, devices["Linetracer"], 1, direction, detectCond);
 
-        const datas = this._getPackage(Sensors.Linetracer, 1, direction, detect);
+        const datas = this._getPackage(Sensors.LineTracer, 1, direction, detect);
 
         if (this.isConnected()) {
             this.send(datas);
@@ -1258,7 +1426,7 @@ class CoconutPeripheral {
      * get line tracers detection
      */
     coconutGetLineTracers () {
-        const datas = this._getPackage(Sensors.Linetracer, 4);
+        const datas = this._getPackage(Sensors.LineTracer, 4);
 
         if (this.isConnected()) {
             this.send(datas);
@@ -1272,7 +1440,7 @@ class CoconutPeripheral {
     coconutLineTracerCmd (cmd) {
         if (typeof cmd == "string") cmd = Commands[cmd];
         // runPackage(devices["Linetracer"], 5, cmd);
-        const datas = this._runPackage(Sensors.Linetracer, 5, cmd);
+        const datas = this._runPackage(Sensors.LineTracer, 5, cmd);
 
         if (this.isConnected()) {
             this.send(datas);

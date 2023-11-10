@@ -1835,7 +1835,7 @@ class CoconutDevice {
                         text: formatMessage({
                             id: 'coconut.moveMotorColor',
                             default: 'turn [DIRECTION_LR] RGB [LED_COLOR]',
-                            description: 'Turn on RGB LED while rotating motor'
+                            description: 'Turn on RGB LED while rotating the motor'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -1936,7 +1936,7 @@ class CoconutDevice {
                         text: formatMessage({
                             id: 'coconut.rgbOffColor',
                             default: 'turn off RGB [DIRECTION_LRB] [LED_COLOR]',
-                            description: 'Turn off RGB LED '
+                            description: 'Turn off selected RGB LED '
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -1957,7 +1957,7 @@ class CoconutDevice {
                         text: formatMessage({
                             id: 'coconut.rgbOnTime',
                             default: 'turn on RGB [DIRECTION_LRB] [LED_COLOR] for [TIME_SEC] second(s)',
-                            description: 'Turn off RGB LED '
+                            description: 'turn on RGB LED for entered time'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -1992,7 +1992,7 @@ class CoconutDevice {
                         text: formatMessage({
                             id: 'coconut.playBuzzerTime',
                             default: 'play buzzer for [TIME_SEC] second(s)',
-                            description: 'buzzer on for some seconds'
+                            description: 'The buzzer sounds for the entered time'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -2007,7 +2007,7 @@ class CoconutDevice {
                         text: formatMessage({
                             id: 'coconut.playBuzzerFreq',
                             default: 'play buzzer on frequency [N_FREQUENCY] Hz for [TIME_SEC] second(s)',
-                            description: 'buzzer on frequency for some seconds'
+                            description: 'The buzzer sounds at the entered frequency for the entered time'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
@@ -2696,9 +2696,8 @@ class CoconutDevice {
     turnMotorTime (args) {
         console.log(`turn motor for times ${args.DIRECTION_LR} ${args.TIME_SEC} secs`);
 
-        // let sec = args.TIME_SEC;
-
-        this._peripheral.turnMotorTime(args.DIRECTION_LR, args.TIME_SEC);
+        return this._peripheral.moveGoTime(args.DIRECTION_LR, args.TIME_SEC);
+        // return this._peripheral.turnMotorTime(args.DIRECTION_LR, args.TIME_SEC);
         // return Promise.resolve();
     }
 
@@ -2708,12 +2707,11 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     moveMotorColor (args) {
-        console.log(`turn on RGB ${args.LED_COLOR} for turing ${args.DIRECTION_LR}`);
+        // console.log(`turn on RGB ${args.LED_COLOR} for turing ${args.DIRECTION_LR}`);
+        console.log(`moveMotorColor: args= ${JSON.stringify(args)}`);
 
-        // let sec = args.TIME_SEC;
-
-        this._peripheral.moveMotorColor(args.DIRECTION_LR, args.LED_COLOR);
-        return Promise.resolve();
+        return this._peripheral.moveMotorColor(args.DIRECTION_LR, args.LED_COLOR);
+        // return Promise.resolve();
     }
 
     /**
@@ -2722,10 +2720,12 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     moveGoCm (args) {
-        console.log(`move ${args.DIRECTION_FB} by distance ${args.N_CM}`);
+        // console.log(`move ${args.DIRECTION_FB} by distance ${args.N_CM}`);
+        console.log(`moveGoCm:`);
+        console.log(`args= ${JSON.stringify(args)}`);
 
-        this._peripheral.moveGoCm(args.DIRECTION_FB, Cast.toNumber(args.N_CM));
-        return Promise.resolve();
+        return this._peripheral.moveGoCm(args.DIRECTION_FB, Cast.toNumber(args.N_CM));
+        // return Promise.resolve();
     }
 
     /**
@@ -2734,10 +2734,12 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     turnMotorDegree (args) {
-        console.log(`turn ${args.DIRECTION_LR} by degree ${args.DEGREE}`);
+        console.log(`turnMotorDegree :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+        // console.log(`turn ${args.DIRECTION_LR} by degree ${args.DEGREE}`);
 
-        this._peripheral.turnMotorDegree(args.DIRECTION_LR, args.DEGREE);
-        return Promise.resolve();
+        return this._peripheral.turnMotorDegree(args.DIRECTION_LR, Cast.toNumber(args.DEGREE));
+        // return Promise.resolve();
     }
 
     /**
@@ -2745,10 +2747,12 @@ class CoconutDevice {
      * @param args
      */
     rgbOn (args) {
-        console.log(`turn on ${args.DIRECTION_LRB} by color ${args.LED_COLOR}`);
+        // console.log(`turn on ${args.DIRECTION_LRB} by color ${args.LED_COLOR}`);
+        console.log(`rgbOn :`);
+        console.log(`args= ${JSON.stringify(args)}`);
 
-        this._peripheral.rgbOn(args.DIRECTION_LRB, args.LED_COLOR);
-        return Promise.resolve();
+        return this._peripheral.rgbOn(args.DIRECTION_LRB, args.LED_COLOR);
+        // return Promise.resolve();
     }
 
     /**
@@ -2757,10 +2761,12 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     rgbOff (args) {
-        console.log(`turn off ${args.DIRECTION_LRB} RGB LED`);
+        // console.log(`turn off ${args.DIRECTION_LRB} RGB LED`);
+        console.log(`rgbOff :`);
+        console.log(`args= ${JSON.stringify(args)}`);
 
-        this._peripheral.rgbOff(args.DIRECTION_LRB);
-        return Promise.resolve();
+        return this._peripheral.rgbOff(args.DIRECTION_LRB);
+        // return Promise.resolve();
     }
 
     /**
@@ -2768,10 +2774,12 @@ class CoconutDevice {
      * @param args
      */
     rgbOffColor (args) {
-        console.log(`turn off ${args.DIRECTION_LRB} RGB LED ${args.LED_COLOR}`);
+        // console.log(`turn off ${args.DIRECTION_LRB} RGB LED ${args.LED_COLOR}`);
+        console.log(`rgbOffColor :`);
+        console.log(`args= ${JSON.stringify(args)}`);
 
-        this._peripheral.rgbOffColor(args.DIRECTION_LRB, args.LED_COLOR);
-        return Promise.resolve();
+        return this._peripheral.rgbOffColor(args.DIRECTION_LRB, args.LED_COLOR);
+        // return Promise.resolve();
     }
 
     /**
@@ -2780,10 +2788,12 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     rgbOnTime (args) {
-        console.log(`turn off ${args.DIRECTION_LRB} RGB LED ${args.LED_COLOR} ${args.TIME_SEC} secs`);
+        // console.log(`turn off ${args.DIRECTION_LRB} RGB LED ${args.LED_COLOR} ${args.TIME_SEC} secs`);
+        console.log(`rgbOnTime :`);
+        console.log(`args= ${JSON.stringify(args)}`);
 
-        this._peripheral.rgbOnTime(args.DIRECTION_LRB, args.LED_COLOR, args.TIME_SEC);
-        return Promise.resolve();
+        return this._peripheral.rgbOnTime(args.DIRECTION_LRB, args.LED_COLOR, Cast.toNumber(args.TIME_SEC));
+        // return Promise.resolve();
     }
 
     /**
@@ -2791,30 +2801,36 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     beep () {
-        this._peripheral.beep();
-        return Promise.resolve();
+        console.log(`beep :`);
+
+        return this._peripheral.beep();
+        // return Promise.resolve();
     }
 
     /**
-     * buzzer on for some seconds
+     * The buzzer sounds for the entered time.
      * @param args
      */
     playBuzzerTime (args) {
         // console.log(`turn off ${args.DIRECTION_RGB} RGB LED ${args.LED_COLOR} ${args.TIME_SEC} secs`);
+        console.log(`playBuzzerTime :`);
+        console.log(`args= ${JSON.stringify(args)}`);
 
-        this._peripheral.playBuzzerTime(Cast.toNumber(args.TIME_SEC));
-        return Promise.resolve();
+        return this._peripheral.playBuzzerTime(Cast.toNumber(args.TIME_SEC));
+        // return Promise.resolve();
     }
 
     /**
-     * buzzer on frequency for some seconds
+     * The buzzer sounds at the entered frequency for the entered time.
      * @param args
      */
     playBuzzerFreq (args) {
-        console.log(`buzzer on freq ${args.N_FREQUENCY} Hz  ${args.TIME_SEC} secs`);
+        // console.log(`buzzer on freq ${args.N_FREQUENCY} Hz  ${args.TIME_SEC} secs`);
+        console.log(`playBuzzerFreq :`);
+        console.log(`args= ${JSON.stringify(args)}`);
 
-        this._peripheral.playBuzzerFreq(args.N_FREQUENCY, args.TIME_SEC);
-        return Promise.resolve();
+        return this._peripheral.playBuzzerFreq(Cast.toNumber(args.N_FREQUENCY), Cast.toNumber(args.TIME_SEC));
+        // return Promise.resolve();
     }
 
     /**
@@ -2822,8 +2838,9 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     buzzerOff () {
-        this._peripheral.coconutBuzzerOff();
-        return Promise.resolve();
+        console.log(`playBuzzerFreq :`);
+        return this._peripheral.buzzerOff();
+        // return Promise.resolve();
     }
 
     /**
@@ -2831,8 +2848,11 @@ class CoconutDevice {
      * @param args
      */
     playNote (args) {
-        this._peripheral.coconutPlayNote(args.NOTE, args.OCTAVE, args.SHARP, args.BEAT);
-        return Promise.resolve();
+        console.log(`playNote :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.playNote(args.NOTE, Cast.toNumber(args.OCTAVE), args.SHARP, args.BEAT);
+        // return Promise.resolve();
     }
 
     /**
