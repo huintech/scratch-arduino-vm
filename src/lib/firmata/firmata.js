@@ -790,7 +790,37 @@ const SYSEX_RESPONSE = {
                 board.emit(`buzzer-note-${note}-${octave}-${sharp}`, msg);
                 break;
             }
+            case BUZZER_CMD.REST_BEAT: {
+	            console.log(`handler : buzzer-rest-{duration}`);
+	            // const freq = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+	            const duration = `${board._sendBuffer[9]}${board._sendBuffer[10]}`;
 
+	            const msg = (error) ? error: true;
+	            board.emit(`buzzer-rest-${duration}`, msg);
+	            break;
+            }
+            case BUZZER_CMD.NOTE_BEAT_RGB: {
+                console.log(`handler : buzzer-note-color-{note}{octave}{sharp}-{beat}-{direction}-{color}`);
+                // const freq = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+                const note = board._sendBuffer[7];
+                const octave = board._sendBuffer[8];
+                const sharp = board._sendBuffer[9];
+                const beat = `${board._sendBuffer[10]}${board._sendBuffer[11]}`;
+                const direction = board._sendBuffer[12];
+                const color = board._sendBuffer[13];
+
+                const msg = (error) ? error: true;
+                board.emit(`buzzer-note-color-${note}${octave}${sharp}-${beat}-${direction}-${color}`, msg);
+                break;
+            }
+            case BUZZER_CMD.CHANGE_BEAT: {
+                console.log(`handler : buzzer-change-{beat}`);
+                const beat = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+
+                const msg = (error) ? error: true;
+                board.emit(`buzzer-change-${beat}`, msg);
+                break;
+            }
         }
     },
     /**
@@ -799,26 +829,51 @@ const SYSEX_RESPONSE = {
      */
     [LINE_TRACER_RESPONSE] (board) {
         // console.log(`EVENT : motor response...`);
-        console.log(`Line Tracer EVENT...`);
+        console.log(`EVENT : Line Tracer`);
         console.log(`send buffer= ${board._sendBuffer}`);
         // console.log(`typeof cmd ${typeof board._sendBuffer[6]}`);
 
+        const action = board._sendBuffer[4];
         const command = board._sendBuffer[6];
-        let _direction;
+
+        let direction;
+        let color;
+        let error;
+
+        // if (action !== ACTION.GET) {
+        error = `Error: invalid response`;
+        // }
+        let msg;
+        let value;
 
         // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
         // ff 55 04 00 02 1a(26) 01 / stop motor
         switch (command) {
         case LINE_TRACER_CMD.GET_RAW:
-            // _direction = board._sendBuffer[7];
-            const value = getSensorValue(board.buffer);
-            console.log(`handler : line-tracer-${command}`);
+            console.log(`handler : line-tracer-read-${direction}`);
+            direction = board._sendBuffer[7];
+
+            if (action !== ACTION.GET) msg = error;
+
+            value = getSensorValue(board.buffer);
             console.log(`value= ${value}`);
-            board.emit(`line-tracer-${command}`, value);
+            board.emit(`line-tracer-read-${direction}`, value);
             break;
         case LINE_TRACER_CMD.DETECT_SINGLE:
-            console.log(`handler : stop-motor`);
-            board.emit('stop-motor');
+            console.log(`handler : line-tracer-detect-${direction}-${detect}`);
+            direction = board._sendBuffer[7];
+            const detect = board._sendBuffer[8];
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+                value = (value === 1);
+            }
+            else {
+                value = error;
+            }
+
+            board.emit(`line-tracer-detect-${direction}-${detect}`, value);
             break;
         case LINE_TRACER_CMD.FOLLOW:
             _direction = board._sendBuffer[7];
@@ -3399,6 +3454,70 @@ class Firmata extends Emitter {
         this.once(`buzzer-note-${note}-${octave}-${sharp}`, callback);
     }
 
+	/**
+     * rest beat
+	 * @param sensor
+	 * @param cmd
+	 * @param tone
+	 * @param beat
+	 * @param callback
+	 */
+	restBeat (sensor, cmd, tone, beat, callback) {
+		const datas =  this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+		this._sendBuffer = datas.slice();
+		// const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+		const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
+
+		writeToTransport(this, datas);
+
+		this.removeAllListeners(`buzzer-rest-${duration}`);
+		this.once(`buzzer-rest-${duration}`, callback);
+	}
+
+    /**
+     * play note with RGB LED
+     * @param sensor
+     * @param cmd
+     * @param note
+     * @param octave
+     * @param sharp
+     * @param beat
+     * @param direction
+     * @param color
+     * @param callback
+     */
+    playNoteColor (sensor, cmd, note, octave, sharp, beat, direction, color, callback) {
+        const datas = this._runPackage(sensor, cmd, note, octave, sharp, this._short2array(beat), direction, color);
+        this._sendBuffer = datas.slice();
+        // const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        const duration = `${this._sendBuffer[10]}${this._sendBuffer[11]}`;
+
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`buzzer-note-color-${note}${octave}${sharp}-${direction}-${color}`);
+        this.once(`buzzer-note-color-${note}${octave}${sharp}-${duration}-${direction}-${color}`, callback);
+    }
+
+    /**
+     * change beat
+     * @param sensor
+     * @param cmd
+     * @param beat
+     * @param direction
+     * @param color
+     * @param callback
+     */
+    changeBeat (sensor, cmd, beat, callback) {
+        const datas = this._runPackage(sensor, cmd, this._short2array(beat));
+        this._sendBuffer = datas.slice();
+        const duration = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`buzzer-note-color-${note}${octave}${sharp}-${direction}-${color}`);
+        this.once(`buzzer-change-${duration}`, callback);
+    }
+
     /**
      * @brief   센서값 읽기
      *
@@ -3430,13 +3549,31 @@ class Firmata extends Emitter {
      * @param callback
      */
     getLineTracer (sensor, cmd, direction, callback) {
-        const datas = this._getPackage(sensor, 0, direction);
+        const datas = this._getPackage(sensor, cmd, direction);
 
         this._sendBuffer = datas.slice();
         writeToTransport(this, datas);
 
-        this.removeAllListeners(`line-tracer-${cmd}`);
-        this.once(`line-tracer-${cmd}`, callback);
+        // this.removeAllListeners(`line-tracer-read-${direction}`);
+        this.once(`line-tracer-read-${direction}`, callback);
+    }
+
+    /**
+     * if detect the black line
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param detect
+     * @param callback
+     */
+    isLineDetected (sensor, cmd, direction, detect, callback) {
+        const datas = this._getPackage(sensor, cmd, direction, detect);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`line-tracer-detect-${direction}-${detect}`);
+        this.once(`line-tracer-detect-${direction}-${detect}`, callback);
     }
 
 }

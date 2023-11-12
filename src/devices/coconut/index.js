@@ -2860,8 +2860,11 @@ class CoconutDevice {
      * @param args
      */
     restBeat (args) {
-        this._peripheral.coconutRestBeat(args.BEAT_REST);
-        return Promise.resolve();
+	    console.log(`restBeat :`);
+	    console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.restBeat(args.BEAT_REST);
+        // return Promise.resolve();
     }
 
     /**
@@ -2870,8 +2873,11 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     playNoteColor (args) {
-        this._peripheral.coconutPlayNoteColor(args.NOTE, args.OCTAVE, args.SHARP, args.BEAT, args.DIRECTION_LRB, args.LED_COLOR);
-        return Promise.resolve();
+	    console.log(`playNoteColor :`);
+	    console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.playNoteColor(args.NOTE, Cast.toNumber(args.OCTAVE), args.SHARP, args.BEAT, args.DIRECTION_LRB, args.LED_COLOR);
+        // return Promise.resolve();
     }
 
     /**
@@ -2879,8 +2885,11 @@ class CoconutDevice {
      * @param args
      */
     changeBeat (args) {
-        this._peripheral.coconutChangeBeat(args.BEAT_CHANGE);
-        return Promise.resolve();
+        console.log(`changeBeat :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.changeBeat(args.BEAT_CHANGE);
+        // return Promise.resolve();
     }
 
     /**
@@ -2888,6 +2897,9 @@ class CoconutDevice {
      * @param args
      */
     getLineTracer (args) {
+        console.log(`getLineTracer :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
         return this._peripheral.getLineTracer(args.DIRECTION_LR);
         // return Promise.resolve();
     }
@@ -2897,8 +2909,11 @@ class CoconutDevice {
      * @param args
      */
     isLineDetected (args) {
-        this._peripheral.coconutIsLineDetected(args.DIRECTION_LRB, args.DETECT);
-        return Promise.resolve();
+        console.log(`isLineDetected :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.isLineDetected(args.DIRECTION_LRB, args.DETECT);
+        // return Promise.resolve();
     }
 
     /**

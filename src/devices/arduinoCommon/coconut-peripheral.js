@@ -92,8 +92,14 @@ const Directions = {
  * @type {{Red: number, White: number, Cyan: number, Blue: number, Yellow: number, Magenta: number, Black: number, Green: number}}
  */
 const Colors = {
-    Black: 0, White: 1,
-    Red: 2, Green: 3, Blue: 4, Yellow: 5, Cyan: 6, Magenta: 7
+    Black: 0,
+    White: 1,
+    Red: 2,
+    Green: 3,
+    Blue: 4,
+    Yellow: 5,
+    Cyan: 6,
+    Magenta: 7
 };
 
 /**
@@ -101,9 +107,19 @@ const Colors = {
  * @type {{Zero: number, original: number, "Dotted eighth": number, "Dotted half": number, "Dotted sixteenth": number, Whole: number, Double: number, Eighth: number, "Thirty-second": number, Half: number, "Dotted quarter": number, "Dotted thirty-second": number, Quater: number, Sixteenth: number}}
  */
 const Beats = {
-    'Half': 500, 'Quarter': 250, 'Eighth': 125, 'Sixteenth': 63, 'Thirty-second': 32,
-    'Whole': 1000, 'Dotted half': 750, 'Dotted quarter': 375, 'Dotted eighth': 188,
-    'Dotted sixteenth': 95, 'Dotted thirty-second': 48, 'Double': 2000, 'Zero': 0,
+    'Half': 500,
+    'Quarter': 250,
+    'Eighth': 125,
+    'Sixteenth': 63,
+    'Thirty-second': 32,
+    'Whole': 1000,
+    'Dotted half': 750,
+    'Dotted quarter': 375,
+    'Dotted eighth': 188,
+    'Dotted sixteenth': 95,
+    'Dotted thirty-second': 48,
+    'Double': 2000,
+    'Zero': 0,
     'original': 0
 };
 
@@ -111,29 +127,51 @@ const Beats = {
  * check if detected
  * @type {{No: number, Yes: number}}
  */
-const Detects = { Yes: 1, No: 0 };
+const Detects = {Yes: 1, No: 0};
 
 /**
  * line-tracer commands
  * @type {{"Turn left": number, "Turn right": number}}
  */
-const Commands = { 'Turn left': 3, 'Turn right': 4 };
+const Commands = {'Turn left': 3, 'Turn right': 4};
 
 /**
  * led matrix on/off values
  * @type {{Off: number, On: number}}
  */
-const OnOffs = {'On': 1, 'Off': 0};
+const OnOffs = {On: 1, Off: 0};
 
 /**
  * english small letter
  * @type {{a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number, i: number, j: number, k: number, l: number, m: number, n: number, o: number, p: number, q: number, r: number, s: number, t: number, u: number, v: number, w: number, x: number, y: number, z: number}}
  */
 const SmallLetters = {
-    "a": 0, "b": 1, "c": 2, "d": 3, "e": 4, "f": 5, "g": 6,
-    "h": 7, "i": 8, "j": 9, "k": 10, "l": 11, "m": 12, "n": 13,
-    "o": 14, "p": 15, "q": 16, "r": 17, "s": 18, "t": 19, "u": 20,
-    "v": 21, "w": 22, "x": 23, "y": 24, "z": 25
+    a: 0,
+    b: 1,
+    c: 2,
+    d: 3,
+    e: 4,
+    f: 5,
+    g: 6,
+    h: 7,
+    i: 8,
+    j: 9,
+    k: 10,
+    l: 11,
+    m: 12,
+    n: 13,
+    o: 14,
+    p: 15,
+    q: 16,
+    r: 17,
+    s: 18,
+    t: 19,
+    u: 20,
+    v: 21,
+    w: 22,
+    x: 23,
+    y: 24,
+    z: 25
 };
 
 /**
@@ -141,10 +179,32 @@ const SmallLetters = {
  * @type {{A: number, B: number, C: number, D: number, E: number, F: number, G: number, H: number, I: number, J: number, K: number, L: number, M: number, N: number, O: number, P: number, Q: number, R: number, S: number, T: number, U: number, V: number, W: number, X: number, Y: number, Z: number}}
  */
 const CapitalLetters = {
-    "A": 0, "B": 1, "C": 2, "D": 3, "E": 4, "F": 5, "G": 6,
-    "H": 7, "I": 8, "J": 9, "K": 10, "L": 11, "M": 12, "N": 13,
-    "O": 14, "P": 15, "Q": 16, "R": 17, "S": 18, "T": 19, "U": 20,
-    "V": 21, "W": 22, "X": 23, "Y": 24, "Z": 25
+    A: 0,
+    B: 1,
+    C: 2,
+    D: 3,
+    E: 4,
+    F: 5,
+    G: 6,
+    H: 7,
+    I: 8,
+    J: 9,
+    K: 10,
+    L: 11,
+    M: 12,
+    N: 13,
+    O: 14,
+    P: 15,
+    Q: 16,
+    R: 17,
+    S: 18,
+    T: 19,
+    U: 20,
+    V: 21,
+    W: 22,
+    X: 23,
+    Y: 24,
+    Z: 25
 };
 
 /**
@@ -152,15 +212,27 @@ const CapitalLetters = {
  * @type {{aa: number, ta: number, sa: number, pa: number, na: number, ma: number, la: number, ka: number, ja: number, ha: number, ga: number, da: number, cha: number, ba: number}}
  */
 const KoreanLetters = {
-    "ga": 0, "na": 1, "da": 2, "la": 3, "ma": 4, "ba": 5, "sa": 6,
-    "aa": 7, "ja": 8, "cha": 9, "ka": 10, "ta": 11, "pa": 12, "ha": 13
+    ga: 0,
+    na: 1,
+    da: 2,
+    la: 3,
+    ma: 4,
+    ba: 5,
+    sa: 6,
+    aa: 7,
+    ja: 8,
+    cha: 9,
+    ka: 10,
+    ta: 11,
+    pa: 12,
+    ha: 13
 };
 
 /**
  * 3-Axis Accelerometer
  * @type {{"X-Axis": number, "Z-Axis": number, "Y-Axis": number}}
  */
-const Axises = { "X-Axis": 1, "Y-Axis": 2, "Z-Axis": 3 };
+const Axises = {'X-Axis': 1, 'Y-Axis': 2, 'Z-Axis': 3};
 
 /**
  * Manage communication with a Arduino peripheral over a Scratch Arduino Link client socket.
@@ -647,7 +719,7 @@ class CoconutPeripheral {
             // console.log(`type: ${arguments[i].constructor}, val= ${arguments[i]}`);
             // console.log(`type: ${(typeof arguments[i])}, val= ${arguments[i]}`);
             // if (arguments[i].constructor == '[class Array]') {
-            if (typeof arguments[i] == 'object') {
+            if (typeof arguments[i] === 'object') {
                 bytes = bytes.concat(arguments[i]);
             } else {
                 bytes.push(arguments[i]);
@@ -955,7 +1027,7 @@ class CoconutPeripheral {
         return new Promise(resolve => {
             this._firmata.turnMotorDegree(Sensors.Motor, MOTOR_CMD.DEGREE, direction, degree, value => {
                 resolve(value);
-                console.log(`resolve : ${value}`);
+                // console.log(`resolve : ${value}`);
             });
             // window.setTimeout(() => {
             //     resolve();
@@ -1071,7 +1143,7 @@ class CoconutPeripheral {
         // console.log(`typeof sec ${typeof sec}`);
 
         // 시간이 정수가 아니거나 0보다 작을 경우 0으로 변경
-        if (typeof sec == 'string') sec = Number(sec);
+        if (typeof sec === 'string') sec = Number(sec);
         if (typeof sec !== 'number') sec = 0;
         if (sec < 0) sec = 0;
 
@@ -1111,8 +1183,8 @@ class CoconutPeripheral {
      * @param   beat    박자
      */
     _buzzerControl (seq, tone, beat) {
-        //if (typeof tone == "string") tone = tones[tone];
-        if (typeof beat == "string") beat = Beats[beat];
+        // if (typeof tone == "string") tone = tones[tone];
+        if (typeof beat === 'string') beat = Beats[beat];
 
         return this._runPackage(Sensors.Buzzer, seq, this._short2array(tone), this._short2array(beat));
     }
@@ -1182,15 +1254,15 @@ class CoconutPeripheral {
         // console.log(`typeof freq ${typeof freq} sec ${typeof sec}`);
 
         // 시간이 정수가 아니거나 0보다 작을 경우 0으로 변경
-        if (typeof sec == 'string') sec = Number(sec);
+        if (typeof sec === 'string') sec = Number(sec);
         if (typeof sec !== 'number') sec = 0.6;
         if (sec < 0) sec = 0.6;
 
-        sec = 1000 * sec;  // milliseconds 변환
+        sec = 1000 * sec; // milliseconds 변환
 
         // 주파수가 숫자가 아니거나 0보다 작을 경우 300hz로 고정
-        if (typeof freq == 'string') freq = Number(freq);
-        if (typeof freq != 'number') freq = 300;
+        if (typeof freq === 'string') freq = Number(freq);
+        if (typeof freq !== 'number') freq = 300;
         if (freq < 0) freq = 300;
 
         // this.buzzerControl(0, freq, sec);
@@ -1213,6 +1285,7 @@ class CoconutPeripheral {
         });
     }
 
+    // eslint-disable-next-line valid-jsdoc
     /**
      * buzzer off
      */
@@ -1229,8 +1302,7 @@ class CoconutPeripheral {
                 // resolve(value);
                 if (value !== true) {
                     resolve(value);
-                }
-                else {
+                } else {
                     resolve();
                 }
                 console.log(`resolve= ${value}`);
@@ -1256,8 +1328,8 @@ class CoconutPeripheral {
         // 계이름 + 옥타브
         // var tone = note.concat(octave);
 
-        //if (typeof note == "string") tone = tones[tone];
-        if (typeof beat == 'string') beat = Beats[beat];
+        // if (typeof note == "string") tone = tones[tone];
+        if (typeof beat === 'string') beat = Beats[beat];
         // if (typeof octave == 'string') octave = Number(octave);
 
         const options = [Sensors.Buzzer, 4, note.charCodeAt(0), octave, sharp.charCodeAt(0), beat];
@@ -1275,8 +1347,7 @@ class CoconutPeripheral {
                 // resolve(value);
                 if (value !== true) {
                     resolve(value);
-                }
-                else {
+                } else {
                     resolve();
                 }
                 console.log(`resolve= ${value}`);
@@ -1294,7 +1365,7 @@ class CoconutPeripheral {
      */
     _getNote (note) {
         // note 에서 `NOTE_` 다음 문자열만 추출
-        const arrNote = note.split("_");
+        const arrNote = note.split('_');
 
         return arrNote[1];
     }
@@ -1303,19 +1374,38 @@ class CoconutPeripheral {
      * beat rest
      * @param beat
      */
-    coconutRestBeat (beat) {
-        if (typeof beat == "string") {
+    restBeat (beat) {
+        if (typeof beat === 'string') {
             // Half_rest 에서 `_` 앞 문자열만 추출하여 박자 설정
-            const arrBeat = beat.split("_", 1);
-            beat = Beats[arrBeat];
+            const arrBeat = beat.split('_', 1);
+            beat = Beats[arrBeat[0]];
         }
+
+        // sensor, cmd, tone, beat
+	    const options = [Sensors.Buzzer, 1, 0, beat];
 
         // buzzerControl(1, 0, beat);
-        const datas = this._buzzerControl(1, 0, beat);
+        // const datas = this._buzzerControl(1, 0, beat);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+	    return new Promise(resolve => {
+		    this._firmata.restBeat(...options, value => {
+			    // resolve(value);
+			    if (value !== true) {
+				    resolve(value);
+			    } else {
+				    resolve();
+			    }
+			    console.log(`resolve= ${value}`);
+		    });
+		    // window.setTimeout(result => {
+		    //     resolve();
+		    //     console.log(`resolve : ${result}`);
+		    // }, sec);
+	    });
     }
 
     /**
@@ -1327,65 +1417,107 @@ class CoconutPeripheral {
      * @param   direction   Left:1, Right:2, All: 0
      * @param   color       1: Red, 2: Green, 3: Blue, default: Red
      */
-    coconutPlayNoteColor (note, octave, sharp, beat, direction, color) {
+    playNoteColor (note, octave, sharp, beat, direction, color) {
         // note 에서 `NOTE_` 다음 문자열만 추출
         note = this._getNote(note);
 
-        if (typeof beat == "string") beat = Beats[beat];
-        if (typeof direction == "string") direction = Directions[direction];
-        if (typeof color == "string") color = Colors[color];
-        if (typeof octave == "string") octave = Number(octave);
+        if (typeof beat === 'string') beat = Beats[beat];
+        if (typeof direction === 'string') direction = Directions[direction];
+        if (typeof color === 'string') color = Colors[color];
+        if (typeof octave === 'string') octave = Number(octave);
 
-        const datas = this._runPackage(Sensors.Buzzer, 5, note.charCodeAt(0), octave, sharp.charCodeAt(0), this._short2array(beat), direction, color);
+	    const options = [Sensors.Buzzer, 5, note.charCodeAt(0), octave, sharp.charCodeAt(0), beat, direction, color];
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // const datas = this._runPackage(Sensors.Buzzer, 5, note.charCodeAt(0), octave, sharp.charCodeAt(0), this._short2array(beat), direction, color);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.playNoteColor(...options, value => {
+                // resolve(value);
+                if (value !== true) {
+                    resolve(value);
+                } else {
+                    resolve();
+                }
+                console.log(`resolve= ${value}`);
+            });
+            // window.setTimeout(result => {
+            //     resolve();
+            //     console.log(`resolve : ${result}`);
+            // }, sec);
+        });
     }
 
     /**
      * change beat
      * @param beat
      */
-    coconutChangeBeat (beat) {
-        if (typeof beat == "string") beat = Beats[beat];
+    changeBeat (beat) {
+        if (typeof beat === 'string') beat = Beats[beat];
+        console.log(`beat= ${beat}`);
 
-        const datas = this._runPackage(Sensors.Buzzer, 7, this._short2array(beat));
+        const options = [Sensors.Buzzer, 7, beat];
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // const datas = this._runPackage(Sensors.Buzzer, 7, this._short2array(beat));
+
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.changeBeat(...options, value => {
+                resolve(value);
+                // if (value !== true) {
+                //     resolve(value);
+                // } else {
+                //     resolve();
+                // }
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(result => {
+                // resolve();
+                if (result !== true) {
+                    resolve(result);
+                } else {
+                    resolve();
+                }
+                console.log(`resolve : ${result}`);
+            }, beat);
+        });
     }
 
     /**
      * @brief   센서값 읽기
      *
      */
-    _getPackage() {
+    _getPackage () {
         // var nextID = arguments[0];
-        let len = arguments.length;
+        const len = arguments.length;
 
         console.log(`len = ${arguments.length}`);
 
-        let bytes = [0xff, 0x55];
-        bytes.push(len+2);
+        const bytes = [0xff, 0x55];
+        bytes.push(len + 2);
         bytes.push(0);
         bytes.push(1);
 
-        for (let i= 0; i < len; i++) {
+        for (let i = 0; i < len; i++) {
             bytes.push(arguments[i]);
-        }//for
+        }// for
 
         // device.send(bytes);
         return bytes;
-    } //function getPackage
+    } // function getPackage
 
     /**
      * read line tracer
      * @param direction
      */
     getLineTracer (direction) {
-        if (typeof direction == "string") direction = Directions[direction];
+        if (typeof direction === 'string') direction = Directions[direction];
 
         // const datas = this._getPackage(Sensors.Linetracer, 0, direction);
         //
@@ -1393,14 +1525,20 @@ class CoconutPeripheral {
         //     this.send(datas);
         // }
 
+        const options = [Sensors.LineTracer, 0, direction];
+
         return new Promise(resolve => {
-            this._firmata.getLineTracer(Sensors.LineTracer, 0, direction, value => {
+            this._firmata.getLineTracer(...options, value => {
                 resolve(value);
-                console.log(`resolve : ${value}`);
+                console.log(`resolve= ${value}`);
             });
-            window.setTimeout(() => {
-                resolve();
-            }, FrimataReadTimeout);
+            // this._firmata.getLineTracer(Sensors.LineTracer, 0, direction, value => {
+            //     resolve(value);
+            //     console.log(`resolve : ${value}`);
+            // });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
         });
     }
 
@@ -1409,17 +1547,32 @@ class CoconutPeripheral {
      * @param direction
      * @param detect
      */
-    coconutIsLineDetected (direction, detect) {
-        if (typeof direction == "string") direction = Directions[direction];
-        if (typeof detect == "string") detect = Detects[detect];
+    isLineDetected (direction, detect) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        if (typeof detect === 'string') detect = Detects[detect];
 
         // getPackage(nextID, devices["Linetracer"], 1, direction, detectCond);
+        const options = [Sensors.LineTracer, 1, direction, detect];
 
-        const datas = this._getPackage(Sensors.LineTracer, 1, direction, detect);
+        // const datas = this._getPackage(Sensors.LineTracer, 1, direction, detect);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        return new Promise(resolve => {
+            this._firmata.isLineDetected(...options, value => {
+                resolve(value);
+                console.log(`resolve= ${value}`);
+            });
+            // this._firmata.getLineTracer(Sensors.LineTracer, 0, direction, value => {
+            //     resolve(value);
+            //     console.log(`resolve : ${value}`);
+            // });
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FrimataReadTimeout);
+        });
     }
 
     /**
@@ -1438,7 +1591,7 @@ class CoconutPeripheral {
      * @param cmd
      */
     coconutLineTracerCmd (cmd) {
-        if (typeof cmd == "string") cmd = Commands[cmd];
+        if (typeof cmd === 'string') cmd = Commands[cmd];
         // runPackage(devices["Linetracer"], 5, cmd);
         const datas = this._runPackage(Sensors.LineTracer, 5, cmd);
 
@@ -1452,7 +1605,7 @@ class CoconutPeripheral {
      * @param direction
      */
     coconutGetDistance (direction) {
-        if (typeof direction == "string") direction = Directions[direction];
+        if (typeof direction === 'string') direction = Directions[direction];
 
         // getPackage(nextID, devices["IRdistance"], 0, direction);
         const datas = this._getPackage(Sensors.IRdistance, 0, direction);
@@ -1468,8 +1621,8 @@ class CoconutPeripheral {
      * @param detect
      */
     coconutIsDetectObstacle (direction, detect) {
-        if (typeof direction == "string") direction = Directions[direction];
-        if (typeof detect == "string") detect = Detects[detect];
+        if (typeof direction === 'string') direction = Directions[direction];
+        if (typeof detect === 'string') detect = Detects[detect];
 
         // getPackage(nextID, devices["Linetracer"], 1, direction, detectCond);
 
@@ -1500,9 +1653,9 @@ class CoconutPeripheral {
      * @param col
      */
     coconutLedMatrixOn (on, row, col) {
-        if (typeof on == "string") on = OnOffs[on];
-        if ((typeof row == "string") && (row == 'Both')) row = 0;
-        if ((typeof col == "string") && (col == 'Both')) col = 0;
+        if (typeof on === 'string') on = OnOffs[on];
+        if ((typeof row === 'string') && (row == 'Both')) row = 0;
+        if ((typeof col === 'string') && (col == 'Both')) col = 0;
 
         // runPackage(devices["LedMatrix"], 0, row, col, onOff);
         const datas = this._runPackage(Sensors.LedMatrix, 0, row, col, on);
@@ -1552,7 +1705,7 @@ class CoconutPeripheral {
      * @param letter
      */
     showLedMatrixSmall (letter) {
-        if (typeof letter == 'string') letter = SmallLetters[letter];
+        if (typeof letter === 'string') letter = SmallLetters[letter];
 
         const datas = this._runPackage(Sensors.LedMatrix, 2, letter);
 
@@ -1566,7 +1719,7 @@ class CoconutPeripheral {
      * @param letter
      */
     showLedMatrixCapital (letter) {
-        if (typeof letter == 'string') letter = CapitalLetters[letter];
+        if (typeof letter === 'string') letter = CapitalLetters[letter];
 
         const datas = this._runPackage(Sensors.LedMatrix, 3, letter);
 
@@ -1580,7 +1733,7 @@ class CoconutPeripheral {
      * @param letter
      */
     showLedMatrixKorean (letter) {
-        if (typeof letter == 'string') letter = KoreanLetters[letter];
+        if (typeof letter === 'string') letter = KoreanLetters[letter];
 
         const datas = this._runPackage(Sensors.LedMatrix, 4, letter);
 
@@ -1620,7 +1773,7 @@ class CoconutPeripheral {
     getAccelerometer (axis) {
         console.log(`typeof axis ${typeof axis}`);
         // if (typeof axis == 'string') axis = Axises[axis];
-        if (typeof axis == 'string') axis = Number(axis);
+        if (typeof axis === 'string') axis = Number(axis);
 
         const datas = this._getPackage(Sensors.Accelerometer, 0, axis);
 
