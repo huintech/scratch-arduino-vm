@@ -30,7 +30,7 @@ const FrimataHeartbeatTimeout = 5000;
 /**
  * A time interval to wait deivce report data.
  */
-const FrimataReadTimeout = 2000;
+const FirmataReadTimeout = 2000;
 
 const Level = {
     High: 'HIGH',
@@ -661,7 +661,7 @@ class CoconutPeripheral {
                 });
                 window.setTimeout(() => {
                     resolve();
-                }, FrimataReadTimeout);
+                }, FirmataReadTimeout);
             });
         }
     }
@@ -682,7 +682,7 @@ class CoconutPeripheral {
                 });
                 window.setTimeout(() => {
                     resolve();
-                }, FrimataReadTimeout);
+                }, FirmataReadTimeout);
             });
         }
     }
@@ -742,24 +742,6 @@ class CoconutPeripheral {
         if (typeof direction === 'string') direction = Directions[direction];
         const speed = 60;
 
-        // const {
-        //     Sensors.Motor,
-        //     0,
-        //     direction,
-        //     speed
-        // } = options;
-
-        // const options = {
-        //     sensor: Sensors.Motor,
-        //     index: 0,
-        //     direction: direction,
-        //     speed: 60
-        // };
-
-        // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        // console.log(`isReady : ${this.isReady()}`);
-        // console.log(`isConnected : ${this.isConnected()}`);
-
         const datas = this._runPackage(Sensors.Motor, 0, direction, speed);
         console.log(`move motors datas : ${datas}`);
         // this.send(datas);
@@ -770,9 +752,9 @@ class CoconutPeripheral {
                 resolve(value);
                 console.log(`resolve : ${value}`);
             });
-            // window.setTimeout(() => {
-            //     resolve();
-            // }, FrimataReadTimeout);
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
         });
 
         // if (this.isReady()) {
@@ -1532,13 +1514,9 @@ class CoconutPeripheral {
                 resolve(value);
                 console.log(`resolve= ${value}`);
             });
-            // this._firmata.getLineTracer(Sensors.LineTracer, 0, direction, value => {
-            //     resolve(value);
-            //     console.log(`resolve : ${value}`);
-            // });
-            // window.setTimeout(() => {
-            //     resolve();
-            // }, FrimataReadTimeout);
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
         });
     }
 
@@ -1565,54 +1543,100 @@ class CoconutPeripheral {
                 resolve(value);
                 console.log(`resolve= ${value}`);
             });
-            // this._firmata.getLineTracer(Sensors.LineTracer, 0, direction, value => {
-            //     resolve(value);
-            //     console.log(`resolve : ${value}`);
-            // });
-            // window.setTimeout(() => {
-            //     resolve();
-            // }, FrimataReadTimeout);
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
         });
     }
 
     /**
      * get line tracers detection
      */
-    coconutGetLineTracers () {
-        const datas = this._getPackage(Sensors.LineTracer, 4);
+    getLineTracersDetect () {
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        const options = [Sensors.LineTracer, 4];
+
+        // const datas = this._getPackage(Sensors.LineTracer, 4);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.getLineTracersDetect(...options, value => {
+                resolve(value);
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
      * run command until line-tracer detect black line
      * @param cmd
      */
-    coconutLineTracerCmd (cmd) {
+    lineTracerCmd (cmd) {
         if (typeof cmd === 'string') cmd = Commands[cmd];
-        // runPackage(devices["Linetracer"], 5, cmd);
-        const datas = this._runPackage(Sensors.LineTracer, 5, cmd);
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        const options = [Sensors.LineTracer, 5, cmd];
+
+        // runPackage(devices["Linetracer"], 5, cmd);
+        // const datas = this._runPackage(Sensors.LineTracer, 5, cmd);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.lineTracerCmd(...options, value => {
+                if (value === true) {
+                    resolve();
+                }
+                else {
+                    resolve(value);
+                }
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
      * read IR Distance sensor
      * @param direction
      */
-    coconutGetDistance (direction) {
+    getDistance (direction) {
         if (typeof direction === 'string') direction = Directions[direction];
 
-        // getPackage(nextID, devices["IRdistance"], 0, direction);
-        const datas = this._getPackage(Sensors.IRdistance, 0, direction);
+        const options = [Sensors.IRdistance, 0, direction];
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // getPackage(nextID, devices["IRdistance"], 0, direction);
+        // const datas = this._getPackage(Sensors.IRdistance, 0, direction);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.getDistance(...options, value => {
+                if (value === true) {
+                    resolve();
+                }
+                else {
+                    resolve(value);
+                }
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
@@ -1620,30 +1644,56 @@ class CoconutPeripheral {
      * @param direction
      * @param detect
      */
-    coconutIsDetectObstacle (direction, detect) {
+    isDetectObstacle (direction, detect) {
         if (typeof direction === 'string') direction = Directions[direction];
         if (typeof detect === 'string') detect = Detects[detect];
 
         // getPackage(nextID, devices["Linetracer"], 1, direction, detectCond);
 
-        const datas = this._getPackage(Sensors.IRdistance, 1, direction, detect);
+        const options = [Sensors.IRdistance, 1, direction, detect];
 
-        if (this.isConnected()) {
-            this.send(datas);
-            // return Promise.resolve();
-        }
+        // const datas = this._getPackage(Sensors.IRdistance, 1, direction, detect);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        //     // return Promise.resolve();
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.isDetectObstacle(...options, value => {
+                resolve(value);
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
      * all IR distance sensor detecting check
+     * return boolean
      */
-    coconutIsDetectObstacles () {
-        const datas = this._getPackage(Sensors.IRdistance, 2);
+    isDetectObstacles () {
+        const options = [Sensors.IRdistance, 2];
 
-        if (this.isConnected()) {
-            this.send(datas);
-            // return Promise.resolve();
-        }
+        // const datas = this._getPackage(Sensors.IRdistance, 2);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.isDetectObstacles(...options, value => {
+                resolve(value);
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
@@ -1652,39 +1702,92 @@ class CoconutPeripheral {
      * @param row
      * @param col
      */
-    coconutLedMatrixOn (on, row, col) {
+    ledMatrixOn (on, row, col) {
         if (typeof on === 'string') on = OnOffs[on];
         if ((typeof row === 'string') && (row == 'Both')) row = 0;
         if ((typeof col === 'string') && (col == 'Both')) col = 0;
 
-        // runPackage(devices["LedMatrix"], 0, row, col, onOff);
-        const datas = this._runPackage(Sensors.LedMatrix, 0, row, col, on);
+        const options = [Sensors.LedMatrix, 0, row, col, on];
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // runPackage(devices["LedMatrix"], 0, row, col, onOff);
+        // const datas = this._runPackage(Sensors.LedMatrix, 0, row, col, on);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.ledMatrixOn(...options, value => {
+                if (value === true) {
+                    resolve();
+                }
+                else {
+                    resolve(value);
+                }
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
      * turn on all LED Matrix
      */
-    coconutLedMatrixOnAll () {
-        const datas = this._runPackage(Sensors.LedMatrix, 6);
+    ledMatrixOnAll () {
+        const options = [Sensors.LedMatrix, 6];
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // const datas = this._runPackage(Sensors.LedMatrix, 6);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.ledMatrixOnAll(...options, value => {
+                if (value === true) {
+                    resolve();
+                }
+                else {
+                    resolve(value);
+                }
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
      * LED Matrix clear all
      */
-    coconutLedMatrixClear () {
-        const datas = this._runPackage(Sensors.LedMatrix, 5);
+    ledMatrixClear () {
+        const options = [Sensors.LedMatrix, 5];
+        // const datas = this._runPackage(Sensors.LedMatrix, 5);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        return new Promise(resolve => {
+            this._firmata.ledMatrixClear(...options, value => {
+                if (value === true) {
+                    resolve();
+                }
+                else {
+                    resolve(value);
+                }
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
@@ -1692,12 +1795,29 @@ class CoconutPeripheral {
      * @param num
      */
     showLedMatrixNumber (num) {
+        const options = [Sensors.LedMatrix, 1, num];
         // runPackage(devices["LedMatrix"], 1, code);
-        const datas = this._runPackage(Sensors.LedMatrix, 1, num);
+        // const datas = this._runPackage(Sensors.LedMatrix, 1, num);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        return new Promise(resolve => {
+            this._firmata.showLedMatrixNumber(...options, value => {
+                if (value === true) {
+                    resolve();
+                }
+                else {
+                    resolve(value);
+                }
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
@@ -1705,13 +1825,31 @@ class CoconutPeripheral {
      * @param letter
      */
     showLedMatrixSmall (letter) {
-        if (typeof letter === 'string') letter = SmallLetters[letter];
+        if (typeof (+letter) === 'string') letter = SmallLetters[letter];
 
-        const datas = this._runPackage(Sensors.LedMatrix, 2, letter);
+        const options = [Sensors.LedMatrix, 2, letter];
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // const datas = this._runPackage(Sensors.LedMatrix, 2, letter);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.showLedMatrixSmall(...options, value => {
+                if (value === true) {
+                    resolve();
+                }
+                else {
+                    resolve(value);
+                }
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
@@ -1719,13 +1857,31 @@ class CoconutPeripheral {
      * @param letter
      */
     showLedMatrixCapital (letter) {
-        if (typeof letter === 'string') letter = CapitalLetters[letter];
+        if (typeof (+letter) === 'string') letter = CapitalLetters[letter];
 
-        const datas = this._runPackage(Sensors.LedMatrix, 3, letter);
+        const options = [Sensors.LedMatrix, 3, letter];
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // const datas = this._runPackage(Sensors.LedMatrix, 3, letter);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.showLedMatrixCapital(...options, value => {
+                if (value === true) {
+                    resolve();
+                }
+                else {
+                    resolve(value);
+                }
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
@@ -1733,37 +1889,79 @@ class CoconutPeripheral {
      * @param letter
      */
     showLedMatrixKorean (letter) {
-        if (typeof letter === 'string') letter = KoreanLetters[letter];
+        if (typeof (+letter) === 'string') letter = KoreanLetters[letter];
 
-        const datas = this._runPackage(Sensors.LedMatrix, 4, letter);
+        const options = [Sensors.LedMatrix, 4, letter];
 
-        if (this.isConnected()) {
-            this.send(datas);
-        }
+        // const datas = this._runPackage(Sensors.LedMatrix, 4, letter);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        // }
+
+        return new Promise(resolve => {
+            this._firmata.showLedMatrixKorean(...options, value => {
+                if (value === true) {
+                    resolve();
+                }
+                else {
+                    resolve(value);
+                }
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
      * read light sensor
      */
     getLightSensor () {
-        const datas = this._getPackage(Sensors.LightSensor, 0);
+        const options = [Sensors.LightSensor, 0];
+        // const datas = this._getPackage(Sensors.LightSensor, 0);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        //     // return Promise.resolve();
+        // }
 
-        if (this.isConnected()) {
-            this.send(datas);
-            // return Promise.resolve();
-        }
+        return new Promise(resolve => {
+            this._firmata.getLightSensor(...options, value => {
+                resolve(value);
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
      * read temperature sensor
      */
     getTemperature () {
-        const datas = this._getPackage(Sensors.Temperature, 0);
+        const options = [Sensors.Temperature, 0];
+        // const datas = this._getPackage(Sensors.Temperature, 0);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        //     // return Promise.resolve();
+        // }
 
-        if (this.isConnected()) {
-            this.send(datas);
-            // return Promise.resolve();
-        }
+        return new Promise(resolve => {
+            this._firmata.getTemperature(...options, value => {
+                resolve(value);
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 
     /**
@@ -1771,16 +1969,28 @@ class CoconutPeripheral {
      * @param axis
      */
     getAccelerometer (axis) {
-        console.log(`typeof axis ${typeof axis}`);
+        // console.log(`typeof axis ${typeof axis}`);
         // if (typeof axis == 'string') axis = Axises[axis];
-        if (typeof axis === 'string') axis = Number(axis);
+        if (typeof (+axis) === 'string') axis = Number(axis);
 
-        const datas = this._getPackage(Sensors.Accelerometer, 0, axis);
+        const options = [Sensors.Accelerometer, 0, axis];
+        // const datas = this._getPackage(Sensors.Accelerometer, 0, axis);
+        //
+        // if (this.isConnected()) {
+        //     this.send(datas);
+        //     // return Promise.resolve();
+        // }
 
-        if (this.isConnected()) {
-            this.send(datas);
-            // return Promise.resolve();
-        }
+        return new Promise(resolve => {
+            this._firmata.getAccelerometer(...options, value => {
+                resolve(value);
+
+                console.log(`resolve= ${value}`);
+            });
+            window.setTimeout(() => {
+                resolve();
+            }, FirmataReadTimeout);
+        });
     }
 }
 

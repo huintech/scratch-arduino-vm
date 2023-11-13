@@ -2177,7 +2177,7 @@ class CoconutDevice {
                         text: formatMessage({
                             id: 'coconut.getLineTracersDetect',
                             default: 'line tracer detection',
-                            description: 'line trace detection result'
+                            description: 'line tracer detection result'
                         }),
                         blockType: BlockType.REPORTER,
                     },
@@ -2243,7 +2243,7 @@ class CoconutDevice {
                             description: 'check if IR distance sensor is detected'
                         }),
                         blockType: BlockType.BOOLEAN,
-                        arguments: { }
+                        arguments: {}
                     },
                     '---',
                     {
@@ -2901,7 +2901,6 @@ class CoconutDevice {
         console.log(`args= ${JSON.stringify(args)}`);
 
         return this._peripheral.getLineTracer(args.DIRECTION_LR);
-        // return Promise.resolve();
     }
 
     /**
@@ -2913,15 +2912,16 @@ class CoconutDevice {
         console.log(`args= ${JSON.stringify(args)}`);
 
         return this._peripheral.isLineDetected(args.DIRECTION_LRB, args.DETECT);
-        // return Promise.resolve();
     }
 
     /**
      * get line tracers decetion
      */
     getLineTracersDetect () {
-        this._peripheral.coconutGetLineTracers();
-        return Promise.resolve();
+        console.log(`getLineTracersDetect :`);
+        // console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.getLineTracersDetect();
     }
 
     /**
@@ -2930,8 +2930,11 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     lineTracerCmd (args) {
-        this._peripheral.coconutLineTracerCmd(args.COMMAND);
-        return Promise.resolve();
+        console.log(`lineTracerCmd :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.lineTracerCmd(args.COMMAND);
+        // return Promise.resolve();
     }
 
     /**
@@ -2940,8 +2943,11 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     getDistance (args) {
-        this._peripheral.coconutGetDistance(args.DIRECTION_LR);
-        return Promise.resolve();
+        console.log(`getDistance :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.getDistance(args.DIRECTION_LR);
+        // return Promise.resolve();
     }
 
     /**
@@ -2949,8 +2955,11 @@ class CoconutDevice {
      * @param args
      */
     isDetectObstacle (args) {
-        this._peripheral.coconutIsDetectObstacle(args.DIRECTION_LRB, args.DETECT);
-        return Promise.resolve();
+        console.log(`isDetectObstacle :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.isDetectObstacle(args.DIRECTION_LRB, args.DETECT);
+        // return Promise.resolve();
     }
 
     /**
@@ -2958,8 +2967,10 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     isDetectObstacles () {
-        this._peripheral.coconutIsDetectObstacles();
-        return Promise.resolve();
+        console.log(`isDetectObstacles :`);
+
+        return this._peripheral.isDetectObstacles();
+        // return Promise.resolve();
     }
 
     /**
@@ -2967,24 +2978,29 @@ class CoconutDevice {
      * @param args
      */
     ledMatrixOn (args) {
-        this._peripheral.coconutLedMatrixOn(args.ON_OFF, args.ROW, args.COL);
-        return Promise.resolve();
+        console.log(`ledMatrixOn :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.ledMatrixOn(args.ON_OFF, Cast.toNumber(args.ROW), Cast.toNumber(args.COL));
+        // return Promise.resolve();
     }
 
     /**
      * turn on all LED Matrix
      */
     ledMatrixOnAll () {
-        this._peripheral.coconutLedMatrixOnAll();
-        return Promise.resolve();
+        console.log(`ledMatrixOnAll :`);
+        return this._peripheral.ledMatrixOnAll();
+        // return Promise.resolve();
     }
 
     /**
      * LED Matrix clear all
      */
     ledMatrixClear () {
-        this._peripheral.coconutLedMatrixClear();
-        return Promise.resolve();
+        console.log(`ledMatrixClear :`);
+        return this._peripheral.ledMatrixClear();
+        // return Promise.resolve();
     }
 
     /**
@@ -2992,8 +3008,11 @@ class CoconutDevice {
      * @param args
      */
     showLedMatrixNumber (args) {
-        this._peripheral.showLedMatrixNumber(args.NUMBER);
-        return Promise.resolve();
+        console.log(`showLedMatrixNumber :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.showLedMatrixNumber(Cast.toNumber(args.NUMBER));
+        // return Promise.resolve();
     }
 
     /**
@@ -3002,8 +3021,11 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     showLedMatrixSmall (args) {
-        this._peripheral.showLedMatrixSmall(args.SMALL_LETTER);
-        return Promise.resolve();
+        console.log(`showLedMatrixSmall :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.showLedMatrixSmall(args.SMALL_LETTER);
+        // return Promise.resolve();
     }
 
     /**
@@ -3012,8 +3034,11 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     showLedMatrixCapital (args) {
-        this._peripheral.showLedMatrixCapital(args.CAPITAL_LETTER);
-        return Promise.resolve();
+        console.log(`showLedMatrixCapital :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.showLedMatrixCapital(args.CAPITAL_LETTER);
+        // return Promise.resolve();
     }
 
     /**
@@ -3022,24 +3047,30 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     showLedMatrixKorean (args) {
-        this._peripheral.showLedMatrixKorean(args.KR_LETTER);
-        return Promise.resolve();
+        console.log(`showLedMatrixKorean :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.showLedMatrixKorean(args.KR_LETTER);
+        // return Promise.resolve();
     }
 
     /**
      * read light sensor
      */
     getLightSensor () {
-        this._peripheral.getLightSensor();
-        return Promise.resolve();
+        console.log(`getLightSensor :`);
+
+        return this._peripheral.getLightSensor();
+        // return Promise.resolve();
     }
 
     /**
      * read temperature sensor
      */
     getTemperature () {
-        this._peripheral.getTemperature();
-        return Promise.resolve();
+        console.log(`getTemperature :`);
+        return this._peripheral.getTemperature();
+        // return Promise.resolve();
     }
 
     /**
@@ -3048,10 +3079,11 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     getAccelerometer (args) {
-        console.log(`axis ${args.ACC_AXIS}`);
+        console.log(`getAccelerometer :`);
+        console.log(`args= ${JSON.stringify(args)}`);
 
-        this._peripheral.getAccelerometer(args.ACC_AXIS);
-        return Promise.resolve();
+        return this._peripheral.getAccelerometer(args.ACC_AXIS);
+        // return Promise.resolve();
     }
 
     /**

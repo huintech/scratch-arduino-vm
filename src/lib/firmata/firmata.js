@@ -76,9 +76,14 @@ const MAX_PIN_COUNT = 128;
  */
 const BUZZER= 0x03;
 const BUZZER_RESPONSE = 0x03;
-const MOTOR_RESPONSE = 0x1A;
-const RGB_RESPONSE = 0x19;
+const DISTANCE_RESPONSE = 0x05;
 const LINE_TRACER_RESPONSE = 0x07;
+const LIGHT_RESPONSE = 0x0E;
+const ACCELEROMETER_RESPONSE = 0x12;
+const TEMPERATURE_RESPONSE = 0x15;
+const RGB_RESPONSE = 0x19;
+const MOTOR_RESPONSE = 0x1A;
+const MATRIX_RESPONSE = 0x1B;
 
 /**
  * action type
@@ -156,8 +161,35 @@ const LINE_TRACER_CMD = {
     FOLLOW: 0x03,
     DETECT_INT: 0x04,
     TURN_BLACK: 0x05,
-    DETECT_SINGLE2: 0x06
+    DETECT_NONE: 0x06
 };
+
+/**
+ * IR Distance sensor command
+ * @type {{DETECT_ALL: number, AVOID: number, GET_RAW: number, DETECT: number, OFF: number}}
+ */
+const DISTANCE_CMD = {
+    GET_RAW: 0x00,
+    DETECT: 0x01,
+    DETECT_ALL: 0x02,
+    AVOID: 0x03,
+    OFF: 0x04
+}
+
+/**
+ * LED Matrix command
+ * @type {{NUMBER: number, EN_LARGE: number, OFF_ALL: number, ON_ALL: number, EN_SMALL: number, FREE: number, ON: number, KOREAN: number}}
+ */
+const MATRIX_CMD = {
+    ON: 0x00,
+    NUMBER: 0x01,
+    EN_SMALL: 0x02,
+    EN_CAPITAL: 0x03,
+    KOREAN: 0x04,
+    OFF_ALL: 0x05,
+    ON_ALL: 0x06,
+    FREE: 0x07
+}
 
 const symbolSendOneWireSearch = Symbol('sendOneWireSearch');
 const symbolSendOneWireRequest = Symbol('sendOneWireRequest');
@@ -837,32 +869,29 @@ const SYSEX_RESPONSE = {
         const command = board._sendBuffer[6];
 
         let direction;
-        let color;
-        let error;
-
-        // if (action !== ACTION.GET) {
-        error = `Error: invalid response`;
-        // }
-        let msg;
+        let error = `Error: invalid response`;
         let value;
 
-        // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
-        // ff 55 04 00 02 1a(26) 01 / stop motor
         switch (command) {
         case LINE_TRACER_CMD.GET_RAW:
-            console.log(`handler : line-tracer-read-${direction}`);
             direction = board._sendBuffer[7];
+            console.log(`handler : line-tracer-read-${direction}`);
 
-            if (action !== ACTION.GET) msg = error;
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+            }
+            else {
+                value = error;
+            }
 
-            value = getSensorValue(board.buffer);
-            console.log(`value= ${value}`);
             board.emit(`line-tracer-read-${direction}`, value);
             break;
         case LINE_TRACER_CMD.DETECT_SINGLE:
-            console.log(`handler : line-tracer-detect-${direction}-${detect}`);
             direction = board._sendBuffer[7];
             const detect = board._sendBuffer[8];
+
+            console.log(`handler : line-tracer-detect-${direction}-${detect}`);
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
@@ -881,28 +910,301 @@ const SYSEX_RESPONSE = {
             board.emit(`move-motor-time-${_direction}`, true);
             break;
         case LINE_TRACER_CMD.DETECT_INT:
-            console.log(`handler : move-motor-rgb`);
-            board.emit('move-motor-rgb');
+            console.log(`handler : line-tracer-detects`);
+
+            // direction = board._sendBuffer[7];
+            // const detect = board._sendBuffer[8];
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+                // value = (value === 1);
+            }
+            else {
+                value = error;
+            }
+
+            board.emit('line-tracer-detects', value);
             break;
         case LINE_TRACER_CMD.TURN_BLACK:
-            console.log(`handler : move-motor-cm`);
-            board.emit('move-motor-cm');
+            const exCmd = board._sendBuffer[7];
+            console.log(`handler : line-tracer-command-${exCmd}`);
+
+            if (action === ACTION.RUN) {
+               value = true;
+                // console.log(`value= ${value}`);
+            }
+            else {
+                value = error;
+            }
+
+            board.emit(`line-tracer-command-${exCmd}`, value);
             break;
-        case LINE_TRACER_CMD.DETECT_SINGLE2:
-            console.log(`handler : move-motor-degree`);
-            board.emit('move-motor-degree');
-            break;
+        // case LINE_TRACER_CMD.DETECT_NONE:
+        //     console.log(`handler : move-motor-degree`);
+        //     board.emit('move-motor-degree');
+        //     break;
+        }
+    },
+    /**
+     * Handles a IR Distance sensor response and emits the 'distance-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [DISTANCE_RESPONSE] (board) {
+        console.log(`EVENT : IR Distance`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        let direction;
+        let error = `Error: invalid response`;
+        let value;
+
+        switch (command) {
+            case DISTANCE_CMD.GET_RAW:
+                direction = board._sendBuffer[7];
+                console.log(`handler : distance-read-${direction}`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    console.log(`value= ${value}`);
+                }
+                else {
+                    value = error;
+                }
+
+                board.emit(`distance-read-${direction}`, value);
+                break;
+            case DISTANCE_CMD.DETECT: {
+                direction = board._sendBuffer[7];
+                const detect = board._sendBuffer[8];
+                console.log(`handler : distance-detect-${direction}-${detect}`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    value = (value === 1);
+                    console.log(`value= ${value}`);
+                }
+                else {
+                    value = error;
+                }
+
+                board.emit(`distance-detect-${direction}-${detect}`, value);
+                break;
+            }
+            case DISTANCE_CMD.DETECT_ALL: {
+                console.log(`handler : distance-detect-all`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    value = (value === 1); // return boolean
+                    console.log(`value= ${value}`);
+                }
+                else {
+                    value = error;
+                }
+
+                board.emit(`distance-detect-all`, value);
+                break;
+            }
+        }
+    },
+    /**
+     * Handles a LED Matrix response and emits the 'matrix-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [MATRIX_RESPONSE] (board) {
+        console.log(`EVENT : LED Matrix`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        let direction;
+        let error = `Error: invalid response`;
+        let value;
+
+        switch (command) {
+            case MATRIX_CMD.ON: {
+                const row = board._sendBuffer[7];
+                const col = board._sendBuffer[8];
+                const on = board._sendBuffer[9];
+
+                console.log(`handler : matrix-${row}-${col}-${on}`);
+
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`matrix-${row}-${col}-${on}`, value);
+                break;
+            }
+            case MATRIX_CMD.ON_ALL: {
+                console.log(`handler : matrix-on-all`);
+
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`matrix-on-all`, value);
+                break;
+            }
+            case MATRIX_CMD.OFF_ALL: {
+                console.log(`handler : matrix-off-all`);
+
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`matrix-off-all`, value);
+                break;
+            }
+            case MATRIX_CMD.NUMBER: {
+                const num = board._sendBuffer[7];
+                console.log(`handler : matrix-num-${num}`);
+
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`matrix-num-${num}`, value);
+                break;
+            }
+            case MATRIX_CMD.EN_SMALL: {
+                const letter = board._sendBuffer[7];
+                console.log(`handler : matrix-small-${letter}`);
+
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`matrix-small-${letter}`, value);
+                break;
+            }
+            case MATRIX_CMD.EN_CAPITAL: {
+                const letter = board._sendBuffer[7];
+                console.log(`handler : matrix-capital-${letter}`);
+
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`matrix-capital-${letter}`, value);
+                break;
+            }
+            case MATRIX_CMD.KOREAN: {
+                const letter = board._sendBuffer[7];
+                console.log(`handler : matrix-kr-${letter}`);
+
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`matrix-kr-${letter}`, value);
+                break;
+            }
+        }
+    },
+    /**
+     * Handles a Light sensor response and emits the 'light-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [LIGHT_RESPONSE] (board) {
+        console.log(`EVENT : Light`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        let direction;
+        let error = `Error: invalid response`;
+        let value;
+
+        switch (command) {
+            case 0: {
+                const letter = board._sendBuffer[7];
+                console.log(`handler : light`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    // value = (value === 1); // return boolean
+                    console.log(`value= ${value}`);
+                }
+                else {
+                    value = error;
+                }
+
+                // value = (action === ACTION.RUN) ? true : error;
+                board.emit(`light`, value);
+                break;
+            }
+        }
+    },
+    /**
+     * Handles a Temperature sensor response and emits the 'temperature-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [TEMPERATURE_RESPONSE] (board) {
+        console.log(`EVENT : Temperature`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        let direction;
+        let error = `Error: invalid response`;
+        let value;
+
+        switch (command) {
+            case 0: {
+                console.log(`handler : temperature`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    // value = (value === 1); // return boolean
+                    console.log(`value= ${value}`);
+                }
+                else {
+                    value = error;
+                }
+
+                // value = (action === ACTION.RUN) ? true : error;
+                board.emit(`temperature`, value);
+                break;
+            }
+        }
+    },
+    /**
+     * Handles a Accelerometer sensor response and emits the 'acc-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [ACCELEROMETER_RESPONSE] (board) {
+        console.log(`EVENT : Accelerometer`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        let direction;
+        let error = `Error: invalid response`;
+        let value;
+
+        switch (command) {
+            case 0: {
+                const axis = board._sendBuffer[7];
+                console.log(`handler : acc-${axis}`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    // value = (value === 1); // return boolean
+                    console.log(`value= ${value}`);
+                }
+                else {
+                    value = error;
+                }
+
+                // value = (action === ACTION.RUN) ? true : error;
+                board.emit(`acc-${axis}`, value);
+                break;
+            }
         }
     }
 };
 
 const parseShort = (a, b) => a << 8 | b << 0;
 
-const readShort = function (arr, position) {
-    const s = [arr[position], arr[position + 1]];
-    return parseShort(s);
+// const readShort = function (arr, position) {
+const readShort = (arr, position) => {
+    const s = [arr[position + 1], arr[position]];
+    console.log(`${JSON.stringify(s)}`);
+    return parseShort(...s);
 }; // function
 
+/**
+ * convert byte array (4 bytes) to float
+ * @param data
+ * @returns {number}
+ */
 const parseFloat = function (data) {
     // var data =  [64, 226, 157, 10];
 
@@ -920,12 +1222,13 @@ const parseFloat = function (data) {
     // converting it from a 32-bit float into JavaScript's native 64-bit double
     const num = view.getFloat32(0);
     // Done
-    console.log(num);
+    console.log(`float = ${num}`);
     return num;
 };
 
 const readFloat = function (arr, position) {
-    const f = [arr[position], arr[position + 1], arr[position + 2], arr[position + 3]];
+    // const f = [arr[position], arr[position + 1], arr[position + 2], arr[position + 3]];
+    const f = [arr[position + 3], arr[position + 2], arr[position + 1], arr[position]];
     return parseFloat(f);
 }; // function
 
@@ -948,7 +1251,8 @@ const readString = function (arr, position, len) {
  * @param data
  * @returns {number}
  */
-const getSensorValue = function (data) {
+// const getSensorValue = function (data) {
+const getSensorValue = (data) => {
     let position = 2;
     const extId = data[position];
     position++;
@@ -985,7 +1289,8 @@ const getSensorValue = function (data) {
     console.log(`type= ${type} value=${value}`);
 
     return value;
-};
+}
+
 
 /**
  * @class The Board object represents an arduino board.
@@ -1006,6 +1311,9 @@ const getSensorValue = function (data) {
  * @property {SerialPort} sp The serial port object used to communicate with the arduino.
  */
 
+/**
+ *
+ */
 class Firmata extends Emitter {
     constructor (transportWrite, options) {
         super();
@@ -3576,6 +3884,256 @@ class Firmata extends Emitter {
         this.once(`line-tracer-detect-${direction}-${detect}`, callback);
     }
 
+    /**
+     * get left and right line tracer detecting code
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    getLineTracersDetect (sensor, cmd, callback) {
+        const datas = this._getPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`line-tracer-detects`);
+        this.once(`line-tracer-detects`, callback);
+    }
+
+    /**
+     * turn motor until meet the black line
+     * @param sensor
+     * @param cmd
+     * @param exCmd
+     * @param callback
+     */
+    lineTracerCmd (sensor, cmd, exCmd, callback) {
+        const datas = this._runPackage(sensor,cmd, exCmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`line-tracer-command-${exCmd}`);
+        this.once(`line-tracer-command-${exCmd}`, callback);
+    }
+
+    /**
+     * read IR Distance sensor
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param callback
+     */
+    getDistance (sensor, cmd, direction, callback) {
+        const datas = this._getPackage(sensor, cmd, direction);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`distance-read-${direction}`);
+        this.once(`distance-read-${direction}`, callback);
+    }
+
+    /**
+     * get obstacle detecting
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param detect
+     * @param callback
+     */
+    isDetectObstacle (sensor, cmd, direction, detect, callback) {
+        const datas = this._getPackage(sensor, cmd, direction, detect);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`distance-detect-${direction}-${detect}`);
+        this.once(`distance-detect-${direction}-${detect}`, callback);
+    }
+
+    /**
+     * get detecting value of left and right IR distance sensor
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    isDetectObstacles (sensor, cmd, callback) {
+        const datas = this._getPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`distance-detect-all`);
+        this.once(`distance-detect-all`, callback);
+    }
+
+    /**
+     * led matrix on/off (row, col)
+     * @param sensor
+     * @param cmd
+     * @param row
+     * @param col
+     * @param on
+     * @param callback
+     */
+    ledMatrixOn (sensor, cmd, row, col, on, callback) {
+        const datas = this._runPackage(sensor, cmd, row, col, on);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-${row}-${col}-${on}`);
+        this.once(`matrix-${row}-${col}-${on}`, callback);
+    }
+
+    /**
+     * turn on all LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    ledMatrixOnAll (sensor, cmd, callback) {
+        const datas = this._runPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-on-all`);
+        this.once(`matrix-on-all`, callback);
+    }
+
+    /**
+     * turn off all LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    ledMatrixClear (sensor, cmd, callback) {
+        const datas = this._runPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-off-all`);
+        this.once(`matrix-off-all`, callback);
+    }
+
+    /**
+     * show number on LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param num
+     * @param callback
+     */
+    showLedMatrixNumber (sensor, cmd, num, callback) {
+        const datas = this._runPackage(sensor, cmd, num);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-num-${num}`);
+        this.once(`matrix-num-${num}`, callback);
+    }
+
+    /**
+     * show english small letter on LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param letter
+     * @param callback
+     */
+    showLedMatrixSmall (sensor, cmd, letter, callback) {
+        const datas = this._runPackage(sensor, cmd, letter);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-small-${letter}`);
+        this.once(`matrix-small-${letter}`, callback);
+    }
+
+    /**
+     * show english capital letter on LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param letter
+     * @param callback
+     */
+    showLedMatrixCapital (sensor, cmd, letter, callback) {
+        const datas = this._runPackage(sensor, cmd, letter);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-capital-${letter}`);
+        this.once(`matrix-capital-${letter}`, callback);
+    }
+
+    /**
+     * show korean letter on LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param letter
+     * @param callback
+     */
+    showLedMatrixKorean (sensor, cmd, letter, callback) {
+        const datas = this._runPackage(sensor, cmd, letter);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-kr-${letter}`);
+        this.once(`matrix-kr-${letter}`, callback);
+    }
+
+    /**
+     * read value of light sensor
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    getLightSensor (sensor, cmd, callback) {
+        const datas = this._getPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`light`);
+        this.once(`light`, callback);
+    }
+
+    /**
+     * read temperature on board
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    getTemperature (sensor, cmd, callback) {
+        const datas = this._getPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`temperature`);
+        this.once(`temperature`, callback);
+    }
+
+    /**
+     * read 3-Axis Accelerometer sensor
+     * @param sensor
+     * @param cmd
+     * @param axis
+     * @param callback
+     */
+    getAccelerometer (sensor, cmd, axis, callback) {
+        const datas = this._getPackage(sensor, cmd, axis);
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`acc-${axis}`);
+        this.once(`acc-${axis}`, callback);
+    }
 }
 
 // Prototype Compatibility Aliases
