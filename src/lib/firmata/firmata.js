@@ -66,14 +66,16 @@ const SYSTEM_RESET = 0xFF;
 
 const MAX_PIN_COUNT = 128;
 
-// coconut protocol
+// coconutS protocol
 // const DEV_MOTOR = 0x1a;
 // const MOTOR_CMD_0 = 0x00;
 
 /**
- * coconut response ID
+ * coconutS response ID
  * @type {number}
  */
+const RESET_RESPONSE = 0x04;
+
 const BUZZER= 0x03;
 const BUZZER_RESPONSE = 0x03;
 const DISTANCE_RESPONSE = 0x05;
@@ -660,7 +662,15 @@ const SYSEX_RESPONSE = {
             board.emit(`serial-data-${portId}`, reply);
         }
     },
-
+    /**
+     * stop all blocks
+     * remove all event listeners, stop all
+      * @param board
+     */
+    [RESET_RESPONSE] (board) {
+        console.log(`EVENT : STOP ALL`);
+        board.emit(`stop-all`, true);
+    },
     /**
      * Handles a Motor response and emits the 'coconut-motor-move-' + n event where n is command of the block parameter
      * @param board
@@ -873,77 +883,88 @@ const SYSEX_RESPONSE = {
         let value;
 
         switch (command) {
-        case LINE_TRACER_CMD.GET_RAW:
-            direction = board._sendBuffer[7];
-            console.log(`handler : line-tracer-read-${direction}`);
+            case LINE_TRACER_CMD.GET_RAW:
+                direction = board._sendBuffer[7];
+                console.log(`handler : line-tracer-read-${direction}`);
 
-            if (action === ACTION.GET) {
-                value = getSensorValue(board.buffer);
-                console.log(`value= ${value}`);
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    console.log(`value= ${value}`);
+                } else {
+                    value = error;
+                }
+
+                board.emit(`line-tracer-read-${direction}`, value);
+                break;
+            case LINE_TRACER_CMD.DETECT_SINGLE:
+                direction = board._sendBuffer[7];
+                const detect = board._sendBuffer[8];
+
+                console.log(`handler : line-tracer-detect-${direction}-${detect}`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    console.log(`value= ${value}`);
+                    value = (value === 1);
+                } else {
+                    value = error;
+                }
+
+                board.emit(`line-tracer-detect-${direction}-${detect}`, value);
+                break;
+            case LINE_TRACER_CMD.FOLLOW:
+                _direction = board._sendBuffer[7];
+                console.log(`handler : move-motor-time-${_direction}`);
+                board.emit(`move-motor-time-${_direction}`, true);
+                break;
+            case LINE_TRACER_CMD.DETECT_INT:
+                console.log(`handler : line-tracer-detects`);
+
+                // direction = board._sendBuffer[7];
+                // const detect = board._sendBuffer[8];
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    console.log(`value= ${value}`);
+                    // value = (value === 1);
+                } else {
+                    value = error;
+                }
+
+                board.emit('line-tracer-detects', value);
+                break;
+            case LINE_TRACER_CMD.TURN_BLACK:
+                const exCmd = board._sendBuffer[7];
+                console.log(`handler : line-tracer-command-${exCmd}`);
+
+                if (action === ACTION.RUN) {
+                    value = true;
+                    // console.log(`value= ${value}`);
+                } else {
+                    value = error;
+                }
+
+                board.emit(`line-tracer-command-${exCmd}`, value);
+                break;
+            // case LINE_TRACER_CMD.DETECT_NONE:
+            //     console.log(`handler : move-motor-degree`);
+            //     board.emit('move-motor-degree');
+            //     break;
+            case LINE_TRACER_CMD.FOLLOW: {
+                const exCmd = board._sendBuffer[7];
+                console.log(`handler : follow-line`);
+
+                if (action === ACTION.RUN) {
+                    value = true;
+                    // console.log(`value= ${value}`);
+                } else {
+                    value = error;
+                }
+
+                board.emit(`follow-line`, value);
+                break;
+
             }
-            else {
-                value = error;
-            }
-
-            board.emit(`line-tracer-read-${direction}`, value);
-            break;
-        case LINE_TRACER_CMD.DETECT_SINGLE:
-            direction = board._sendBuffer[7];
-            const detect = board._sendBuffer[8];
-
-            console.log(`handler : line-tracer-detect-${direction}-${detect}`);
-
-            if (action === ACTION.GET) {
-                value = getSensorValue(board.buffer);
-                console.log(`value= ${value}`);
-                value = (value === 1);
-            }
-            else {
-                value = error;
-            }
-
-            board.emit(`line-tracer-detect-${direction}-${detect}`, value);
-            break;
-        case LINE_TRACER_CMD.FOLLOW:
-            _direction = board._sendBuffer[7];
-            console.log(`handler : move-motor-time-${_direction}`);
-            board.emit(`move-motor-time-${_direction}`, true);
-            break;
-        case LINE_TRACER_CMD.DETECT_INT:
-            console.log(`handler : line-tracer-detects`);
-
-            // direction = board._sendBuffer[7];
-            // const detect = board._sendBuffer[8];
-
-            if (action === ACTION.GET) {
-                value = getSensorValue(board.buffer);
-                console.log(`value= ${value}`);
-                // value = (value === 1);
-            }
-            else {
-                value = error;
-            }
-
-            board.emit('line-tracer-detects', value);
-            break;
-        case LINE_TRACER_CMD.TURN_BLACK:
-            const exCmd = board._sendBuffer[7];
-            console.log(`handler : line-tracer-command-${exCmd}`);
-
-            if (action === ACTION.RUN) {
-               value = true;
-                // console.log(`value= ${value}`);
-            }
-            else {
-                value = error;
-            }
-
-            board.emit(`line-tracer-command-${exCmd}`, value);
-            break;
-        // case LINE_TRACER_CMD.DETECT_NONE:
-        //     console.log(`handler : move-motor-degree`);
-        //     board.emit('move-motor-degree');
-        //     break;
         }
     },
     /**
@@ -1006,6 +1027,19 @@ const SYSEX_RESPONSE = {
                 }
 
                 board.emit(`distance-detect-all`, value);
+                break;
+            }
+            case DISTANCE_CMD.AVOID: {
+                console.log(`handler : avoid-mode`);
+
+                if (action === ACTION.RUN) {
+                    value = true;
+                }
+                else {
+                    value = error;
+                }
+
+                board.emit(`avoid-mode`, value);
                 break;
             }
         }
@@ -1598,7 +1632,15 @@ class Firmata extends Emitter {
                         // if (handler) handler(this);
                     }
 
-                    const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
+                    let handler;
+                    // stop all
+                    if (this._sendBuffer[4] === 0x04) {
+                        handler = SYSEX_RESPONSE[this._sendBuffer[4]];
+                    }
+                    else {
+                        handler = SYSEX_RESPONSE[this._sendBuffer[5]];
+                    }
+
                     if (handler) handler(this);
 
                     console.log(`this.buffer= ${this.buffer}`);
@@ -3402,7 +3444,7 @@ class Firmata extends Emitter {
         return decoded;
     }
 
-    // ------ coconut blocks ------
+    // ------ coconutS blocks ------
 
     /**
      * @brief 모듈 실행
@@ -3455,7 +3497,7 @@ class Firmata extends Emitter {
         writeToTransport(this, datas);
         // this.removeAllListeners(`analog-read-${pin}`);
         this.once(`move-motor-${direction}`, callback);
-        // this.once(`coconut-move-motors`, callback);
+        // this.once(`coconutS-move-motors`, callback);
     }
 
     /**
@@ -3475,7 +3517,7 @@ class Firmata extends Emitter {
         writeToTransport(this, datas);
         // this.removeAllListeners(`analog-read-${pin}`);
         this.once(`stop-motor`, callback);
-        // this.once(`coconut-move-motors`, callback);
+        // this.once(`coconutS-move-motors`, callback);
     }
 
     /**
@@ -4133,6 +4175,71 @@ class Firmata extends Emitter {
 
         this.removeAllListeners(`acc-${axis}`);
         this.once(`acc-${axis}`, callback);
+    }
+
+    /**
+     * stop all blocks
+     */
+    stopAll (callback) {
+        const datas = [0xff, 0x55, 0x02, 0x00, 0x04];
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(); // all event listeners
+        // this.removeAllListeners(`stop-all`);
+        this.once(`stop-all`, callback);
+    }
+
+    /**
+     * play melody
+     * @param sensor
+     * @param cmd
+     * @param melody
+     * @param callback
+     */
+    playMelody (sensor, cmd, melody, callback) {
+        const datas = this._runPackage(sensor, cmd, melody);
+        this._sendBuffer = datas.slice();
+        // const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        // const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-melody-${melody}`);
+        this.once(`buzzer-melody-${melody}`, callback);
+    }
+
+    /**
+     * follow the line
+     * @param sensor
+     * @param cmd
+     * @param speed
+     * @param callback
+     */
+    followLine (sensor, cmd, speed, callback) {
+        const datas = this._runPackage(sensor, cmd, speed);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`follow-line`);
+        this.once(`follow-line`, callback);
+    }
+
+    /**
+     * avoid mode
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    avoidMode (sensor, cmd, callback) {
+        const datas = this._runPackage(sensor, cmd);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`avoid-mode`);
+        this.once(`avoid-mode`, callback);
     }
 }
 

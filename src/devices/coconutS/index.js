@@ -7,7 +7,7 @@ const ProgramModeType = require('../../extension-support/program-mode-type');
 const Cast = require('../../util/cast');
 const log = require('../../util/log');
 
-const CoconutPeripheral = require('../arduinoCommon/coconut-peripheral');
+const CoconutPeripheral = require('../arduinoCommon/coconutS-peripheral');
 
 /**
  * The list of USB device filters.
@@ -209,7 +209,7 @@ class CoconutDevice {
      * @return {string} - the ID of this extension.
      */
     static get DEVICE_ID () {
-        return 'coconut';
+        return 'coconutS';
     }
 
     /**
@@ -1358,7 +1358,6 @@ class CoconutDevice {
      * @constructor
      */
     get ACC_AXIS_MENU () {
-        // TODO: id 추가, 한글 번역 추가
         return [
             {
                 text: formatMessage({
@@ -1383,6 +1382,55 @@ class CoconutDevice {
                     description: 'Z-Axis'
                 }),
                 value: 3
+            }
+        ];
+    }
+
+    /**
+     * melody menu
+     * @constructor
+     */
+    get MELODY_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.melodyMenu.twinkle',
+                    default: 'Twinkle Twinkle little star',
+                    description: 'Twinkle Twinkle little star'
+                }),
+                value: 1
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.melodyMenu.bears',
+                    default: 'Three bears',
+                    description: 'Three bears'
+                }),
+                value: 2
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.melodyMenu.lullaby',
+                    default: 'Mozart\'s Lullaby',
+                    description: 'Mozart\'s Lullaby'
+                }),
+                value: 3
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.melodyMenu.doremi',
+                    default: 'Do-Re-Mi',
+                    description: 'Do-Re-Mi'
+                }),
+                value: 4
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.melodyMenu.butterfly',
+                    default: 'Butterfly',
+                    description: 'Butterfly'
+                }),
+                value: 5
             }
         ];
     }
@@ -1735,15 +1783,15 @@ class CoconutDevice {
     getInfo () {
         return [
             {
-                id: 'coconut',
+                id: 'coconutS',
                 name: formatMessage({
                     id: 'coconut.category.coconutS',
                     default: 'Coconut-S',
-                    description: 'The name of the coconut device pin category'
+                    description: 'The name of the Coconut-S device category'
                 }),
                 color1: '#009297',
-                // color1: '#004B4C',
-                // color: '#004B4C',
+                color2: '#004B4C',
+                color3: '#004B4C',
                 blocks: [
                     // 코코넛/코코넛-S 블럭
                     // [앞으로/뒤로] 움직이기
@@ -2637,10 +2685,101 @@ class CoconutDevice {
                     }
                 }
             },
+            // 강제 정지
+            {
+                id: 'reset',
+                name: formatMessage({
+                        id: 'coconut.category.reset',
+                        default: 'Reset',
+                        description: 'Reset block'
+                }),
+                color1: '#9966FF',
+                blocks: [
+                    {
+                        opcode: 'stopAll',
+                        text: formatMessage({
+                            id: 'coconut.reset.stopAll',
+                            default: 'stop all',
+                            description: 'stop all block'
+                        }),
+                        blockType: BlockType.COMMAND,
+                   }
+                ]
+            },
+            {
+                id: 'hidden',
+                name: formatMessage({
+                    id: 'coconut.category.hidden',
+                    default: 'Hidden',
+                    description: 'The name of the Coconut-S device Hidden category'
+                }),
+                color1: '#9966FF',
+                color2: '#774DCB',
+                color3: '#774DCB',
+                blocks: [
+                    {
+                        opcode: 'playMelody',
+                        text: formatMessage({
+                            id: 'coconut.hidden.playMelody',
+                            default: 'play melody [MELODY]',
+                            description: 'play selected melody'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            MELODY: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'MelodyMenu',
+                                defaultValue: 1
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'followLine',
+                        text: formatMessage({
+                            id: 'coconut.hidden.followLine',
+                            default: 'follow the line',
+                            description: 'follow the line'
+                        }),
+                        blockType: BlockType.COMMAND
+                    },
+                    {
+                        opcode: 'avoidMode',
+                        text: formatMessage({
+                            id: 'coconut.hidden.avoidMode',
+                            default: 'avoid mode',
+                            description: 'coconut avoid mode'
+                        }),
+                        blockType: BlockType.COMMAND
+                    },
+                    {
+                        opcode: 'showCharacterDraw',
+                        text: formatMessage({
+                            id: 'coconut.hidden.showCharacterDraw',
+                            default: 'LED Matrix Character [MATRIX]',
+                            description: 'show character draw'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            MATRIX: {
+                                type: ArgumentType.MATRIX,
+                                menu: 'MelodyMenu',
+                                defaultValue: '0101010101100010101000100'
+                            }
+                        }
+                    }
+                ],
+                menus: {
+                    MelodyMenu: {
+                        items: this.MELODY_MENU
+                    },
+                    eol: {
+                        items: this.EOL_MENU
+                    }
+                }
+            },
         ];
     }
 
-    // TODO: promise() 추가요
     /**
      * move forward or backward
      * @param args
@@ -3084,6 +3223,71 @@ class CoconutDevice {
 
         return this._peripheral.getAccelerometer(args.ACC_AXIS);
         // return Promise.resolve();
+    }
+
+    /**
+     * forced stop all block
+     * @returns {*}
+     */
+    stopAll () {
+        console.log(`stopAll :`);
+
+        return this._peripheral.stopAll();
+    }
+
+    /**
+     * play melody
+     * @param args
+     */
+    playMelody (args) {
+        console.log(`playMelody :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.playMelody(args.MELODY);
+    }
+
+    /**
+     * follow the line
+     */
+    followLine () {
+        console.log(`followLine :`);
+        return this._peripheral.followLine();
+    }
+
+    /**
+     * avoid mode
+     * @returns {*}
+     */
+    avoidMode () {
+        console.log(`avoidMode :`);
+        return this._peripheral.avoidMode();
+    }
+
+    /**
+     * Display a predefined symbol on the 5x5 LED matrix.
+     * @param args
+     */
+    showCharacterDraw (args) {
+        const symbol = cast.toString(args.MATRIX).replace(/\s/g, '');
+        const reducer = (accumulator, c, index) => {
+            const value = (c === '0') ? accumulator : accumulator + Math.pow(2, index);
+            return value;
+        };
+        // const hex = symbol.split('').reduce(reducer, 0);
+        // if (hex !== null) {
+        //     this._peripheral.ledMatrixState[0] = hex & 0x1F;
+        //     this._peripheral.ledMatrixState[1] = (hex >> 5) & 0x1F;
+        //     this._peripheral.ledMatrixState[2] = (hex >> 10) & 0x1F;
+        //     this._peripheral.ledMatrixState[3] = (hex >> 15) & 0x1F;
+        //     this._peripheral.ledMatrixState[4] = (hex >> 20) & 0x1F;
+        //     this._peripheral.displayMatrix(this._peripheral.ledMatrixState);
+        // }
+        //
+        // return new Promise(resolve => {
+        //     setTimeout(() => {
+        //         resolve();
+        //     }, BLESendInterval);
+        // });
     }
 
     /**
