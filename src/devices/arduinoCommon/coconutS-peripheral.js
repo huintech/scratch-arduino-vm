@@ -58,7 +58,9 @@ const Sensors = {
     IR: 9,
     RGBled: 25,
     Motor: 26,
-    LedMatrix: 27 // 0x1b
+    LedMatrix: 27, // 0x1b
+    ServoMotor: 43,
+    ExtMotor: 46
 };
 
 /**
@@ -240,11 +242,11 @@ const Axises = {'X-Axis': 1, 'Y-Axis': 2, 'Z-Axis': 3};
  * @type {{Butterfly: number, "Three bears": number, "Mozart's Lullaby": number, "Do-Re-Mi": number, "Twinkle Twinkle little star": number}}
  */
 const Melodys = {
-    "Twinkle Twinkle little star": 1,
-    "Three bears": 2,
+    'Twinkle Twinkle little star': 1,
+    'Three bears': 2,
     "Mozart's Lullaby": 3,
-    "Do-Re-Mi": 4,
-    "Butterfly": 5
+    'Do-Re-Mi': 4,
+    'Butterfly': 5
 };
 
 /**
@@ -1608,8 +1610,7 @@ class CoconutSPeripheral {
             this._firmata.lineTracerCmd(...options, value => {
                 if (value === true) {
                     resolve();
-                }
-                else {
+                } else {
                     resolve(value);
                 }
 
@@ -1641,8 +1642,7 @@ class CoconutSPeripheral {
             this._firmata.getDistance(...options, value => {
                 if (value === true) {
                     resolve();
-                }
-                else {
+                } else {
                     resolve(value);
                 }
 
@@ -1735,8 +1735,7 @@ class CoconutSPeripheral {
             this._firmata.ledMatrixOn(...options, value => {
                 if (value === true) {
                     resolve();
-                }
-                else {
+                } else {
                     resolve(value);
                 }
 
@@ -1764,8 +1763,7 @@ class CoconutSPeripheral {
             this._firmata.ledMatrixOnAll(...options, value => {
                 if (value === true) {
                     resolve();
-                }
-                else {
+                } else {
                     resolve(value);
                 }
 
@@ -1792,8 +1790,7 @@ class CoconutSPeripheral {
             this._firmata.ledMatrixClear(...options, value => {
                 if (value === true) {
                     resolve();
-                }
-                else {
+                } else {
                     resolve(value);
                 }
 
@@ -1822,8 +1819,7 @@ class CoconutSPeripheral {
             this._firmata.showLedMatrixNumber(...options, value => {
                 if (value === true) {
                     resolve();
-                }
-                else {
+                } else {
                     resolve(value);
                 }
 
@@ -1854,8 +1850,7 @@ class CoconutSPeripheral {
             this._firmata.showLedMatrixSmall(...options, value => {
                 if (value === true) {
                     resolve();
-                }
-                else {
+                } else {
                     resolve(value);
                 }
 
@@ -1886,8 +1881,7 @@ class CoconutSPeripheral {
             this._firmata.showLedMatrixCapital(...options, value => {
                 if (value === true) {
                     resolve();
-                }
-                else {
+                } else {
                     resolve(value);
                 }
 
@@ -1918,8 +1912,7 @@ class CoconutSPeripheral {
             this._firmata.showLedMatrixKorean(...options, value => {
                 if (value === true) {
                     resolve();
-                }
-                else {
+                } else {
                     resolve(value);
                 }
 
@@ -2029,7 +2022,7 @@ class CoconutSPeripheral {
         const jobDurationMS = 3000;
         const timeoutMS = 2000;
 
-        const job = new Promise((resolve) => {
+        const job = new Promise(resolve => {
             this._firmata.stopAll(value => {
                 if (value === true) resolve();
                 else resolve(value);
@@ -2041,15 +2034,15 @@ class CoconutSPeripheral {
         let timer;
         Promise.race([
             job,
-            new Promise((resolve) => {
-                timer = setTimeout(() => resolve("timeout"), FirmataReadTimeout);
-            }),
+            new Promise(resolve => {
+                timer = setTimeout(() => resolve('timeout'), FirmataReadTimeout);
+            })
         ])
-            .then((result) => {
-                if (result === "timeout") {
-                    console.log("시간이 초과되었습니다!");
+            .then(result => {
+                if (result === 'timeout') {
+                    console.log('시간이 초과되었습니다!');
                 } else {
-                    console.log("시간 내에 작업을 완료하였습니다.");
+                    console.log('시간 내에 작업을 완료하였습니다.');
                 }
             })
             .finally(() => clearTimeout(timer));
@@ -2088,7 +2081,7 @@ class CoconutSPeripheral {
         const jobDurationMS = 3000;
         const timeoutMS = 2000;
 
-        const job = new Promise((resolve) => {
+        const job = new Promise(resolve => {
             this._firmata.followLine(...options, value => {
                 resolve(value);
 
@@ -2098,15 +2091,15 @@ class CoconutSPeripheral {
         let timer;
         Promise.race([
             job,
-            new Promise((resolve) => {
-                timer = setTimeout(() => resolve("timeout"), FirmataReadTimeout);
-            }),
+            new Promise(resolve => {
+                timer = setTimeout(() => resolve('timeout'), FirmataReadTimeout);
+            })
         ])
-            .then((result) => {
-                if (result === "timeout") {
-                    console.log("시간이 초과되었습니다!");
+            .then(result => {
+                if (result === 'timeout') {
+                    console.log('시간이 초과되었습니다!');
                 } else {
-                    console.log("시간 내에 작업을 완료하였습니다.");
+                    console.log('시간 내에 작업을 완료하였습니다.');
                 }
             })
             .finally(() => clearTimeout(timer));
@@ -2121,7 +2114,7 @@ class CoconutSPeripheral {
         const jobDurationMS = 3000;
         const timeoutMS = 2000;
 
-        const job = new Promise((resolve) => {
+        const job = new Promise(resolve => {
             this._firmata.avoidMode(...options, value => {
                 resolve(value);
 
@@ -2132,15 +2125,131 @@ class CoconutSPeripheral {
         let timer;
         Promise.race([
             job,
-            new Promise((resolve) => {
-                timer = setTimeout(() => resolve("timeout"), FirmataReadTimeout);
-            }),
+            new Promise(resolve => {
+                timer = setTimeout(() => resolve('timeout'), FirmataReadTimeout);
+            })
         ])
-            .then((result) => {
-                if (result === "timeout") {
-                    console.log("시간이 초과되었습니다!");
+            .then(result => {
+                if (result === 'timeout') {
+                    console.log('시간이 초과되었습니다!');
                 } else {
-                    console.log("시간 내에 작업을 완료하였습니다.");
+                    console.log('시간 내에 작업을 완료하였습니다.');
+                }
+            })
+            .finally(() => clearTimeout(timer));
+    }
+
+    /**
+     * Move external motor
+     * @param direction
+     * @param speed
+     */
+    moveExtMotors (direction, speed) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        const options = [Sensors.ExtMotor, 2, direction, speed];
+
+        const jobDurationMS = 3000;
+        const timeoutMS = 2000;
+
+        const job = new Promise(resolve => {
+            this._firmata.moveExtMotors(...options, value => {
+                resolve(value);
+
+                console.log(`resolve= ${value}`);
+            });
+        });
+
+        let timer;
+        Promise.race([
+            job,
+            new Promise(resolve => {
+                timer = setTimeout(() => resolve('timeout'), FirmataReadTimeout);
+            })
+        ])
+            .then(result => {
+                if (result === 'timeout') {
+                    console.log('시간이 초과되었습니다!');
+                } else {
+                    console.log('시간 내에 작업을 완료하였습니다.');
+                }
+            })
+            .finally(() => clearTimeout(timer));
+    }
+
+    /**
+     * set speed to selected external motor
+     * @param direction
+     * @param speed
+     */
+    extMotorControl (direction, speed) {
+        if (typeof direction === 'string') direction = Directions[direction];
+        const options = [Sensors.ExtMotor, 1, direction, speed];
+
+        // const jobDurationMS = 3000;
+        // const timeoutMS = 2000;
+
+        const job = new Promise(resolve => {
+            this._firmata.extMotorControl(...options, value => {
+                resolve(value);
+
+                // eslint-disable-next-line no-console
+                console.log(`resolve= ${value}`);
+            });
+        });
+
+        let timer;
+        Promise.race([
+            job,
+            new Promise(resolve => {
+                timer = setTimeout(() => resolve('timeout'), FirmataReadTimeout);
+            })
+        ])
+            .then(result => {
+                if (result === 'timeout') {
+                    console.log('시간이 초과되었습니다!');
+                } else {
+                    console.log('시간 내에 작업을 완료하였습니다.');
+                }
+            })
+            .finally(() => clearTimeout(timer));
+    }
+
+    /**
+     * set servo motor
+     * @param pin
+     * @param angle
+     */
+    runExtServo (pin, angle) {
+        // if (typeof direction === 'string') direction = Directions[direction];
+        const options = [Sensors.ServoMotor, pin, angle];
+
+        // const jobDurationMS = 3000;
+        // const timeoutMS = 2000;
+
+        console.log(`${options}`);
+
+        const job = new Promise(resolve => {
+            this._firmata.runExtServo(...options, value => {
+                resolve(value);
+
+                console.log(`resolve= ${value}`);
+            });
+        });
+
+        let timer;
+        Promise.race([
+            job,
+            new Promise(resolve => {
+                timer = setTimeout(() => resolve('timeout'), FirmataReadTimeout);
+            })
+        ])
+            .then(result => {
+                console.log(`resolve = ${result}`);
+
+                if (result === 'timeout') {
+                    console.log('시간이 초과되었습니다!');
+                } else {
+                    console.log('시간 내에 작업을 완료하였습니다.');
                 }
             })
             .finally(() => clearTimeout(timer));

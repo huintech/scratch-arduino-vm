@@ -60,12 +60,12 @@ const Pins = {
     D11: '11',
     D12: '12',
     D13: '13',
-    A0: 'A0',
-    A1: 'A1',
-    A2: 'A2',
-    A3: 'A3',
-    A4: 'A4',
-    A5: 'A5'
+    A0: '14',
+    A1: '15',
+    A2: '16',
+    A3: '17',
+    A4: '18',
+    A5: '19'
 };
 
 
@@ -140,50 +140,65 @@ const LEDColorValues = {
  * @type {{}}
  */
 const NoteValues = {
-    NOTE_C: "NOTE_C", NOTE_D: "NOTE_D", NOTE_E: "NOTE_E",
-    NOTE_F: "NOTE_F", NOTE_G: "NOTE_G", NOTE_A: "NOTE_A", NOTE_B: "NOTE_B"
+    NOTE_C: 'NOTE_C',
+    NOTE_D: 'NOTE_D',
+    NOTE_E: 'NOTE_E',
+    NOTE_F: 'NOTE_F',
+    NOTE_G: 'NOTE_G',
+    NOTE_A: 'NOTE_A',
+    NOTE_B: 'NOTE_B'
 };
 
-const SharpValues = { NONE: '-', SHARP: '#', FLAT: 'b' };
+const SharpValues = {NONE: '-', SHARP: '#', FLAT: 'b'};
 
 /**
  * beat values
  * @type {{QUATER: string, HALF: string, DOT_QUATER: string, DOT_8TH: string, DOT_HALF: string, DOT_16TH: string, THIRTYH_2ND: string, WHOLE: string, EIGHTH: string, SIXTEENTH: string, DOT_32ND: string}}
  */
 const BeatValues = {
-    HALF: 'Half', QUARTER: 'Quarter', EIGHTH: 'Eighth', SIXTEENTH: 'Sixteenth',
-    THIRTY_2ND: 'Thirty-second', WHOLE: 'Whole',
-    DOT_HALF: 'Dotted half', DOT_QUARTER: 'Dotted quarter',
-    DOT_8TH: 'Dotted eighth', DOT_16TH: 'Dotted sixteenth',
-    DOT_32ND: 'Dotted thirty-second', ORIGINAL: 'original'
-}
+    HALF: 'Half',
+    QUARTER: 'Quarter',
+    EIGHTH: 'Eighth',
+    SIXTEENTH: 'Sixteenth',
+    THIRTY_2ND: 'Thirty-second',
+    WHOLE: 'Whole',
+    DOT_HALF: 'Dotted half',
+    DOT_QUARTER: 'Dotted quarter',
+    DOT_8TH: 'Dotted eighth',
+    DOT_16TH: 'Dotted sixteenth',
+    DOT_32ND: 'Dotted thirty-second',
+    ORIGINAL: 'original'
+};
 
 /**
  * rest beat values
  * @type {{QUATER: string, HALF: string, WHOLE: string, EIGHTH: string, SIXTEENTH: string}}
  */
 const BeatRestValues = {
-    HALF: "Half_rest", QUARTER: "Quarter_rest", EIGHTH: "Eighth_rest",
-    SIXTEENTH: "Sixteenth_rest", WHOLE: "Whole_rest"
+    HALF: 'Half_rest',
+    QUARTER: 'Quarter_rest',
+    EIGHTH: 'Eighth_rest',
+    SIXTEENTH: 'Sixteenth_rest',
+    WHOLE: 'Whole_rest'
 };
 
 /**
  * detect values
  * @type {{}}
  */
-const DetectValues = { YES: 'Yes', NO: 'No' };
+const DetectValues = {YES: 'Yes', NO: 'No'};
 
 /**
  * line tracer command
  * @type {{LEFT: string, RIGHT: string}}
  */
-const CommandValues = { LEFT: 'Turn left', RIGHT: 'Turn right' };
+const CommandValues = {LEFT: 'Turn left', RIGHT: 'Turn right'};
 
 /**
  * on off values
  * @type {{OFF: string, ON: string}}
  */
-const OnOffValues = { ON: 'On', OFF: 'Off' };
+const OnOffValues = {ON: 'On', OFF: 'Off'};
 
 /**
  * Manage communication with a Arduino Uno peripheral over a Scratch Arduino Link client socket.
@@ -627,7 +642,7 @@ class CoconutDevice {
                     description: 'Dotted thirty-second beat'
                 }),
                 value: BeatValues.DOT_32ND
-            },
+            }
         ];
     }
 
@@ -1435,6 +1450,186 @@ class CoconutDevice {
         ];
     }
 
+    /**
+     * External motor direction menu
+     * @returns {[{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string}]}
+     * @constructor
+     */
+    get DIRECTION_EXT_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.dirMenu.forward',
+                    default: 'Forward',
+                    description: 'forward direction'
+                }),
+                value: DirectionValues.FORWARD
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.dirMenu.backward',
+                    default: 'Backward',
+                    description: 'backward direction'
+                }),
+                value: DirectionValues.BACKWARD
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.dirMenu.left',
+                    default: 'Left',
+                    description: 'left direction'
+                }),
+                value: DirectionValues.LEFT
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.dirMenu.right',
+                    default: 'Right',
+                    description: 'right direction'
+                }),
+                value: DirectionValues.RIGHT
+            }
+        ];
+    }
+
+    /**
+     * External motor speed menu
+     * @constructor
+     */
+    get MOTOR_SPEED_MENU () {
+        // return [0,50, 100, 150, 255];
+        return [
+            {
+                text: '0',
+                value: 0
+            },
+            {
+                text: '50',
+                value: 50
+            },
+            {
+                text: '100',
+                value: 100
+            },
+            {
+                text: '150',
+                value: 150
+            },
+            {
+                text: '255',
+                value: 255
+            }
+        ];
+    }
+
+    // eslint-disable-next-line valid-jsdoc
+    /**
+     * external motor speed
+     * @returns {[{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},null,null]}
+     * @constructor
+     */
+    get MOTOR_SPEED2_MENU () {
+        return [
+            {
+                text: '255',
+                value: 255
+            },
+            {
+                text: '100',
+                value: 100
+            },
+            {
+                text: '50',
+                value: 50
+            },
+            {
+                text: '0',
+                value: 0
+            },
+            {
+                text: '-50',
+                value: -50
+            },
+            {
+                text: '-100',
+                value: -100
+            },
+            {
+                text: '-255',
+                value: -255
+            }
+        ];
+    }
+
+    /**
+     * servo pin menu
+     * @returns {[{text: string, value: string},{text: string, value: string},{text: string, value: string},{text: string, value: string},{text: string, value: string},null]}
+     * @constructor
+     */
+    get SERVO_PIN_MENU () {
+        return [
+            {
+                text: 'D4',
+                value: Pins.D4
+            },
+            {
+                text: 'D10',
+                value: Pins.D10
+            },
+            {
+                text: 'D11',
+                value: Pins.D11
+            },
+            {
+                text: 'D12',
+                value: Pins.D12
+            },
+            {
+                text: 'A2',
+                value: Pins.A2
+            },
+            {
+                text: 'A3',
+                value: Pins.A3
+            }
+        ];
+    }
+
+    /**
+     * servo angle menu
+     * @returns {[{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},null]}
+     * @constructor
+     */
+    get SERVO_ANGLE_MENU () {
+        // [0, 60, 90, 120, 150, 180]
+        return [
+            {
+                text: '0',
+                value: 0
+            },
+            {
+                text: '60',
+                value: 60
+            },
+            {
+                text: '90',
+                value: 90
+            },
+            {
+                text: '120',
+                value: 120
+            },
+            {
+                text: '150',
+                value: 150
+            },
+            {
+                text: '180',
+                value: 180
+            }
+        ];
+    }
+
     get PINS_MENU () {
         return [
             {
@@ -2033,7 +2228,7 @@ class CoconutDevice {
                             default: 'buzzer on',
                             description: 'buzzer on'
                         }),
-                        blockType: BlockType.COMMAND,
+                        blockType: BlockType.COMMAND
                     },
                     {
                         opcode: 'playBuzzerTime',
@@ -2076,7 +2271,7 @@ class CoconutDevice {
                             default: 'buzzer off',
                             description: 'buzzer off'
                         }),
-                        blockType: BlockType.COMMAND,
+                        blockType: BlockType.COMMAND
                     },
                     {
                         opcode: 'playNote',
@@ -2227,7 +2422,7 @@ class CoconutDevice {
                             default: 'line tracer detection',
                             description: 'line tracer detection result'
                         }),
-                        blockType: BlockType.REPORTER,
+                        blockType: BlockType.REPORTER
                     },
                     {
                         opcode: 'lineTracerCmd',
@@ -2327,7 +2522,7 @@ class CoconutDevice {
                             default: 'turn on all LED Matrix',
                             description: 'turn on all LED Matrix'
                         }),
-                        blockType: BlockType.COMMAND,
+                        blockType: BlockType.COMMAND
                     },
                     {
                         opcode: 'ledMatrixClear',
@@ -2336,7 +2531,7 @@ class CoconutDevice {
                             default: 'LED Matrix clear all',
                             description: 'LED Matrix clear all'
                         }),
-                        blockType: BlockType.COMMAND,
+                        blockType: BlockType.COMMAND
                     },
                     {
                         opcode: 'showLedMatrixNumber',
@@ -2436,164 +2631,164 @@ class CoconutDevice {
                                 defaultValue: 1
                             }
                         }
-                    },
-                    '---',
-                    {
-                        opcode: 'setPinMode',
-                        text: formatMessage({
-                            id: 'arduino.pins.setPinMode',
-                            default: 'set pin [PIN] mode [MODE]',
-                            description: 'arduino set pin mode'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: Pins.D0
-                            },
-                            MODE: {
-                                type: ArgumentType.STRING,
-                                menu: 'mode',
-                                defaultValue: Mode.Input
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'setDigitalOutput',
-                        text: formatMessage({
-                            id: 'arduino.pins.setDigitalOutput',
-                            default: 'set digital pin [PIN] out [LEVEL]',
-                            description: 'arduino set digital pin out'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: Pins.D0
-                            },
-                            LEVEL: {
-                                type: ArgumentType.STRING,
-                                menu: 'level',
-                                defaultValue: Level.High
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'setPwmOutput',
-                        text: formatMessage({
-                            id: 'arduino.pins.setPwmOutput',
-                            default: 'set pwm pin [PIN] out [OUT]',
-                            description: 'arduino set pwm pin out'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pwmPins',
-                                defaultValue: Pins.D3
-                            },
-                            OUT: {
-                                type: ArgumentType.UINT8_NUMBER,
-                                defaultValue: '255'
-                            }
-                        }
-                    },
-                    '---',
-                    {
-                        opcode: 'readDigitalPin',
-                        text: formatMessage({
-                            id: 'arduino.pins.readDigitalPin',
-                            default: 'read digital pin [PIN]',
-                            description: 'arduino read digital pin'
-                        }),
-                        blockType: BlockType.BOOLEAN,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pins',
-                                defaultValue: Pins.D0
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'readAnalogPin',
-                        text: formatMessage({
-                            id: 'arduino.pins.readAnalogPin',
-                            default: 'read analog pin [PIN]',
-                            description: 'arduino read analog pin'
-                        }),
-                        blockType: BlockType.REPORTER,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'analogPins',
-                                defaultValue: Pins.A0
-                            }
-                        }
-                    },
-                    '---',
-                    {
-                        opcode: 'setServoOutput',
-                        text: formatMessage({
-                            id: 'arduino.pins.setServoOutput',
-                            default: 'set servo pin [PIN] out [OUT]',
-                            description: 'arduino set servo pin out'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'pwmPins',
-                                defaultValue: Pins.D3
-                            },
-                            OUT: {
-                                type: ArgumentType.ANGLE,
-                                defaultValue: '90'
-                            }
-                        }
-                    },
-                    '---',
-                    {
-                        opcode: 'attachInterrupt',
-                        text: formatMessage({
-                            id: 'arduino.pins.attachInterrupt',
-                            default: 'attach interrupt pin [PIN] mode [MODE] executes',
-                            description: 'arduino attach interrupt'
-                        }),
-                        blockType: BlockType.CONDITIONAL,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'interruptPins',
-                                defaultValue: Pins.D3
-                            },
-                            MODE: {
-                                type: ArgumentType.STRING,
-                                menu: 'interruptMode',
-                                defaultValue: InterrupMode.Rising
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
-                    },
-                    {
-                        opcode: 'detachInterrupt',
-                        text: formatMessage({
-                            id: 'arduino.pins.detachInterrupt',
-                            default: 'detach interrupt pin [PIN]',
-                            description: 'arduino attach interrupt'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            PIN: {
-                                type: ArgumentType.STRING,
-                                menu: 'interruptPins',
-                                defaultValue: Pins.D3
-                            }
-                        },
-                        programMode: [ProgramModeType.UPLOAD]
                     }
+                    // '---',
+                    // {
+                    //     opcode: 'setPinMode',
+                    //     text: formatMessage({
+                    //         id: 'arduino.pins.setPinMode',
+                    //         default: 'set pin [PIN] mode [MODE]',
+                    //         description: 'arduino set pin mode'
+                    //     }),
+                    //     blockType: BlockType.COMMAND,
+                    //     arguments: {
+                    //         PIN: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'pins',
+                    //             defaultValue: Pins.D0
+                    //         },
+                    //         MODE: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'mode',
+                    //             defaultValue: Mode.Input
+                    //         }
+                    //     }
+                    // },
+                    // {
+                    //     opcode: 'setDigitalOutput',
+                    //     text: formatMessage({
+                    //         id: 'arduino.pins.setDigitalOutput',
+                    //         default: 'set digital pin [PIN] out [LEVEL]',
+                    //         description: 'arduino set digital pin out'
+                    //     }),
+                    //     blockType: BlockType.COMMAND,
+                    //     arguments: {
+                    //         PIN: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'pins',
+                    //             defaultValue: Pins.D0
+                    //         },
+                    //         LEVEL: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'level',
+                    //             defaultValue: Level.High
+                    //         }
+                    //     }
+                    // },
+                    // {
+                    //     opcode: 'setPwmOutput',
+                    //     text: formatMessage({
+                    //         id: 'arduino.pins.setPwmOutput',
+                    //         default: 'set pwm pin [PIN] out [OUT]',
+                    //         description: 'arduino set pwm pin out'
+                    //     }),
+                    //     blockType: BlockType.COMMAND,
+                    //     arguments: {
+                    //         PIN: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'pwmPins',
+                    //             defaultValue: Pins.D3
+                    //         },
+                    //         OUT: {
+                    //             type: ArgumentType.UINT8_NUMBER,
+                    //             defaultValue: '255'
+                    //         }
+                    //     }
+                    // },
+                    // '---',
+                    // {
+                    //     opcode: 'readDigitalPin',
+                    //     text: formatMessage({
+                    //         id: 'arduino.pins.readDigitalPin',
+                    //         default: 'read digital pin [PIN]',
+                    //         description: 'arduino read digital pin'
+                    //     }),
+                    //     blockType: BlockType.BOOLEAN,
+                    //     arguments: {
+                    //         PIN: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'pins',
+                    //             defaultValue: Pins.D0
+                    //         }
+                    //     }
+                    // },
+                    // {
+                    //     opcode: 'readAnalogPin',
+                    //     text: formatMessage({
+                    //         id: 'arduino.pins.readAnalogPin',
+                    //         default: 'read analog pin [PIN]',
+                    //         description: 'arduino read analog pin'
+                    //     }),
+                    //     blockType: BlockType.REPORTER,
+                    //     arguments: {
+                    //         PIN: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'analogPins',
+                    //             defaultValue: Pins.A0
+                    //         }
+                    //     }
+                    // },
+                    // '---',
+                    // {
+                    //     opcode: 'setServoOutput',
+                    //     text: formatMessage({
+                    //         id: 'arduino.pins.setServoOutput',
+                    //         default: 'set servo pin [PIN] out [OUT]',
+                    //         description: 'arduino set servo pin out'
+                    //     }),
+                    //     blockType: BlockType.COMMAND,
+                    //     arguments: {
+                    //         PIN: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'pwmPins',
+                    //             defaultValue: Pins.D3
+                    //         },
+                    //         OUT: {
+                    //             type: ArgumentType.ANGLE,
+                    //             defaultValue: '90'
+                    //         }
+                    //     }
+                    // },
+                    // '---',
+                    // {
+                    //     opcode: 'attachInterrupt',
+                    //     text: formatMessage({
+                    //         id: 'arduino.pins.attachInterrupt',
+                    //         default: 'attach interrupt pin [PIN] mode [MODE] executes',
+                    //         description: 'arduino attach interrupt'
+                    //     }),
+                    //     blockType: BlockType.CONDITIONAL,
+                    //     arguments: {
+                    //         PIN: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'interruptPins',
+                    //             defaultValue: Pins.D3
+                    //         },
+                    //         MODE: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'interruptMode',
+                    //             defaultValue: InterrupMode.Rising
+                    //         }
+                    //     },
+                    //     programMode: [ProgramModeType.UPLOAD]
+                    // },
+                    // {
+                    //     opcode: 'detachInterrupt',
+                    //     text: formatMessage({
+                    //         id: 'arduino.pins.detachInterrupt',
+                    //         default: 'detach interrupt pin [PIN]',
+                    //         description: 'arduino attach interrupt'
+                    //     }),
+                    //     blockType: BlockType.COMMAND,
+                    //     arguments: {
+                    //         PIN: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'interruptPins',
+                    //             defaultValue: Pins.D3
+                    //         }
+                    //     },
+                    //     programMode: [ProgramModeType.UPLOAD]
+                    // }
                 ],
                 menus: {
                     // direction : forward, backward
@@ -2660,38 +2855,38 @@ class CoconutDevice {
                     },
                     AccAxisMenu: {
                         items: this.ACC_AXIS_MENU
-                    },
-                    pins: {
-                        items: this.PINS_MENU
-                    },
-                    mode: {
-                        items: this.MODE_MENU
-                    },
-                    analogPins: {
-                        items: this.ANALOG_PINS_MENU
-                    },
-                    level: {
-                        acceptReporters: true,
-                        items: this.LEVEL_MENU
-                    },
-                    pwmPins: {
-                        items: this.PWM_PINS_MENU
-                    },
-                    interruptPins: {
-                        items: this.INTERRUPT_PINS_MENU
-                    },
-                    interruptMode: {
-                        items: this.INTERRUP_MODE_MENU
                     }
+                    // pins: {
+                    //     items: this.PINS_MENU
+                    // },
+                    // mode: {
+                    //     items: this.MODE_MENU
+                    // },
+                    // analogPins: {
+                    //     items: this.ANALOG_PINS_MENU
+                    // },
+                    // level: {
+                    //     acceptReporters: true,
+                    //     items: this.LEVEL_MENU
+                    // },
+                    // pwmPins: {
+                    //     items: this.PWM_PINS_MENU
+                    // },
+                    // interruptPins: {
+                    //     items: this.INTERRUPT_PINS_MENU
+                    // },
+                    // interruptMode: {
+                    //     items: this.INTERRUP_MODE_MENU
+                    // }
                 }
             },
             // 강제 정지
             {
                 id: 'reset',
                 name: formatMessage({
-                        id: 'coconut.category.reset',
-                        default: 'Reset',
-                        description: 'Reset block'
+                    id: 'coconut.category.reset',
+                    default: 'Reset',
+                    description: 'Reset block'
                 }),
                 color1: '#9966FF',
                 blocks: [
@@ -2702,8 +2897,8 @@ class CoconutDevice {
                             default: 'stop all',
                             description: 'stop all block'
                         }),
-                        blockType: BlockType.COMMAND,
-                   }
+                        blockType: BlockType.COMMAND
+                    }
                 ]
             },
             {
@@ -2762,7 +2957,6 @@ class CoconutDevice {
                         arguments: {
                             MATRIX: {
                                 type: ArgumentType.MATRIX,
-                                menu: 'MelodyMenu',
                                 defaultValue: '0101010101100010101000100'
                             }
                         }
@@ -2771,12 +2965,121 @@ class CoconutDevice {
                 menus: {
                     MelodyMenu: {
                         items: this.MELODY_MENU
-                    },
-                    eol: {
-                        items: this.EOL_MENU
                     }
                 }
             },
+            {
+                id: 'sensor',
+                name: formatMessage({
+                    id: 'coconut.category.sensor',
+                    default: 'Sensor',
+                    description: 'The name of the Coconut-S device Extended sensor category'
+                }),
+                color1: '#CF63CF',
+                color2: '#C94FC9',
+                color3: '#BD42BD',
+                blocks: [
+                    {
+                        opcode: 'moveExtMotors',
+                        text: formatMessage({
+                            id: 'coconut.sensor.moveExtMotors',
+                            default: 'external Motor [DIRECTION_EXT] speed [MOTOR_SPEED]',
+                            description: 'external all motors run'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_EXT: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionExtMenu',
+                                defaultValue: DirectionValues.FORWARD
+                            },
+                            MOTOR_SPEED: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'MotorSpeedMenu',
+                                defaultValue: 50
+                            }
+                        }
+                    },
+                    // eslint-disable-next-line no-warning-comments
+                    // TODO: error: don't show block
+                    {
+                        opcode: 'extMotorControl',
+                        text: formatMessage({
+                            id: 'coconut.sensor.extMotorControl',
+                            default: 'set external Motor [DIRECTION_LR] speed [MOTOR_SPEED2]',
+                            description: 'set speed to selected external motor'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_LR: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionLRMenu',
+                                defaultValue: DirectionValues.LEFT
+                            },
+                            MOTOR_SPEED2: {
+                                type: ArgumentType.NUMBER,
+                                menu: 'MotorSpeed2Menu',
+                                defaultValue: 50
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'runExtServo',
+                        text: formatMessage({
+                            id: 'coconut.sensor.runExtServo',
+                            default: 'set servo pin [SERVO_PIN] angle as [SERVO_ANGLE]',
+                            description: 'set servo motor'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            SERVO_PIN: {
+                                type: ArgumentType.STRING,
+                                menu: 'ServoPinMenu',
+                                defaultValue: Pins.D4
+                            },
+                            SERVO_ANGLE: {
+                                type: ArgumentType.ANGLE,
+                                menu: 'ServoAngleMenu',
+                                defaultValue: 90
+                            }
+                        }
+                    }
+                    // {
+                    //     opcode: 'showCharacterDraw',
+                    //     text: formatMessage({
+                    //         id: 'coconut.hidden.showCharacterDraw',
+                    //         default: 'LED Matrix Character [MATRIX]',
+                    //         description: 'show character draw'
+                    //     }),
+                    //     blockType: BlockType.COMMAND,
+                    //     arguments: {
+                    //         MATRIX: {
+                    //             type: ArgumentType.MATRIX,
+                    //             menu: 'MelodyMenu',
+                    //             defaultValue: '0101010101100010101000100'
+                    //         }
+                    //     }
+                    // }
+                ],
+                menus: {
+                    DirectionExtMenu: {
+                        items: this.DIRECTION_EXT_MENU
+                    },
+                    MotorSpeedMenu: {
+                        items: this.MOTOR_SPEED_MENU
+                    },
+                    MotorSpeed2Menu: {
+                        items: this.MOTOR_SPEED2_MENU
+                    },
+                    ServoPinMenu: {
+                        items: this.SERVO_PIN_MENU
+                    },
+                    ServoAngleMenu: {
+                        items: this.SERVO_ANGLE_MENU
+                    }
+                }
+            }
         ];
     }
 
@@ -3265,10 +3568,11 @@ class CoconutDevice {
 
     /**
      * Display a predefined symbol on the 5x5 LED matrix.
+     * TODO: ui 구현
      * @param args
      */
     showCharacterDraw (args) {
-        const symbol = cast.toString(args.MATRIX).replace(/\s/g, '');
+        const symbol = Cast.toString(args.MATRIX).replace(/\s/g, '');
         const reducer = (accumulator, c, index) => {
             const value = (c === '0') ? accumulator : accumulator + Math.pow(2, index);
             return value;
@@ -3288,6 +3592,38 @@ class CoconutDevice {
         //         resolve();
         //     }, BLESendInterval);
         // });
+    }
+
+    /**
+     * move external motor
+     * @param args
+     * @returns {*}
+     */
+    moveExtMotors (args) {
+        console.log(`moveExtMotor :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+        return this._peripheral.moveExtMotors(args.DIRECTION_EXT, args.MOTOR_SPEED);
+    }
+
+    /**
+     * set speed to selected external motor
+     * @param args
+     */
+    extMotorControl (args) {
+        console.log(`extMotorControl :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+        return this._peripheral.extMotorControl(args.DIRECTION_LR, Cast.toNumber(args.MOTOR_SPEED2));
+    }
+
+    /**
+     * set servo motor
+     * @param args
+     */
+    runExtServo (args) {
+        console.log(`runExtServo :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.runExtServo(Cast.toNumber(args.SERVO_PIN), Cast.toNumber(args.SERVO_ANGLE));
     }
 
     /**

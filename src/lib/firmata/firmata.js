@@ -76,7 +76,7 @@ const MAX_PIN_COUNT = 128;
  */
 const RESET_RESPONSE = 0x04;
 
-const BUZZER= 0x03;
+const BUZZER = 0x03;
 const BUZZER_RESPONSE = 0x03;
 const DISTANCE_RESPONSE = 0x05;
 const LINE_TRACER_RESPONSE = 0x07;
@@ -86,6 +86,8 @@ const TEMPERATURE_RESPONSE = 0x15;
 const RGB_RESPONSE = 0x19;
 const MOTOR_RESPONSE = 0x1A;
 const MATRIX_RESPONSE = 0x1B;
+const SERVO_MOTOR = 0x2B; // 43
+const EXT_MOTOR = 0x2E; // 46
 
 /**
  * action type
@@ -136,7 +138,7 @@ const RGB_CMD = {
     OFF: 0x01,
     ON_TIME: 0x03,
     RAINBOW: 0x04
-}
+};
 
 /**
  * Buzzer command
@@ -176,7 +178,7 @@ const DISTANCE_CMD = {
     DETECT_ALL: 0x02,
     AVOID: 0x03,
     OFF: 0x04
-}
+};
 
 /**
  * LED Matrix command
@@ -191,7 +193,16 @@ const MATRIX_CMD = {
     OFF_ALL: 0x05,
     ON_ALL: 0x06,
     FREE: 0x07
-}
+};
+
+/**
+ * External motor command
+ * @type {{SET_SPEED: number, MOVE: number}}
+ */
+const EXT_MOTOR_CMD = {
+    SET_SPEED: 0x01,
+    MOVE: 0x02
+};
 
 const symbolSendOneWireSearch = Symbol('sendOneWireSearch');
 const symbolSendOneWireRequest = Symbol('sendOneWireRequest');
@@ -688,7 +699,7 @@ const SYSEX_RESPONSE = {
         // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
         // ff 55 04 00 02 1a(26) 01 / stop motor
         switch (command) {
-            // 전/후진, 좌/우회전
+        // 전/후진, 좌/우회전
         case MOTOR_CMD.MOVE:
             direction = board._sendBuffer[7];
             console.log(`handler : move-motor-${direction}`);
@@ -747,39 +758,39 @@ const SYSEX_RESPONSE = {
         // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
         // ff 55 04 00 02 1a(26) 01 / stop motor
         switch (command) {
-            // RGB on
-            case RGB_CMD.ON_COLOR:
-                direction = board._sendBuffer[7];
-                color = board._sendBuffer[8];
-                console.log(`handler : rgb-on-${direction}-${color}`);
-                // board.emit(`move-motor-${_direction}`, true);
+        // RGB on
+        case RGB_CMD.ON_COLOR:
+            direction = board._sendBuffer[7];
+            color = board._sendBuffer[8];
+            console.log(`handler : rgb-on-${direction}-${color}`);
+            // board.emit(`move-motor-${_direction}`, true);
 
-                if (error) {
-                    board.emit(`rgb-on-${direction}-${color}`, error);
-                } else {
-                    board.emit(`rgb-on-${direction}-${color}`);
-                }
-                break;
+            if (error) {
+                board.emit(`rgb-on-${direction}-${color}`, error);
+            } else {
+                board.emit(`rgb-on-${direction}-${color}`);
+            }
+            break;
             // RGB off
-            case RGB_CMD.OFF:
-                direction = board._sendBuffer[7];
-                color = board._sendBuffer[8];
-                console.log(`handler : rgb-off-${direction}-${color}`);
+        case RGB_CMD.OFF:
+            direction = board._sendBuffer[7];
+            color = board._sendBuffer[8];
+            console.log(`handler : rgb-off-${direction}-${color}`);
 
-                if (error) {
-                    board.emit(`rgb-off-${direction}-${color}`, error);
-                } else {
-                    board.emit(`rgb-off-${direction}-${color}`);
-                }
-                break;
-            case RGB_CMD.ON_TIME:
-                direction = board._sendBuffer[7];
-                color = board._sendBuffer[8];
-                console.log(`handler : rgb-time-${direction}-${color}`);
+            if (error) {
+                board.emit(`rgb-off-${direction}-${color}`, error);
+            } else {
+                board.emit(`rgb-off-${direction}-${color}`);
+            }
+            break;
+        case RGB_CMD.ON_TIME:
+            direction = board._sendBuffer[7];
+            color = board._sendBuffer[8];
+            console.log(`handler : rgb-time-${direction}-${color}`);
 
-                const msg = (error) ? error : true;
-                board.emit(`rgb-time-${direction}-${color}`, msg);
-                break;
+            const msg = (error) ? error : true;
+            board.emit(`rgb-time-${direction}-${color}`, msg);
+            break;
         }
     },
     /**
@@ -803,66 +814,66 @@ const SYSEX_RESPONSE = {
         // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
         // ff 55 04 00 02 1a(26) 01 / stop motor
         switch (command) {
-            // buzzer on
-            case BUZZER_CMD.ON: {
-                // direction = board._sendBuffer[7];
-                // color = board._sendBuffer[8];
-                console.log(`handler : buzzer-{on|time|freq|off}`);
-                // board.emit(`move-motor-${_direction}`, true);
+        // buzzer on
+        case BUZZER_CMD.ON: {
+            // direction = board._sendBuffer[7];
+            // color = board._sendBuffer[8];
+            console.log(`handler : buzzer-{on|time|freq|off}`);
+            // board.emit(`move-motor-${_direction}`, true);
 
-                const freq = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
-                const duration = `${board._sendBuffer[9]}${board._sendBuffer[10]}`;
+            const freq = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+            const duration = `${board._sendBuffer[9]}${board._sendBuffer[10]}`;
 
-                const msg = (error) ? error: true;
-                board.emit(`buzzer-on`, msg);
-                board.emit(`buzzer-time-${freq}-${duration}`, msg); // buzzer + frequency + duration
-                board.emit(`buzzer-freq-${freq}-${duration}`, msg); // buzzer + frequency + duration
-                board.emit(`buzzer-off-${freq}-${duration}`, msg); // buzzer + frequency + duration
-                break;
-            }
-            case BUZZER_CMD.NOTE_BEAT: {
-                // direction = board._sendBuffer[7];
-                // color = board._sendBuffer[8];
-                console.log(`handler : buzzer-note-{note}-{octave}-{sharp}`);
-                const note = board._sendBuffer[7];
-                const octave = board._sendBuffer[8];
-                const sharp = board._sendBuffer[9];
+            const msg = (error) ? error : true;
+            board.emit(`buzzer-on`, msg);
+            board.emit(`buzzer-time-${freq}-${duration}`, msg); // buzzer + frequency + duration
+            board.emit(`buzzer-freq-${freq}-${duration}`, msg); // buzzer + frequency + duration
+            board.emit(`buzzer-off-${freq}-${duration}`, msg); // buzzer + frequency + duration
+            break;
+        }
+        case BUZZER_CMD.NOTE_BEAT: {
+            // direction = board._sendBuffer[7];
+            // color = board._sendBuffer[8];
+            console.log(`handler : buzzer-note-{note}-{octave}-{sharp}`);
+            const note = board._sendBuffer[7];
+            const octave = board._sendBuffer[8];
+            const sharp = board._sendBuffer[9];
 
-                const msg = (error) ? error: true;
-                board.emit(`buzzer-note-${note}-${octave}-${sharp}`, msg);
-                break;
-            }
-            case BUZZER_CMD.REST_BEAT: {
+            const msg = (error) ? error : true;
+            board.emit(`buzzer-note-${note}-${octave}-${sharp}`, msg);
+            break;
+        }
+        case BUZZER_CMD.REST_BEAT: {
 	            console.log(`handler : buzzer-rest-{duration}`);
 	            // const freq = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
 	            const duration = `${board._sendBuffer[9]}${board._sendBuffer[10]}`;
 
-	            const msg = (error) ? error: true;
+	            const msg = (error) ? error : true;
 	            board.emit(`buzzer-rest-${duration}`, msg);
 	            break;
-            }
-            case BUZZER_CMD.NOTE_BEAT_RGB: {
-                console.log(`handler : buzzer-note-color-{note}{octave}{sharp}-{beat}-{direction}-{color}`);
-                // const freq = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
-                const note = board._sendBuffer[7];
-                const octave = board._sendBuffer[8];
-                const sharp = board._sendBuffer[9];
-                const beat = `${board._sendBuffer[10]}${board._sendBuffer[11]}`;
-                const direction = board._sendBuffer[12];
-                const color = board._sendBuffer[13];
+        }
+        case BUZZER_CMD.NOTE_BEAT_RGB: {
+            console.log(`handler : buzzer-note-color-{note}{octave}{sharp}-{beat}-{direction}-{color}`);
+            // const freq = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+            const note = board._sendBuffer[7];
+            const octave = board._sendBuffer[8];
+            const sharp = board._sendBuffer[9];
+            const beat = `${board._sendBuffer[10]}${board._sendBuffer[11]}`;
+            const direction = board._sendBuffer[12];
+            const color = board._sendBuffer[13];
 
-                const msg = (error) ? error: true;
-                board.emit(`buzzer-note-color-${note}${octave}${sharp}-${beat}-${direction}-${color}`, msg);
-                break;
-            }
-            case BUZZER_CMD.CHANGE_BEAT: {
-                console.log(`handler : buzzer-change-{beat}`);
-                const beat = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+            const msg = (error) ? error : true;
+            board.emit(`buzzer-note-color-${note}${octave}${sharp}-${beat}-${direction}-${color}`, msg);
+            break;
+        }
+        case BUZZER_CMD.CHANGE_BEAT: {
+            console.log(`handler : buzzer-change-{beat}`);
+            const beat = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
 
-                const msg = (error) ? error: true;
-                board.emit(`buzzer-change-${beat}`, msg);
-                break;
-            }
+            const msg = (error) ? error : true;
+            board.emit(`buzzer-change-${beat}`, msg);
+            break;
+        }
         }
     },
     /**
@@ -879,92 +890,92 @@ const SYSEX_RESPONSE = {
         const command = board._sendBuffer[6];
 
         let direction;
-        let error = `Error: invalid response`;
+        const error = `Error: invalid response`;
         let value;
 
         switch (command) {
-            case LINE_TRACER_CMD.GET_RAW:
-                direction = board._sendBuffer[7];
-                console.log(`handler : line-tracer-read-${direction}`);
+        case LINE_TRACER_CMD.GET_RAW:
+            direction = board._sendBuffer[7];
+            console.log(`handler : line-tracer-read-${direction}`);
 
-                if (action === ACTION.GET) {
-                    value = getSensorValue(board.buffer);
-                    console.log(`value= ${value}`);
-                } else {
-                    value = error;
-                }
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
 
-                board.emit(`line-tracer-read-${direction}`, value);
-                break;
-            case LINE_TRACER_CMD.DETECT_SINGLE:
-                direction = board._sendBuffer[7];
-                const detect = board._sendBuffer[8];
+            board.emit(`line-tracer-read-${direction}`, value);
+            break;
+        case LINE_TRACER_CMD.DETECT_SINGLE:
+            direction = board._sendBuffer[7];
+            const detect = board._sendBuffer[8];
 
-                console.log(`handler : line-tracer-detect-${direction}-${detect}`);
+            console.log(`handler : line-tracer-detect-${direction}-${detect}`);
 
-                if (action === ACTION.GET) {
-                    value = getSensorValue(board.buffer);
-                    console.log(`value= ${value}`);
-                    value = (value === 1);
-                } else {
-                    value = error;
-                }
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+                value = (value === 1);
+            } else {
+                value = error;
+            }
 
-                board.emit(`line-tracer-detect-${direction}-${detect}`, value);
-                break;
-            case LINE_TRACER_CMD.FOLLOW:
-                _direction = board._sendBuffer[7];
-                console.log(`handler : move-motor-time-${_direction}`);
-                board.emit(`move-motor-time-${_direction}`, true);
-                break;
-            case LINE_TRACER_CMD.DETECT_INT:
-                console.log(`handler : line-tracer-detects`);
+            board.emit(`line-tracer-detect-${direction}-${detect}`, value);
+            break;
+        case LINE_TRACER_CMD.FOLLOW:
+            _direction = board._sendBuffer[7];
+            console.log(`handler : move-motor-time-${_direction}`);
+            board.emit(`move-motor-time-${_direction}`, true);
+            break;
+        case LINE_TRACER_CMD.DETECT_INT:
+            console.log(`handler : line-tracer-detects`);
 
-                // direction = board._sendBuffer[7];
-                // const detect = board._sendBuffer[8];
+            // direction = board._sendBuffer[7];
+            // const detect = board._sendBuffer[8];
 
-                if (action === ACTION.GET) {
-                    value = getSensorValue(board.buffer);
-                    console.log(`value= ${value}`);
-                    // value = (value === 1);
-                } else {
-                    value = error;
-                }
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+                // value = (value === 1);
+            } else {
+                value = error;
+            }
 
-                board.emit('line-tracer-detects', value);
-                break;
-            case LINE_TRACER_CMD.TURN_BLACK:
-                const exCmd = board._sendBuffer[7];
-                console.log(`handler : line-tracer-command-${exCmd}`);
+            board.emit('line-tracer-detects', value);
+            break;
+        case LINE_TRACER_CMD.TURN_BLACK:
+            const exCmd = board._sendBuffer[7];
+            console.log(`handler : line-tracer-command-${exCmd}`);
 
-                if (action === ACTION.RUN) {
-                    value = true;
-                    // console.log(`value= ${value}`);
-                } else {
-                    value = error;
-                }
+            if (action === ACTION.RUN) {
+                value = true;
+                // console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
 
-                board.emit(`line-tracer-command-${exCmd}`, value);
-                break;
+            board.emit(`line-tracer-command-${exCmd}`, value);
+            break;
             // case LINE_TRACER_CMD.DETECT_NONE:
             //     console.log(`handler : move-motor-degree`);
             //     board.emit('move-motor-degree');
             //     break;
-            case LINE_TRACER_CMD.FOLLOW: {
-                const exCmd = board._sendBuffer[7];
-                console.log(`handler : follow-line`);
+        case LINE_TRACER_CMD.FOLLOW: {
+            const exCmd = board._sendBuffer[7];
+            console.log(`handler : follow-line`);
 
-                if (action === ACTION.RUN) {
-                    value = true;
-                    // console.log(`value= ${value}`);
-                } else {
-                    value = error;
-                }
-
-                board.emit(`follow-line`, value);
-                break;
-
+            if (action === ACTION.RUN) {
+                value = true;
+                // console.log(`value= ${value}`);
+            } else {
+                value = error;
             }
+
+            board.emit(`follow-line`, value);
+            break;
+
+        }
         }
     },
     /**
@@ -979,69 +990,65 @@ const SYSEX_RESPONSE = {
         const command = board._sendBuffer[6];
 
         let direction;
-        let error = `Error: invalid response`;
+        const error = `Error: invalid response`;
         let value;
 
         switch (command) {
-            case DISTANCE_CMD.GET_RAW:
-                direction = board._sendBuffer[7];
-                console.log(`handler : distance-read-${direction}`);
+        case DISTANCE_CMD.GET_RAW:
+            direction = board._sendBuffer[7];
+            console.log(`handler : distance-read-${direction}`);
 
-                if (action === ACTION.GET) {
-                    value = getSensorValue(board.buffer);
-                    console.log(`value= ${value}`);
-                }
-                else {
-                    value = error;
-                }
-
-                board.emit(`distance-read-${direction}`, value);
-                break;
-            case DISTANCE_CMD.DETECT: {
-                direction = board._sendBuffer[7];
-                const detect = board._sendBuffer[8];
-                console.log(`handler : distance-detect-${direction}-${detect}`);
-
-                if (action === ACTION.GET) {
-                    value = getSensorValue(board.buffer);
-                    value = (value === 1);
-                    console.log(`value= ${value}`);
-                }
-                else {
-                    value = error;
-                }
-
-                board.emit(`distance-detect-${direction}-${detect}`, value);
-                break;
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
             }
-            case DISTANCE_CMD.DETECT_ALL: {
-                console.log(`handler : distance-detect-all`);
 
-                if (action === ACTION.GET) {
-                    value = getSensorValue(board.buffer);
-                    value = (value === 1); // return boolean
-                    console.log(`value= ${value}`);
-                }
-                else {
-                    value = error;
-                }
+            board.emit(`distance-read-${direction}`, value);
+            break;
+        case DISTANCE_CMD.DETECT: {
+            direction = board._sendBuffer[7];
+            const detect = board._sendBuffer[8];
+            console.log(`handler : distance-detect-${direction}-${detect}`);
 
-                board.emit(`distance-detect-all`, value);
-                break;
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                value = (value === 1);
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
             }
-            case DISTANCE_CMD.AVOID: {
-                console.log(`handler : avoid-mode`);
 
-                if (action === ACTION.RUN) {
-                    value = true;
-                }
-                else {
-                    value = error;
-                }
+            board.emit(`distance-detect-${direction}-${detect}`, value);
+            break;
+        }
+        case DISTANCE_CMD.DETECT_ALL: {
+            console.log(`handler : distance-detect-all`);
 
-                board.emit(`avoid-mode`, value);
-                break;
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                value = (value === 1); // return boolean
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
             }
+
+            board.emit(`distance-detect-all`, value);
+            break;
+        }
+        case DISTANCE_CMD.AVOID: {
+            console.log(`handler : avoid-mode`);
+
+            if (action === ACTION.RUN) {
+                value = true;
+            } else {
+                value = error;
+            }
+
+            board.emit(`avoid-mode`, value);
+            break;
+        }
         }
     },
     /**
@@ -1056,67 +1063,67 @@ const SYSEX_RESPONSE = {
         const command = board._sendBuffer[6];
 
         let direction;
-        let error = `Error: invalid response`;
+        const error = `Error: invalid response`;
         let value;
 
         switch (command) {
-            case MATRIX_CMD.ON: {
-                const row = board._sendBuffer[7];
-                const col = board._sendBuffer[8];
-                const on = board._sendBuffer[9];
+        case MATRIX_CMD.ON: {
+            const row = board._sendBuffer[7];
+            const col = board._sendBuffer[8];
+            const on = board._sendBuffer[9];
 
-                console.log(`handler : matrix-${row}-${col}-${on}`);
+            console.log(`handler : matrix-${row}-${col}-${on}`);
 
-                value = (action === ACTION.RUN) ? true : error;
-                board.emit(`matrix-${row}-${col}-${on}`, value);
-                break;
-            }
-            case MATRIX_CMD.ON_ALL: {
-                console.log(`handler : matrix-on-all`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-${row}-${col}-${on}`, value);
+            break;
+        }
+        case MATRIX_CMD.ON_ALL: {
+            console.log(`handler : matrix-on-all`);
 
-                value = (action === ACTION.RUN) ? true : error;
-                board.emit(`matrix-on-all`, value);
-                break;
-            }
-            case MATRIX_CMD.OFF_ALL: {
-                console.log(`handler : matrix-off-all`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-on-all`, value);
+            break;
+        }
+        case MATRIX_CMD.OFF_ALL: {
+            console.log(`handler : matrix-off-all`);
 
-                value = (action === ACTION.RUN) ? true : error;
-                board.emit(`matrix-off-all`, value);
-                break;
-            }
-            case MATRIX_CMD.NUMBER: {
-                const num = board._sendBuffer[7];
-                console.log(`handler : matrix-num-${num}`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-off-all`, value);
+            break;
+        }
+        case MATRIX_CMD.NUMBER: {
+            const num = board._sendBuffer[7];
+            console.log(`handler : matrix-num-${num}`);
 
-                value = (action === ACTION.RUN) ? true : error;
-                board.emit(`matrix-num-${num}`, value);
-                break;
-            }
-            case MATRIX_CMD.EN_SMALL: {
-                const letter = board._sendBuffer[7];
-                console.log(`handler : matrix-small-${letter}`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-num-${num}`, value);
+            break;
+        }
+        case MATRIX_CMD.EN_SMALL: {
+            const letter = board._sendBuffer[7];
+            console.log(`handler : matrix-small-${letter}`);
 
-                value = (action === ACTION.RUN) ? true : error;
-                board.emit(`matrix-small-${letter}`, value);
-                break;
-            }
-            case MATRIX_CMD.EN_CAPITAL: {
-                const letter = board._sendBuffer[7];
-                console.log(`handler : matrix-capital-${letter}`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-small-${letter}`, value);
+            break;
+        }
+        case MATRIX_CMD.EN_CAPITAL: {
+            const letter = board._sendBuffer[7];
+            console.log(`handler : matrix-capital-${letter}`);
 
-                value = (action === ACTION.RUN) ? true : error;
-                board.emit(`matrix-capital-${letter}`, value);
-                break;
-            }
-            case MATRIX_CMD.KOREAN: {
-                const letter = board._sendBuffer[7];
-                console.log(`handler : matrix-kr-${letter}`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-capital-${letter}`, value);
+            break;
+        }
+        case MATRIX_CMD.KOREAN: {
+            const letter = board._sendBuffer[7];
+            console.log(`handler : matrix-kr-${letter}`);
 
-                value = (action === ACTION.RUN) ? true : error;
-                board.emit(`matrix-kr-${letter}`, value);
-                break;
-            }
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-kr-${letter}`, value);
+            break;
+        }
         }
     },
     /**
@@ -1131,27 +1138,26 @@ const SYSEX_RESPONSE = {
         const command = board._sendBuffer[6];
 
         let direction;
-        let error = `Error: invalid response`;
+        const error = `Error: invalid response`;
         let value;
 
         switch (command) {
-            case 0: {
-                const letter = board._sendBuffer[7];
-                console.log(`handler : light`);
+        case 0: {
+            const letter = board._sendBuffer[7];
+            console.log(`handler : light`);
 
-                if (action === ACTION.GET) {
-                    value = getSensorValue(board.buffer);
-                    // value = (value === 1); // return boolean
-                    console.log(`value= ${value}`);
-                }
-                else {
-                    value = error;
-                }
-
-                // value = (action === ACTION.RUN) ? true : error;
-                board.emit(`light`, value);
-                break;
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                // value = (value === 1); // return boolean
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
             }
+
+            // value = (action === ACTION.RUN) ? true : error;
+            board.emit(`light`, value);
+            break;
+        }
         }
     },
     /**
@@ -1166,26 +1172,25 @@ const SYSEX_RESPONSE = {
         const command = board._sendBuffer[6];
 
         let direction;
-        let error = `Error: invalid response`;
+        const error = `Error: invalid response`;
         let value;
 
         switch (command) {
-            case 0: {
-                console.log(`handler : temperature`);
+        case 0: {
+            console.log(`handler : temperature`);
 
-                if (action === ACTION.GET) {
-                    value = getSensorValue(board.buffer);
-                    // value = (value === 1); // return boolean
-                    console.log(`value= ${value}`);
-                }
-                else {
-                    value = error;
-                }
-
-                // value = (action === ACTION.RUN) ? true : error;
-                board.emit(`temperature`, value);
-                break;
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                // value = (value === 1); // return boolean
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
             }
+
+            // value = (action === ACTION.RUN) ? true : error;
+            board.emit(`temperature`, value);
+            break;
+        }
         }
     },
     /**
@@ -1200,32 +1205,85 @@ const SYSEX_RESPONSE = {
         const command = board._sendBuffer[6];
 
         let direction;
-        let error = `Error: invalid response`;
+        const error = `Error: invalid response`;
         let value;
 
         switch (command) {
-            case 0: {
-                const axis = board._sendBuffer[7];
-                console.log(`handler : acc-${axis}`);
+        case 0: {
+            const axis = board._sendBuffer[7];
+            console.log(`handler : acc-${axis}`);
 
-                if (action === ACTION.GET) {
-                    value = getSensorValue(board.buffer);
-                    // value = (value === 1); // return boolean
-                    console.log(`value= ${value}`);
-                }
-                else {
-                    value = error;
-                }
-
-                // value = (action === ACTION.RUN) ? true : error;
-                board.emit(`acc-${axis}`, value);
-                break;
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                // value = (value === 1); // return boolean
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
             }
+
+            // value = (action === ACTION.RUN) ? true : error;
+            board.emit(`acc-${axis}`, value);
+            break;
         }
+        }
+    },
+    /**
+     * Handles a External motor response and emits the 'ext-motor-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [EXT_MOTOR] (board) {
+        console.log(`EVENT : External Motor`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        let direction;
+        const error = `Error: invalid response`;
+        let value;
+
+        switch (command) {
+        case EXT_MOTOR_CMD.MOVE: {
+            const direction = board._sendBuffer[7];
+            console.log(`handler : ext-motor-${direction}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`ext-motor-${direction}`, value);
+            break;
+        }
+        case EXT_MOTOR_CMD.SET_SPEED: {
+            const direction = board._sendBuffer[7];
+            console.log(`handler : ext-motor-set-${direction}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`ext-motor-set-${direction}`, value);
+            break;
+        }
+        }
+    },
+    /**
+     * Handles a servo motor response and emits the 'servo-motor-' + n event where n is command of the block parameter
+     // eslint-disable-next-line valid-jsdoc
+     * @param board
+     */
+    [SERVO_MOTOR] (board) {
+        console.log(`EVENT : Servo Motor`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+        const angle = board._sendBuffer[7];
+
+        const error = `Error: invalid response`;
+
+        console.log(`handler : servo-motor-${pin}-${angle}`);
+
+        const value = (action === ACTION.RUN) ? true : error;
+        board.emit(`servo-motor-${pin}-${angle}`, value);
     }
 };
 
-const parseShort = (a, b) => a << 8 | b << 0;
+const parseShort = (a, b) => (a << 8) | (b << 0);
 
 // const readShort = function (arr, position) {
 const readShort = (arr, position) => {
@@ -1286,7 +1344,7 @@ const readString = function (arr, position, len) {
  * @returns {number}
  */
 // const getSensorValue = function (data) {
-const getSensorValue = (data) => {
+const getSensorValue = data => {
     let position = 2;
     const extId = data[position];
     position++;
@@ -1323,7 +1381,7 @@ const getSensorValue = (data) => {
     console.log(`type= ${type} value=${value}`);
 
     return value;
-}
+};
 
 
 /**
@@ -1636,8 +1694,7 @@ class Firmata extends Emitter {
                     // stop all
                     if (this._sendBuffer[4] === 0x04) {
                         handler = SYSEX_RESPONSE[this._sendBuffer[4]];
-                    }
-                    else {
+                    } else {
                         handler = SYSEX_RESPONSE[this._sendBuffer[5]];
                     }
 
@@ -3698,8 +3755,8 @@ class Firmata extends Emitter {
      * @param   beat    박자
      */
     _buzzerControl (seq, tone, beat) {
-        //if (typeof tone == "string") tone = tones[tone];
-        if (typeof beat == "string") beat = Beats[beat];
+        // if (typeof tone == "string") tone = tones[tone];
+        if (typeof beat === 'string') beat = Beats[beat];
 
         return this._runPackage(Sensors.Buzzer, seq, this._short2array(tone), this._short2array(beat));
     }
@@ -3714,7 +3771,7 @@ class Firmata extends Emitter {
      */
     beep (sensor, cmd, tone, beat, callback) {
         // const datas = this._buzzerControl(0, 262, 50);
-        const datas =  this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+        const datas = this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
         this._sendBuffer = datas.slice();
         writeToTransport(this, datas);
 
@@ -3731,7 +3788,7 @@ class Firmata extends Emitter {
      * @param callback
      */
     playBuzzerTime (sensor, cmd, tone, beat, callback) {
-        const datas =  this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+        const datas = this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
         this._sendBuffer = datas.slice();
         const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
         const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
@@ -3751,7 +3808,7 @@ class Firmata extends Emitter {
      * @param callback
      */
     playBuzzerFreq (sensor, cmd, tone, beat, callback) {
-        const datas =  this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+        const datas = this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
         this._sendBuffer = datas.slice();
         const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
         const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
@@ -3771,7 +3828,7 @@ class Firmata extends Emitter {
      * @param callback
      */
     buzzerOff (sensor, cmd, tone, beat, callback) {
-        const datas =  this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+        const datas = this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
         this._sendBuffer = datas.slice();
         const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
         const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
@@ -3804,7 +3861,7 @@ class Firmata extends Emitter {
         this.once(`buzzer-note-${note}-${octave}-${sharp}`, callback);
     }
 
-	/**
+    /**
      * rest beat
 	 * @param sensor
 	 * @param cmd
@@ -3812,17 +3869,17 @@ class Firmata extends Emitter {
 	 * @param beat
 	 * @param callback
 	 */
-	restBeat (sensor, cmd, tone, beat, callback) {
-		const datas =  this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
-		this._sendBuffer = datas.slice();
-		// const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
-		const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
+    restBeat (sensor, cmd, tone, beat, callback) {
+        const datas = this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+        this._sendBuffer = datas.slice();
+        // const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
 
-		writeToTransport(this, datas);
+        writeToTransport(this, datas);
 
-		this.removeAllListeners(`buzzer-rest-${duration}`);
-		this.once(`buzzer-rest-${duration}`, callback);
-	}
+        this.removeAllListeners(`buzzer-rest-${duration}`);
+        this.once(`buzzer-rest-${duration}`, callback);
+    }
 
     /**
      * play note with RGB LED
@@ -3950,7 +4007,7 @@ class Firmata extends Emitter {
      * @param callback
      */
     lineTracerCmd (sensor, cmd, exCmd, callback) {
-        const datas = this._runPackage(sensor,cmd, exCmd);
+        const datas = this._runPackage(sensor, cmd, exCmd);
 
         this._sendBuffer = datas.slice();
         writeToTransport(this, datas);
@@ -4240,6 +4297,61 @@ class Firmata extends Emitter {
 
         this.removeAllListeners(`avoid-mode`);
         this.once(`avoid-mode`, callback);
+    }
+
+    /**
+     * Move External motor
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param callback
+     */
+    moveExtMotors (sensor, cmd, direction, speed, callback) {
+        const datas = this._runPackage(sensor, cmd, direction, speed);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`ext-motor-${direction}`);
+        this.once(`ext-motor-${direction}`, callback);
+    }
+
+    /**
+     * set speed to selected external motor
+     // eslint-disable-next-line valid-jsdoc
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param callback
+     */
+    extMotorControl (sensor, cmd, direction, speed, callback) {
+        const datas = this._runPackage(sensor, cmd, direction, this._short2array(speed));
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`ext-motor-set-${direction}`);
+        this.once(`ext-motor-set-${direction}`, callback);
+    }
+
+    /**
+     * set servo motor
+     * @param sensor
+     * @param cmd
+     * @param pin
+     * @param angle
+     * @param callback
+     */
+    runExtServo (sensor, cmd, pin, angle, callback) {
+        const datas = this._runPackage(sensor, cmd, pin, angle);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`servo-motor-${pin}-${angle}`);
+        this.once(`servo-motor-${pin}-${angle}`, callback);
     }
 }
 
