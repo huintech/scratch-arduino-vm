@@ -59,8 +59,12 @@ const Sensors = {
     RGBled: 25,
     Motor: 26,
     LedMatrix: 27, // 0x1b
+    Speaker: 41,
     ServoMotor: 43,
-    ExtMotor: 46
+    ExtLed: 44,
+    ExtMotor: 46,
+    Touch: 47,
+    Mike: 48
 };
 
 /**
@@ -1560,9 +1564,9 @@ class CoconutSPeripheral {
                 resolve(value);
                 console.log(`resolve= ${value}`);
             });
-            window.setTimeout(() => {
-                resolve();
-            }, FirmataReadTimeout);
+            // window.setTimeout(() => {
+            //     resolve();
+            // }, FirmataReadTimeout);
         });
     }
 
@@ -2183,10 +2187,13 @@ class CoconutSPeripheral {
      */
     extMotorControl (direction, speed) {
         if (typeof direction === 'string') direction = Directions[direction];
+
         const options = [Sensors.ExtMotor, 1, direction, speed];
 
         // const jobDurationMS = 3000;
         // const timeoutMS = 2000;
+
+        console.log(`speed= ${speed}`);
 
         const job = new Promise(resolve => {
             this._firmata.extMotorControl(...options, value => {
@@ -2224,7 +2231,8 @@ class CoconutSPeripheral {
         const options = [Sensors.ServoMotor, pin, angle];
 
         // const jobDurationMS = 3000;
-        // const timeoutMS = 2000;
+        const timeoutMS = 3000;
+        // const timeoutMS = FirmataReadTimeout;
 
         console.log(`${options}`);
 
@@ -2240,7 +2248,7 @@ class CoconutSPeripheral {
         Promise.race([
             job,
             new Promise(resolve => {
-                timer = setTimeout(() => resolve('timeout'), FirmataReadTimeout);
+                timer = setTimeout(() => resolve('timeout'), timeoutMS);
             })
         ])
             .then(result => {
@@ -2253,6 +2261,321 @@ class CoconutSPeripheral {
                 }
             })
             .finally(() => clearTimeout(timer));
+    }
+
+    /**
+     * external LED on
+     * @param pin
+     * @param sec
+     */
+    extLedOn (pin, sec) {
+        // const jobDurationMS = 3000;
+        // const timeoutMS = 3000;
+
+        if (sec < 0) sec = -sec;
+        sec = 1000 * sec; // ms 변환
+
+        const options = [Sensors.ExtLed, pin, sec];
+        const timeoutMS = sec;
+
+        // console.log(`${options}`);
+
+        const job = new Promise(resolve => {
+            this._firmata.extLedOn(...options, value => {
+                resolve(value);
+
+                console.log(`resolve= ${value}`);
+            });
+        });
+
+        let timer;
+        Promise.race([
+            job,
+            new Promise(resolve => {
+                timer = setTimeout(() => resolve('timeout'), timeoutMS);
+            })
+        ])
+            .then(result => {
+                console.log(`resolve = ${result}`);
+
+                if (result === 'timeout') {
+                    console.log('시간이 초과되었습니다!');
+                } else {
+                    resolve();
+                    console.log('시간 내에 작업을 완료하였습니다.');
+                }
+            })
+            .finally(() => clearTimeout(timer));
+    }
+
+    /**
+     * external speaker sensor on
+     * @param pin
+     * @param frequency
+     * @param sec
+     */
+    extSpeakerOn (pin, frequency, sec) {
+        if (sec < 0) sec = -sec;
+        sec = 1000 * sec; // ms 변환
+
+        const options = [Sensors.Speaker, pin, frequency, sec];
+        const timeoutMS = sec;
+
+        // console.log(`${options}`);
+
+        const job = new Promise(resolve => {
+            this._firmata.extSpeakerOn(...options, value => {
+                resolve(value);
+
+                console.log(`resolve= ${value}`);
+            });
+        });
+
+        let timer;
+        Promise.race([
+            job,
+            new Promise(resolve => {
+                timer = setTimeout(() => resolve('timeout'), timeoutMS);
+            })
+        ])
+            .then(result => {
+                // resolve(result);
+                // resolve();
+                console.log(`resolve = ${result}`);
+                // resolve();
+
+                if (result === 'timeout') {
+                    console.log('시간이 초과되었습니다!');
+                } else {
+                    // resolve();
+                    console.log('시간 내에 작업을 완료하였습니다.');
+                }
+                // return result;
+            })
+            .finally(() => clearTimeout(timer));
+    }
+
+    /**
+     * external speaker sensor off
+     * @param pin
+     */
+    extSpeakerOff (pin) {
+        const options = [Sensors.Speaker, pin, 0, 0];
+        const timeoutMS = 1000;
+
+        // console.log(`${options}`);
+
+        const job = new Promise(resolve => {
+            this._firmata.extSpeakerOn(...options, value => {
+                resolve(value);
+
+                console.log(`resolve= ${value}`);
+            });
+        });
+
+        let timer;
+        Promise.race([
+            job,
+            new Promise(resolve => {
+                timer = setTimeout(() => resolve('timeout'), timeoutMS);
+            })
+        ])
+            .then(result => {
+                // resolve(result);
+                // resolve();
+                console.log(`resolve = ${result}`);
+                // resolve();
+
+                if (result === 'timeout') {
+                    console.log('시간이 초과되었습니다!');
+                } else {
+                    // resolve();
+                    console.log('시간 내에 작업을 완료하였습니다.');
+                }
+                // return result;
+            })
+            .finally(() => clearTimeout(timer));
+    }
+
+    /**
+     * read external touch sensor pressed
+     * @param pin
+     */
+    getTouchSensor (pin) {
+        const options = [Sensors.Touch, 1, pin];
+        const timeoutMS = FirmataReadTimeout;
+
+        // console.log(`${options}`);
+
+        const job = new Promise(resolve => {
+            this._firmata.getTouchSensor(...options, value => {
+                resolve(value);
+
+                // console.log(`resolve= ${value}`);
+            });
+        });
+
+        // let timer;
+        // Promise.race([
+        //     job,
+        //     new Promise(resolve => {
+        //         timer = setTimeout(() => resolve('timeout'), timeoutMS);
+        //     })
+        // ])
+        //     .then(result => {
+        //         // resolve(result);
+        //         // resolve();
+        //         console.log(`resolve = ${result}`);
+        //         // resolve();
+        //
+        //         if (result === 'timeout') {
+        //             console.log('시간이 초과되었습니다!');
+        //         } else {
+        //             // resolve();
+        //             console.log('시간 내에 작업을 완료하였습니다.');
+        //         }
+        //         // return result;
+        //     })
+        //     .finally(() => clearTimeout(timer));
+
+        return job;
+    }
+
+    /**
+     * read external touch sensor
+     * @param pin
+     */
+    getTouchPressed (pin) {
+        const options = [Sensors.Touch, pin];
+        const timeoutMS = FirmataReadTimeout;
+
+        // console.log(`${options}`);
+        // function job2 (options) {
+        //     return new Promise(resolve => {
+        //         this._firmata.getTouchPressed(...options, value => {
+        //             resolve(value);
+        //
+        //             // console.log(`resolve= ${value}`);
+        //         });
+        //     });
+        // }
+
+        const job = new Promise(resolve => {
+            setTimeout(() => {
+                this._firmata.getTouchPressed(...options, value => {
+                    resolve(value);
+
+                    // console.log(`resolve= ${value}`);
+                });
+            });
+
+        });
+
+        const job2 = new Promise(resolve => {
+            this._firmata.getTouchPressed(...options, value => {
+                resolve(value);
+                console.log(`resolve= ${value}`);
+            });
+        });
+
+        const job3 = new Promise(resolve => {
+            window.setTimeout(() => {
+                resolve("timeout");
+            }, FirmataReadTimeout);
+        });
+
+        const race = Promise.race([job, job3])
+            .then(result => {
+                console.log(`result= ${result}`);
+            });
+
+        console.log(job);
+        console.log(job3);
+        console.log(race);
+
+        return job;
+
+        // return new Promise(resolve => {
+        //     this._firmata.getTouchPressed(...options, value => {
+        //         resolve(value);
+        //         console.log(`resolve= ${value}`);
+        //     });
+        //     window.setTimeout(() => {
+        //         resolve();
+        //     }, FirmataReadTimeout);
+        // });
+
+
+        // let timer;
+        // let ret;
+        // Promise.race([
+        //     job,
+        //     new Promise(resolve => {
+        //         timer = setTimeout(() => resolve('timeout'), timeoutMS);
+        //     })
+        // ])
+        //     .then(result => {
+        //         console.log(`resolve = ${result}`);
+        //
+        //         if (result === 'timeout') {
+        //             console.log('시간이 초과되었습니다!');
+        //         } else {
+        //             // resolve();
+        //             console.log('시간 내에 작업을 완료하였습니다.');
+        //         }
+        //
+        //         ret = result;
+        //     })
+        //     .finally(() => clearTimeout(timer));
+        //
+        // return Promise.resolve(ret);
+        //
+        // const racePromise = Promise.race([
+        //     options,
+        //     new Promise(resolve => {
+        //         timer = setTimeout(() => resolve('timeout'), timeoutMS);
+        //     })
+        // ]);
+        //
+        // return racePromise
+        //     .then(result => {
+        //         // resolve(result);
+        //         // resolve();
+        //         console.log(`resolve = ${result}`);
+        //         // resolve();
+        //
+        //         if (result === 'timeout') {
+        //             console.log('시간이 초과되었습니다!');
+        //         } else {
+        //             // resolve();
+        //             console.log('시간 내에 작업을 완료하였습니다.');
+        //         }
+        //
+        //         // resolve(result);
+        //         // return result;
+        //     })
+        //     .finally(() => clearTimeout(timer));
+
+    }
+
+    /**
+     * read mike sensor
+     * @param pin
+     */
+    getMikeSensor (pin) {
+        const options = [Sensors.Mike, pin];
+        const timeoutMS = FirmataReadTimeout;
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this._firmata.getMikeSensor(...options, value => {
+                    resolve(value);
+
+                    // console.log(`resolve= ${value}`);
+                });
+            });
+
+        });
     }
 }
 

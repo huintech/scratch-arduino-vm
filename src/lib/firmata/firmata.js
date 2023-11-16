@@ -86,8 +86,12 @@ const TEMPERATURE_RESPONSE = 0x15;
 const RGB_RESPONSE = 0x19;
 const MOTOR_RESPONSE = 0x1A;
 const MATRIX_RESPONSE = 0x1B;
-const SERVO_MOTOR = 0x2B; // 43
-const EXT_MOTOR = 0x2E; // 46
+const SPEAKER = 0x29;       // 41
+const SERVO_MOTOR = 0x2B;   // 43
+const EXT_LED = 0x2C;       // 44
+const EXT_MOTOR = 0x2E;     // 46
+const TOUCH_SENSOR = 0x2F;  // 47
+const MIKE_SENSOR = 0x30;   // 48
 
 /**
  * action type
@@ -1244,7 +1248,7 @@ const SYSEX_RESPONSE = {
 
         switch (command) {
         case EXT_MOTOR_CMD.MOVE: {
-            const direction = board._sendBuffer[7];
+            direction = board._sendBuffer[7];
             console.log(`handler : ext-motor-${direction}`);
 
             value = (action === ACTION.RUN) ? true : error;
@@ -1252,7 +1256,7 @@ const SYSEX_RESPONSE = {
             break;
         }
         case EXT_MOTOR_CMD.SET_SPEED: {
-            const direction = board._sendBuffer[7];
+            direction = board._sendBuffer[7];
             console.log(`handler : ext-motor-set-${direction}`);
 
             value = (action === ACTION.RUN) ? true : error;
@@ -1280,6 +1284,116 @@ const SYSEX_RESPONSE = {
 
         const value = (action === ACTION.RUN) ? true : error;
         board.emit(`servo-motor-${pin}-${angle}`, value);
+    },
+    /**
+     * Handles a external LED sensor response and emits the 'ext-led-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [EXT_LED] (board) {
+        console.log(`EVENT : External Led`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+
+        console.log(`handler : ext-led-${pin}`);
+
+        const value = (action === ACTION.RUN) ? true : error;
+        board.emit(`ext-led-${pin}`, value);
+    },
+    /**
+     * Handles a external Speaker sensor response and emits the 'speaker-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [SPEAKER] (board) {
+        console.log(`EVENT : External Speaker`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+
+        console.log(`handler : speaker-${pin}`);
+
+        const value = (action === ACTION.RUN) ? true : error;
+        board.emit(`speaker-${pin}`, value);
+    },
+    /**
+     * Handles a external Touch sensor response and emits the 'touch-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [TOUCH_SENSOR] (board) {
+        console.log(`EVENT : External Touch`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const len = board._sendBuffer[2];
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        let direction;
+        const error = `Error: invalid response`;
+        let value;
+
+        // read touch sensor
+        if (len === 4) {
+            const pin = board._sendBuffer[6];
+            console.log(`handler : touch-pressed-${pin}`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                value = (value === 1); // return boolean
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit(`touch-pressed-${pin}`, value);
+        }
+        // read touch sensor pressed
+        else if (len === 5) {
+            const pin = board._sendBuffer[7];
+            console.log(`handler : touch-${pin}`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                // value = (value === 1); // return boolean
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit(`touch-${pin}`, value);
+        }
+    },
+    /**
+     * Handles a external Mike sensor response and emits the 'mike-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [MIKE_SENSOR] (board) {
+        console.log(`EVENT : External Mike sensor`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+
+        console.log(`handler : mike-${pin}`);
+
+        let value;
+        if (action === ACTION.GET) {
+            value = getSensorValue(board.buffer);
+            // value = (value === 1); // return boolean
+            console.log(`value= ${value}`);
+        }
+        else {
+            value = error;
+        }
+
+        board.emit(`mike-${pin}`, value);
     }
 };
 
@@ -4344,14 +4458,98 @@ class Firmata extends Emitter {
      * @param angle
      * @param callback
      */
-    runExtServo (sensor, cmd, pin, angle, callback) {
-        const datas = this._runPackage(sensor, cmd, pin, angle);
+    runExtServo (sensor, pin, angle, callback) {
+        const datas = this._runPackage(sensor, pin, angle);
         this._sendBuffer = datas.slice();
 
         writeToTransport(this, datas);
 
         this.removeAllListeners(`servo-motor-${pin}-${angle}`);
         this.once(`servo-motor-${pin}-${angle}`, callback);
+    }
+
+    /**
+     * external speaker sensor on
+     * @param sensor
+     * @param pin
+     * @param freq
+     * @param ms
+     * @param callback
+     */
+    extSpeakerOn (sensor, pin, freq, ms, callback) {
+        const datas = this._runPackage(sensor, pin, this._short2array(freq), this._short2array(ms));
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`speaker-${pin}`);
+        this.once(`speaker-${pin}`, callback);
+    }
+
+    /**
+     * external led on
+     * @param sensor
+     * @param pin
+     * @param ms
+     * @param callback
+     */
+    extLedOn (sensor, pin, ms, callback) {
+        const datas = this._runPackage(sensor, pin, this._short2array(ms));
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`ext-led-${pin}`);
+        this.once(`ext-led-${pin}`, callback);
+    }
+
+    /**
+     * read external touch sensor
+     * @param sensor
+     * @param pin
+     * @param callback
+     */
+    getTouchPressed (sensor, pin, callback) {
+        const datas = this._getPackage(sensor, pin);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`touch-pressed-${pin}`);
+        this.once(`touch-pressed-${pin}`, callback);
+    }
+
+    /**
+     * read external touch sensor pressed
+     * @param sensor
+     * @param cmd
+     * @param pin
+     * @param callback
+     */
+    getTouchSensor (sensor, cmd, pin, callback) {
+        const datas = this._getPackage(sensor, cmd, pin);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`touch-${pin}`);
+        this.once(`touch-${pin}`, callback);
+    }
+
+    /**
+     * read mike sensor
+     * @param sensor
+     * @param pin
+     * @param callback
+     */
+    getMikeSensor (sensor, pin, callback) {
+        const datas = this._getPackage(sensor, pin);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`mike-${pin}`);
+        this.once(`mike-${pin}`, callback);
     }
 }
 

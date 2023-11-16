@@ -153,6 +153,7 @@ const SharpValues = {NONE: '-', SHARP: '#', FLAT: 'b'};
 
 /**
  * beat values
+ // eslint-disable-next-line max-len
  * @type {{QUATER: string, HALF: string, DOT_QUATER: string, DOT_8TH: string, DOT_HALF: string, DOT_16TH: string, THIRTYH_2ND: string, WHOLE: string, EIGHTH: string, SIXTEENTH: string, DOT_32ND: string}}
  */
 const BeatValues = {
@@ -227,6 +228,7 @@ class CoconutDevice {
         return 'coconutS';
     }
 
+    // eslint-disable-next-line valid-jsdoc
     /**
      * forward or backward direction menus
      * @returns {[{text: (*|string), value: string},{text: (*|string), value: string}]}
@@ -1562,11 +1564,11 @@ class CoconutDevice {
     }
 
     /**
-     * servo pin menu
+     * available pin menu
      * @returns {[{text: string, value: string},{text: string, value: string},{text: string, value: string},{text: string, value: string},{text: string, value: string},null]}
      * @constructor
      */
-    get SERVO_PIN_MENU () {
+    get PIN_MENU () {
         return [
             {
                 text: 'D4',
@@ -1626,6 +1628,42 @@ class CoconutDevice {
             {
                 text: '180',
                 value: 180
+            }
+        ];
+    }
+
+    /**
+     * pwm pin menu
+     * @returns {[{text: string, value: string},{text: string, value: string}]}
+     * @constructor
+     */
+    get PWM_PINS_MENU () {
+        return [
+            {
+                text: 'D10',
+                value: Pins.D10
+            },
+            {
+                text: 'D11',
+                value: Pins.D11
+            }
+        ];
+    }
+
+    /**
+     * Analog pins menu
+     * @returns {[{text: string, value: string},{text: string, value: string},{text: string, value: string},{text: string, value: string},{text: string, value: string},null]}
+     * @constructor
+     */
+    get ANALOG_PINS_MENU () {
+        return [
+            {
+                text: 'A2',
+                value: Pins.A2
+            },
+            {
+                text: 'A3',
+                value: Pins.A3
             }
         ];
     }
@@ -1744,34 +1782,34 @@ class CoconutDevice {
         ];
     }
 
-    get ANALOG_PINS_MENU () {
-        return [
-            {
-                text: 'A0',
-                value: Pins.A0
-            },
-            {
-                text: 'A1',
-                value: Pins.A1
-            },
-            {
-                text: 'A2',
-                value: Pins.A2
-            },
-            {
-                text: 'A3',
-                value: Pins.A3
-            },
-            {
-                text: 'A4',
-                value: Pins.A4
-            },
-            {
-                text: 'A5',
-                value: Pins.A5
-            }
-        ];
-    }
+    // get ANALOG_PINS_MENU () {
+    //     return [
+    //         {
+    //             text: 'A0',
+    //             value: Pins.A0
+    //         },
+    //         {
+    //             text: 'A1',
+    //             value: Pins.A1
+    //         },
+    //         {
+    //             text: 'A2',
+    //             value: Pins.A2
+    //         },
+    //         {
+    //             text: 'A3',
+    //             value: Pins.A3
+    //         },
+    //         {
+    //             text: 'A4',
+    //             value: Pins.A4
+    //         },
+    //         {
+    //             text: 'A5',
+    //             value: Pins.A5
+    //         }
+    //     ];
+    // }
 
     get LEVEL_MENU () {
         return [
@@ -1794,34 +1832,7 @@ class CoconutDevice {
         ];
     }
 
-    get PWM_PINS_MENU () {
-        return [
-            {
-                text: '3',
-                value: Pins.D3
-            },
-            {
-                text: '5',
-                value: Pins.D5
-            },
-            {
-                text: '6',
-                value: Pins.D6
-            },
-            {
-                text: '9',
-                value: Pins.D9
-            },
-            {
-                text: '10',
-                value: Pins.D10
-            },
-            {
-                text: '11',
-                value: Pins.D11
-            }
-        ];
-    }
+
 
     get INTERRUPT_PINS_MENU () {
         return [
@@ -3028,14 +3039,14 @@ class CoconutDevice {
                         opcode: 'runExtServo',
                         text: formatMessage({
                             id: 'coconut.sensor.runExtServo',
-                            default: 'set servo pin [SERVO_PIN] angle as [SERVO_ANGLE]',
+                            default: 'set servo pin [PINS] angle as [SERVO_ANGLE]',
                             description: 'set servo motor'
                         }),
                         blockType: BlockType.COMMAND,
                         arguments: {
-                            SERVO_PIN: {
+                            PINS: {
                                 type: ArgumentType.STRING,
-                                menu: 'ServoPinMenu',
+                                menu: 'PinMenu',
                                 defaultValue: Pins.D4
                             },
                             SERVO_ANGLE: {
@@ -3044,23 +3055,119 @@ class CoconutDevice {
                                 defaultValue: 90
                             }
                         }
-                    }
-                    // {
-                    //     opcode: 'showCharacterDraw',
-                    //     text: formatMessage({
-                    //         id: 'coconut.hidden.showCharacterDraw',
-                    //         default: 'LED Matrix Character [MATRIX]',
-                    //         description: 'show character draw'
-                    //     }),
-                    //     blockType: BlockType.COMMAND,
-                    //     arguments: {
-                    //         MATRIX: {
-                    //             type: ArgumentType.MATRIX,
-                    //             menu: 'MelodyMenu',
-                    //             defaultValue: '0101010101100010101000100'
-                    //         }
-                    //     }
-                    // }
+                    },
+                    '---',
+                    {
+                        opcode: 'extLedOn',
+                        text: formatMessage({
+                            id: 'coconut.sensor.extLedOn',
+                            default: 'set external LED pin [PINS] for [TIME_SEC] second(s)',
+                            description: 'external LED on'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            PINS: {
+                                type: ArgumentType.STRING,
+                                menu: 'PinMenu',
+                                defaultValue: Pins.D4
+                            },
+                            TIME_SEC: {
+                                type: ArgumentType.NUMBER,
+                                // menu: 'ServoAngleMenu',
+                                defaultValue: 0.5
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'extSpeakerOn',
+                        text: formatMessage({
+                            id: 'coconut.sensor.extSpeakerOn',
+                            default: 'set Speaker pin [PWM_PIN] frequency [N_FREQUENCY] (Hz) duration [TIME_SEC] seconds',
+                            description: 'external speaker sensor on'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            PWM_PIN: {
+                                type: ArgumentType.STRING,
+                                menu: 'PWMPinMenu',
+                                defaultValue: Pins.D10
+                            },
+                            N_FREQUENCY: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 100
+                            },
+                            TIME_SEC: {
+                                type: ArgumentType.NUMBER,
+                                defaultValue: 0.5
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'extSpeakerOff',
+                        text: formatMessage({
+                            id: 'coconut.sensor.extSpeakerOff',
+                            default: 'stop Speaker pin [PWM_PIN]',
+                            description: 'external speaker sensor off'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            PWM_PIN: {
+                                type: ArgumentType.STRING,
+                                menu: 'PWMPinMenu',
+                                defaultValue: Pins.D10
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'getTouchSensor',
+                        text: formatMessage({
+                            id: 'coconut.sensor.getTouchSensor',
+                            default: 'Touch sensor [PINS]',
+                            description: 'read touch sensor'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            PINS: {
+                                type: ArgumentType.STRING,
+                                menu: 'PinMenu',
+                                defaultValue: Pins.D11
+                            },
+                        }
+                    },
+                    {
+                        opcode: 'getTouchPressed',
+                        text: formatMessage({
+                            id: 'coconut.sensor.getTouchPressed',
+                            default: 'Touch sensor [PINS] pressed',
+                            description: 'read touch sensor pressed'
+                        }),
+                        blockType: BlockType.BOOLEAN,
+                        arguments: {
+                            PINS: {
+                                type: ArgumentType.STRING,
+                                menu: 'PinMenu',
+                                defaultValue: Pins.D11
+                            },
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'getMikeSensor',
+                        text: formatMessage({
+                            id: 'coconut.sensor.getMikeSensor',
+                            default: 'Microphone Sound sensor [ANALOG_PIN]',
+                            description: 'read mike sensor'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            ANALOG_PIN: {
+                                type: ArgumentType.STRING,
+                                menu: 'AnalogPinsMenu',
+                                defaultValue: Pins.A2
+                            }
+                        }
+                    },
                 ],
                 menus: {
                     DirectionExtMenu: {
@@ -3072,11 +3179,17 @@ class CoconutDevice {
                     MotorSpeed2Menu: {
                         items: this.MOTOR_SPEED2_MENU
                     },
-                    ServoPinMenu: {
-                        items: this.SERVO_PIN_MENU
+                    PinMenu: {
+                        items: this.PIN_MENU
                     },
                     ServoAngleMenu: {
                         items: this.SERVO_ANGLE_MENU
+                    },
+                    PWMPinMenu: {
+                        items: this.PWM_PINS_MENU
+                    },
+                    AnalogPinsMenu: {
+                        items: this.ANALOG_PINS_MENU
                     }
                 }
             }
@@ -3587,11 +3700,11 @@ class CoconutDevice {
         //     this._peripheral.displayMatrix(this._peripheral.ledMatrixState);
         // }
         //
-        // return new Promise(resolve => {
-        //     setTimeout(() => {
-        //         resolve();
-        //     }, BLESendInterval);
-        // });
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+            }, 2000);
+        });
     }
 
     /**
@@ -3623,7 +3736,74 @@ class CoconutDevice {
         console.log(`runExtServo :`);
         console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.runExtServo(Cast.toNumber(args.SERVO_PIN), Cast.toNumber(args.SERVO_ANGLE));
+        return this._peripheral.runExtServo(Cast.toNumber(args.PINS), Cast.toNumber(args.SERVO_ANGLE));
+    }
+
+    /**
+     * external LED on
+     * @param args
+     */
+    extLedOn (args) {
+        console.log(`extLedOn :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.extLedOn(Cast.toNumber(args.PINS), Cast.toNumber(args.TIME_SEC));
+    }
+
+    /**
+     * external speaker sensor on
+     * @param args
+     */
+    extSpeakerOn (args) {
+        console.log(`extSpeakerOn :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.extSpeakerOn(Cast.toNumber(args.PWM_PIN), Cast.toNumber(args.N_FREQUENCY), Cast.toNumber(args.TIME_SEC));
+    }
+
+    /**
+     * external speaker sensor off
+     * @param args
+     */
+    extSpeakerOff (args) {
+        console.log(`extSpeakerOff :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.extSpeakerOff(Cast.toNumber(args.PWM_PIN));
+    }
+
+    /**
+     * external touch sensor read
+     * @param args
+     */
+    getTouchSensor (args) {
+        console.log(`getTouchSensor :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.getTouchSensor(Cast.toNumber(args.PINS));
+    }
+
+    /**
+     * read external touch sensor pressed
+     * @param args
+     */
+    getTouchPressed (args) {
+        console.log(`getTouchPressed :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.getTouchPressed(Cast.toNumber(args.PINS));
+    }
+
+    /**
+     * read mike sensor
+     * @param args
+     * @returns {Promise<unknown>}
+     */
+    getMikeSensor (args) {
+        console.log(`getMikeSensor :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.getMikeSensor(Cast.toNumber(args.ANALOG_PIN));
     }
 
     /**
