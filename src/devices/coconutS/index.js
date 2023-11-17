@@ -113,12 +113,12 @@ const DataType = {
  * @type {{ALL: string, BACKWARD: string, LEFT: string, RIGHT: string, FORWARD: string}}
  */
 const DirectionValues = {
-    FORWARD: 'Forward',
-    BACKWARD: 'Backward',
-    LEFT: 'Left',
-    RIGHT: 'Right',
-    ALL: 'All',
-    BOTH: 'Both'
+    FORWARD: 3,
+    BACKWARD: 4,
+    LEFT: 1,
+    RIGHT: 2,
+    ALL: 0,
+    BOTH: 0
 };
 
 /**
@@ -1999,7 +1999,6 @@ class CoconutDevice {
                 color2: '#004B4C',
                 color3: '#004B4C',
                 blocks: [
-                    // 코코넛/코코넛-S 블럭
                     // [앞으로/뒤로] 움직이기
                     {
                         opcode: 'moveMotor',
@@ -2804,7 +2803,6 @@ class CoconutDevice {
                 menus: {
                     // direction : forward, backward
                     DirectionFBMenu: {
-                        // acceptReporters: false,
                         items: this.DIRECTION_FB_MENU
                     },
                     DirectionLRMenu: {
@@ -3202,10 +3200,10 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     moveMotor (args) {
-        console.log(`moveMotor... ${args.DIRECTION_FB}`);
+        console.log(`moveMotor :`);
+        console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.moveMotor(args.DIRECTION_FB);
-        // return Promise.resolve();
+        return this._peripheral.moveMotor(Cast.toNumber(args.DIRECTION_FB));
     }
 
     /**

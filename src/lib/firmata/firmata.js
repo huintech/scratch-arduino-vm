@@ -66,10 +66,6 @@ const SYSTEM_RESET = 0xFF;
 
 const MAX_PIN_COUNT = 128;
 
-// coconutS protocol
-// const DEV_MOTOR = 0x1a;
-// const MOTOR_CMD_0 = 0x00;
-
 /**
  * coconutS response ID
  * @type {number}
@@ -84,7 +80,7 @@ const LIGHT_RESPONSE = 0x0E;
 const ACCELEROMETER_RESPONSE = 0x12;
 const TEMPERATURE_RESPONSE = 0x15;
 const RGB_RESPONSE = 0x19;
-const MOTOR_RESPONSE = 0x1A;
+const MOTOR = 0x1A;
 const MATRIX_RESPONSE = 0x1B;
 const SPEAKER = 0x29;       // 41
 const SERVO_MOTOR = 0x2B;   // 43
@@ -690,13 +686,13 @@ const SYSEX_RESPONSE = {
      * Handles a Motor response and emits the 'coconut-motor-move-' + n event where n is command of the block parameter
      * @param board
      */
-    [MOTOR_RESPONSE] (board) {
-        // console.log(`EVENT : motor response...`);
-        console.log(`EVENT : send buffer= ${board._sendBuffer}`);
-        // console.log(`typeof cmd ${typeof board._sendBuffer[6]}`);
+    [MOTOR] (board) {
+        console.log(`EVENT : Motor`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
 
         const action = board._sendBuffer[4];
         const command = board._sendBuffer[6];
+        const error = 'Error: invalid response';
 
         let direction;
 
@@ -704,11 +700,12 @@ const SYSEX_RESPONSE = {
         // ff 55 04 00 02 1a(26) 01 / stop motor
         switch (command) {
         // 전/후진, 좌/우회전
-        case MOTOR_CMD.MOVE:
+            case MOTOR_CMD.MOVE:
             direction = board._sendBuffer[7];
             console.log(`handler : move-motor-${direction}`);
-            // board.emit(`move-motor-${_direction}`, true);
-            board.emit(`move-motor-${direction}`);
+
+            const value = (action === ACTION.RUN) ? true : error;
+            board.emit(`move-motor-${direction}`, value);
             break;
             // 정지
         case MOTOR_CMD.STOP:
@@ -3650,25 +3647,11 @@ class Firmata extends Emitter {
      * @param callback
      */
     moveMotor (motor, cmd, direction, speed, callback) {
-        // const {
-        //     motor,
-        //     index,
-        //     direction,
-        //     speed
-        // } = options;
-
         const datas = this._runPackage(motor, cmd, direction, speed);
-        //
-        // // console.log(`moveMotors : options : ${JSON.stringify(options)}`);
-        // console.log(`moveMotor :  ${JSON.stringify(datas)}`);
-        //
-        // // writeToTransport(this, datas);
-        // this._sendBuffer = datas;
         this._sendBuffer = datas.slice();
         writeToTransport(this, datas);
         // this.removeAllListeners(`analog-read-${pin}`);
         this.once(`move-motor-${direction}`, callback);
-        // this.once(`coconutS-move-motors`, callback);
     }
 
     /**

@@ -755,41 +755,27 @@ class CoconutSPeripheral {
     } // function
 
     /**
-     * move motors for coconutS
+     * move motors for coconut-s
      * @param direction
      * @returns {Promise<unknown>}
      */
     moveMotor (direction) {
         if (typeof direction === 'string') direction = Directions[direction];
-        const speed = 60;
 
-        const datas = this._runPackage(Sensors.Motor, 0, direction, speed);
-        console.log(`move motors datas : ${datas}`);
-        // this.send(datas);
+        const options = [Sensors.Motor, 0, direction, MotorSpeed];
 
-        // TODO: promise 추가
-        return new Promise(resolve => {
-            this._firmata.moveMotor(Sensors.Motor, 0, direction, speed, value => {
-                resolve(value);
-                console.log(`resolve : ${value}`);
+        if (this.isConnected()) {
+            return new Promise(resolve => {
+                this._firmata.moveMotor(...options, value => {
+                    if (value === true) resolve();
+                    else resolve(value);
+                    console.log(`resolve : ${value}`);
+                });
+                // window.setTimeout(() => {
+                //     resolve();
+                // }, FirmataReadTimeout);
             });
-            // window.setTimeout(() => {
-            //     resolve();
-            // }, FirmataReadTimeout);
-        });
-
-        // if (this.isReady()) {
-        //     // const speed = 60;
-        //     return new Promise(resolve => {
-        //         // this._firmata.coconutMoveMotors(Sensors.Motor, direction, speed => {
-        //         this._firmata.coconutMoveMotors(options => {
-        //             resolve(value);
-        //         });
-        //         window.setTimeout(() => {
-        //             resolve();
-        //         }, FrimataReadTimeout);
-        //     });
-        // }
+        }
     }
 
     /**
