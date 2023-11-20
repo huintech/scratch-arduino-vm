@@ -79,7 +79,7 @@ const LINE_TRACER_RESPONSE = 0x07;
 const LIGHT_RESPONSE = 0x0E;
 const ACCELEROMETER_RESPONSE = 0x12;
 const TEMPERATURE_RESPONSE = 0x15;
-const RGB_RESPONSE = 0x19;
+const RGB_LED = 0x19;
 const MOTOR = 0x1A;
 const MATRIX_RESPONSE = 0x1B;
 const SPEAKER = 0x29;       // 41
@@ -696,7 +696,7 @@ const SYSEX_RESPONSE = {
         const command = board._sendBuffer[6];
         const error = 'Error: invalid response';
 
-        let direction;
+        let direction, value;
 
         // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
         // ff 55 04 00 02 1a(26) 01 / stop motor
@@ -706,36 +706,41 @@ const SYSEX_RESPONSE = {
             direction = board._sendBuffer[7];
             console.log(`handler : move-motor-${direction}`);
 
-            const value = (action === ACTION.RUN) ? true : error;
+            value = (action === ACTION.RUN) ? true : error;
             board.emit(`move-motor-${direction}`, value);
             break;
             // 정지
         case MOTOR_CMD.STOP:
             console.log(`handler : stop-motor`);
-            board.emit('stop-motor');
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit('stop-motor', value);
             break;
             // 전/후진/좌/우회전 + 시간
         case MOTOR_CMD.TIME:
             direction = board._sendBuffer[7];
             console.log(`handler : move-motor-time-${direction}`);
-            board.emit(`move-motor-time-${direction}`, true);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`move-motor-time-${direction}`, value);
             break;
             // 전/후진/좌/우회전 + RGB
         case MOTOR_CMD.RGB:
             console.log(`handler : motor-rgb-{direction}-{rgb}`);
             direction = board._sendBuffer[7];
             const color = board._sendBuffer[9];
-            board.emit(`motor-rgb-${direction}-${color}`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`motor-rgb-${direction}-${color}`, value);
             break;
         case MOTOR_CMD.CM:
             console.log(`handler : motor-cm-{direction}`);
             direction = board._sendBuffer[7];
-            board.emit(`motor-cm-${direction}`, true);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`motor-cm-${direction}`, value);
             break;
         case MOTOR_CMD.DEGREE:
             direction = board._sendBuffer[7];
             console.log(`handler : motor-degree-${direction}`);
-            board.emit(`motor-degree-${direction}`, true);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`motor-degree-${direction}`, value);
             break;
         }
 
@@ -744,19 +749,15 @@ const SYSEX_RESPONSE = {
      * Handles a RGB LED response and emits the 'rgb-' + n event where n is command of the block parameter
      * @param board
      */
-    [RGB_RESPONSE] (board) {
+    [RGB_LED] (board) {
         console.log(`EVENT : RGB`);
         console.log(`send buffer= ${board._sendBuffer}`);
 
         const action = board._sendBuffer[4];
         const command = board._sendBuffer[6];
-        let direction;
-        let color;
-        let error;
-
-        if (action !== 0x02) {
-            error = `Error: invalid response`;
-        }
+        let direction, color, value;
+        // let color;
+        const error = 'Error: invalid response';
 
         // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
         // ff 55 04 00 02 1a(26) 01 / stop motor
@@ -766,33 +767,23 @@ const SYSEX_RESPONSE = {
             direction = board._sendBuffer[7];
             color = board._sendBuffer[8];
             console.log(`handler : rgb-on-${direction}-${color}`);
-            // board.emit(`move-motor-${_direction}`, true);
-
-            if (error) {
-                board.emit(`rgb-on-${direction}-${color}`, error);
-            } else {
-                board.emit(`rgb-on-${direction}-${color}`);
-            }
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`rgb-on-${direction}-${color}`, value);
             break;
             // RGB off
         case RGB_CMD.OFF:
             direction = board._sendBuffer[7];
             color = board._sendBuffer[8];
             console.log(`handler : rgb-off-${direction}-${color}`);
-
-            if (error) {
-                board.emit(`rgb-off-${direction}-${color}`, error);
-            } else {
-                board.emit(`rgb-off-${direction}-${color}`);
-            }
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`rgb-off-${direction}-${color}`, value);
             break;
         case RGB_CMD.ON_TIME:
             direction = board._sendBuffer[7];
             color = board._sendBuffer[8];
             console.log(`handler : rgb-time-${direction}-${color}`);
-
-            const msg = (error) ? error : true;
-            board.emit(`rgb-time-${direction}-${color}`, msg);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`rgb-time-${direction}-${color}`, value);
             break;
         }
     },
@@ -3854,7 +3845,7 @@ class Firmata extends Emitter {
      * @param callback
      */
     rgbOn (sensor, cmd, direction, color, callback) {
-        const datas = this._runPackage(sensor, RGB_CMD.ON_COLOR, direction, color);
+        const datas = this._runPackage(sensor, cmd, direction, color);
 
         this._sendBuffer = datas.slice();
         writeToTransport(this, datas);
@@ -3872,7 +3863,7 @@ class Firmata extends Emitter {
      * @param callback
      */
     rgbOff (sensor, cmd, direction, color, callback) {
-        const datas = this._runPackage(sensor, RGB_CMD.OFF, direction, color);
+        const datas = this._runPackage(sensor, cmd, direction, color);
 
         this._sendBuffer = datas.slice();
         writeToTransport(this, datas);

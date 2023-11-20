@@ -125,15 +125,27 @@ const DirectionValues = {
  * RGB LED color
  */
 const LEDColorValues = {
-    RED: 'Red',
-    GREEN: 'Green',
-    BLUE: 'Blue',
-    YELLOW: 'Yellow',
-    CYAN: 'Cyan',
-    MAGENTA: 'Magenta',
-    WHITE: 'White',
-    BLACK: 'Black'
+    BLACK: 0,
+    WHITE: 1,
+    RED: 2,
+    GREEN: 3,
+    BLUE: 4,
+    YELLOW: 5,
+    CYAN: 6,
+    MAGENTA: 7
 };
+
+// const LEDColorValues = {
+//     RED: 'Red',
+//     GREEN: 'Green',
+//     BLUE: 'Blue',
+//     YELLOW: 'Yellow',
+//     CYAN: 'Cyan',
+//     MAGENTA: 'Magenta',
+//     WHITE: 'White',
+//     BLACK: 'Black'
+// };
+
 
 /**
  * Note values
@@ -348,8 +360,8 @@ class CoconutDevice {
     }
 
     /**
-     * degree mmenu
-     * @returns {[{mDegrees: number[]}]}
+     * degree menu
+     * @returns {[{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},null,null,null,null]}
      * @constructor
      */
     get DEGREE_MENU () {
@@ -3244,10 +3256,10 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     turnMotor (args) {
-        console.log(`turn motors ${args.DIRECTION_LR}`);
+        console.log(`turnMotor :`);
+        console.log(`args= ${JSON.stringify(args)}`);
 
-        this._peripheral.turnMotor(args.DIRECTION_LR);
-        // return Promise.resolve();
+        this._peripheral.turnMotor(Cast.toNumber(args.DIRECTION_LR));
     }
 
     /**
@@ -3265,12 +3277,11 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     moveGoTime (args) {
-        console.log(`move ${args.DIRECTION_FB} for ${args.TIME_SEC} secs`);
+        console.log(`moveGoTime :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+        // console.log(`move ${args.DIRECTION_FB} for ${args.TIME_SEC} secs`);
 
-        // let sec = args.TIME_SEC;
-
-        return this._peripheral.moveGoTime(args.DIRECTION_FB, args.TIME_SEC);
-        // return Promise.resolve();
+        return this._peripheral.moveGoTime(Cast.toNumber(args.DIRECTION_FB), Cast.toNumber(args.TIME_SEC));
     }
 
     /**
@@ -3279,11 +3290,11 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     turnMotorTime (args) {
-        console.log(`turn motor for times ${args.DIRECTION_LR} ${args.TIME_SEC} secs`);
+        console.log(`turnMotorTime :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+        // console.log(`turn motor for times ${args.DIRECTION_LR} ${args.TIME_SEC} secs`);
 
-        return this._peripheral.moveGoTime(args.DIRECTION_LR, args.TIME_SEC);
-        // return this._peripheral.turnMotorTime(args.DIRECTION_LR, args.TIME_SEC);
-        // return Promise.resolve();
+        return this._peripheral.moveGoTime(Cast.toNumber(args.DIRECTION_LR), Cast.toNumber(args.TIME_SEC));
     }
 
     /**
@@ -3292,11 +3303,10 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     moveMotorColor (args) {
-        // console.log(`turn on RGB ${args.LED_COLOR} for turing ${args.DIRECTION_LR}`);
-        console.log(`moveMotorColor: args= ${JSON.stringify(args)}`);
+        console.log(`moveMotorColor :`);
+        console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.moveMotorColor(args.DIRECTION_LR, args.LED_COLOR);
-        // return Promise.resolve();
+        return this._peripheral.moveMotorColor(Cast.toNumber(args.DIRECTION_LR), Cast.toNumber(args.LED_COLOR));
     }
 
     /**
@@ -3305,12 +3315,10 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     moveGoCm (args) {
-        // console.log(`move ${args.DIRECTION_FB} by distance ${args.N_CM}`);
         console.log(`moveGoCm:`);
         console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.moveGoCm(args.DIRECTION_FB, Cast.toNumber(args.N_CM));
-        // return Promise.resolve();
+        return this._peripheral.moveGoCm(Cast.toNumber(args.DIRECTION_FB), Cast.toNumber(args.N_CM));
     }
 
     /**
@@ -3321,10 +3329,8 @@ class CoconutDevice {
     turnMotorDegree (args) {
         console.log(`turnMotorDegree :`);
         console.log(`args= ${JSON.stringify(args)}`);
-        // console.log(`turn ${args.DIRECTION_LR} by degree ${args.DEGREE}`);
 
-        return this._peripheral.turnMotorDegree(args.DIRECTION_LR, Cast.toNumber(args.DEGREE));
-        // return Promise.resolve();
+        return this._peripheral.turnMotorDegree(Cast.toNumber(args.DIRECTION_LR), Cast.toNumber(args.DEGREE));
     }
 
     /**
@@ -3332,12 +3338,10 @@ class CoconutDevice {
      * @param args
      */
     rgbOn (args) {
-        // console.log(`turn on ${args.DIRECTION_LRB} by color ${args.LED_COLOR}`);
         console.log(`rgbOn :`);
         console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.rgbOn(args.DIRECTION_LRB, args.LED_COLOR);
-        // return Promise.resolve();
+        return this._peripheral.rgbOn(Cast.toNumber(args.DIRECTION_LRB), Cast.toNumber(args.LED_COLOR));
     }
 
     /**
@@ -3346,12 +3350,10 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     rgbOff (args) {
-        // console.log(`turn off ${args.DIRECTION_LRB} RGB LED`);
         console.log(`rgbOff :`);
         console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.rgbOff(args.DIRECTION_LRB);
-        // return Promise.resolve();
+        return this._peripheral.rgbOff(Cast.toNumber(args.DIRECTION_LRB));
     }
 
     /**
@@ -3359,12 +3361,10 @@ class CoconutDevice {
      * @param args
      */
     rgbOffColor (args) {
-        // console.log(`turn off ${args.DIRECTION_LRB} RGB LED ${args.LED_COLOR}`);
         console.log(`rgbOffColor :`);
         console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.rgbOffColor(args.DIRECTION_LRB, args.LED_COLOR);
-        // return Promise.resolve();
+        return this._peripheral.rgbOffColor(Cast.toNumber(args.DIRECTION_LRB), Cast.toNumber(args.LED_COLOR));
     }
 
     /**
@@ -3373,12 +3373,13 @@ class CoconutDevice {
      * @returns {Promise<void>}
      */
     rgbOnTime (args) {
-        // console.log(`turn off ${args.DIRECTION_LRB} RGB LED ${args.LED_COLOR} ${args.TIME_SEC} secs`);
         console.log(`rgbOnTime :`);
         console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.rgbOnTime(args.DIRECTION_LRB, args.LED_COLOR, Cast.toNumber(args.TIME_SEC));
-        // return Promise.resolve();
+        return this._peripheral.rgbOnTime(
+            Cast.toNumber(args.DIRECTION_LRB),
+            Cast.toNumber(args.LED_COLOR),
+            Cast.toNumber(args.TIME_SEC));
     }
 
     /**

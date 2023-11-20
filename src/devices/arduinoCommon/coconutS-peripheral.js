@@ -786,7 +786,7 @@ class CoconutSPeripheral {
      */
     turnMotor (direction) {
         if (typeof direction === 'string') direction = Directions[direction];
-        const speed = 60;
+        // const speed = 60;
 
         // console.log(`isReady : ${this.isReady()}`);
         // console.log(`isConnected : ${this.isConnected()}`);
@@ -799,9 +799,12 @@ class CoconutSPeripheral {
         //     this.send(datas);
         // }
 
+        const options = [Sensors.Motor, 0, direction, MotorSpeed];
+
         return new Promise(resolve => {
-            this._firmata.turnMotor(Sensors.Motor, 0, direction, speed, value => {
-                resolve(value);
+            this._firmata.turnMotor(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
                 console.log(`resolve : ${value}`);
             });
             // window.setTimeout(() => {
@@ -814,21 +817,24 @@ class CoconutSPeripheral {
      * stop coconutS motor
      */
     stopMotor () {
-        const datas = this._runPackage(Sensors.Motor, 1);
-
-        console.log(`stop motors datas : ${datas}`);
-
-        // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        console.log(`isReady : ${this.isReady()}`);
+        // const datas = this._runPackage(Sensors.Motor, 1);
+        //
+        // console.log(`stop motors datas : ${datas}`);
+        //
+        // // console.log(`_peripheral : ${JSON.stringify(options)}`);
+        // console.log(`isReady : ${this.isReady()}`);
 
         // if (this.isConnected()) {
         //     this.send(datas);
         // }
 
+        const options = [Sensors.Motor, 1];
+
         // TODO: promise 추가
         return new Promise(resolve => {
-            this._firmata.stopMotor(Sensors.Motor, 1, value => {
-                resolve(value);
+            this._firmata.stopMotor(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
                 console.log(`resolve : ${value}`);
             });
             // window.setTimeout(() => {
@@ -861,35 +867,31 @@ class CoconutSPeripheral {
 
         // 시간이 0보다 작으면 양수로 변환
         if (sec < 0) sec = -sec;
-
         sec = 1000 * sec; // ms 변환
-
-        const speed = 60;
 
         // if (this.isConnected()) {
         //     // sensor, seq, dir, speed, degree, time
         //     const datas = this._runPackage(Sensors.Motor, 3, direction, speed, this._short2array(sec));
-        //
         //     console.log(`move motors datas : ${datas}`);
-        //
         //     this.send(datas);
         // }
 
+        const options = [Sensors.Motor, MOTOR_CMD.TIME, direction, MotorSpeed, sec];
+
         return new Promise(resolve => {
-            this._firmata.moveGoTime(Sensors.Motor, MOTOR_CMD.TIME, direction, speed, sec, value => {
-                resolve(value);
-                // console.log(`resolve : ${value}`);
+            this._firmata.moveGoTime(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
+                console.log(`resolve : ${value}`);
             });
+        });
             // window.setTimeout(() => {
             //      resolve();
             // }, sec);
-        }).then(result => {
-            // console.log(result);
-            console.log(`resolve : ${result}`);
-        });
-
-        // seq, direction, speed, degree, time
-        // runPackage(devices["Motor"], 3, direction, speed, short2array(sec));
+        // }).then(result => {
+        //     // console.log(result);
+        //     console.log(`resolve : ${result}`);
+        // });
     }
 
     /**
@@ -897,35 +899,35 @@ class CoconutSPeripheral {
      * @param direction
      * @param sec
      */
-    turnMotorTime (direction, sec) {
-        if (typeof direction === 'string') direction = Directions[direction];
-        // let sec = args.TIME_SEC;
-
-        // 시간이 0보다 작으면 양수로 변환
-        if (sec < 0) sec = -sec;
-        sec = 1000 * sec; // ms 변환
-
-        const speed = 60;
-
-        // if (this.isConnected()) {
-        //     // sensor, seq, dir, speed, degree, time
-        //     const datas = this._runPackage(Sensors.Motor, 3, direction, speed, this._short2array(sec));
-        //
-        //     console.log(`turn motors datas : ${datas}`);
-        //
-        //     this.send(datas);
-        // }
-
-        return new Promise(resolve => {
-            this._firmata.moveGoTime(Sensors.Motor, MOTOR_CMD.TIME, direction, speed, sec, value => {
-                resolve(value);
-                console.log(`resolve : ${value}`);
-            });
-            // window.setTimeout(() => {
-            //     resolve();
-            // }, FrimataReadTimeout);
-        });
-    }
+    // turnMotorTime (direction, sec) {
+    //     if (typeof direction === 'string') direction = Directions[direction];
+    //     // let sec = args.TIME_SEC;
+    //
+    //     // 시간이 0보다 작으면 양수로 변환
+    //     if (sec < 0) sec = -sec;
+    //     sec = 1000 * sec; // ms 변환
+    //
+    //     const speed = 60;
+    //
+    //     // if (this.isConnected()) {
+    //     //     // sensor, seq, dir, speed, degree, time
+    //     //     const datas = this._runPackage(Sensors.Motor, 3, direction, speed, this._short2array(sec));
+    //     //
+    //     //     console.log(`turn motors datas : ${datas}`);
+    //     //
+    //     //     this.send(datas);
+    //     // }
+    //
+    //     return new Promise(resolve => {
+    //         this._firmata.moveGoTime(Sensors.Motor, MOTOR_CMD.TIME, direction, speed, sec, value => {
+    //             resolve(value);
+    //             console.log(`resolve : ${value}`);
+    //         });
+    //         // window.setTimeout(() => {
+    //         //     resolve();
+    //         // }, FrimataReadTimeout);
+    //     });
+    // }
 
     /**
      * Turn on RGB LED while rotating the motor
@@ -943,15 +945,18 @@ class CoconutSPeripheral {
         // console.log(`moveMotorColors datas : ${datas}`);
 
         // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        console.log(`isReady : ${this.isReady()}`);
+        // console.log(`isReady : ${this.isReady()}`);
 
         // if (this.isConnected()) {
         //     this.send(datas);
         // }
 
+        const options = [Sensors.Motor, MOTOR_CMD.RGB, direction, MotorSpeed, color];
+
         return new Promise(resolve => {
-            this._firmata.moveMotorColor(Sensors.Motor, MOTOR_CMD.RGB, direction, MotorSpeed, color, value => {
-                resolve(value);
+            this._firmata.moveMotorColor(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
                 console.log(`resolve : ${value}`);
             });
             // window.setTimeout(() => {
@@ -968,30 +973,24 @@ class CoconutSPeripheral {
     moveGoCm (direction, cm) {
         if (typeof direction === 'string') direction = Directions[direction];
 
-        // runPackage(devices["Motor"], 10, direction, cm);
-        // const datas = this._runPackage(Sensors.Motor, 10, direction, cm);
-
-        // console.log(`moveGoCm datas : ${datas}`);
-
-        // console.log(`_peripheral : ${JSON.stringify(options)}`);
         // console.log(`isReady : ${this.isReady()}`);
-        //
-        // if (this.isConnected()) {
-        //     this.send(datas);
-        // }
+
+        const options = [Sensors.Motor, MOTOR_CMD.CM, direction, cm];
 
         return new Promise(resolve => {
-            this._firmata.moveGoCm(Sensors.Motor, MOTOR_CMD.CM, direction, cm, value => {
-                resolve(value);
-                // console.log(`resolve : ${value}`);
+            this._firmata.moveGoCm(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
+                console.log(`resolve : ${value}`);
             });
             // window.setTimeout(() => {
             //     resolve();
             // }, FrimataReadTimeout);
-        }).then(result => {
-            // console.log(result);
-            console.log(`resolve : ${result}`);
         });
+            // .then(result => {
+        //     // console.log(result);
+        //     console.log(`resolve : ${result}`);
+        // });
     }
 
     /**
@@ -1001,31 +1000,18 @@ class CoconutSPeripheral {
      */
     turnMotorDegree (direction, degree) {
         if (typeof direction === 'string') direction = Directions[direction];
-        // if (typeof direction === 'string') direction = Directions[direction];
 
-        // runPackage(devices["Motor"], 11, direction, short2array(degree));
-        // const datas = this._runPackage(Sensors.Motor, 11, direction, this._short2array(degree));
-
-        // console.log(`TurnMotorDegrees datas : ${datas}`);
-
-        // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        // console.log(`isReady : ${this.isReady()}`);
-        //
-        // if (this.isConnected()) {
-        //     this.send(datas);
-        // }
+        const options = [Sensors.Motor, MOTOR_CMD.DEGREE, direction, degree];
 
         return new Promise(resolve => {
-            this._firmata.turnMotorDegree(Sensors.Motor, MOTOR_CMD.DEGREE, direction, degree, value => {
-                resolve(value);
-                // console.log(`resolve : ${value}`);
+            this._firmata.turnMotorDegree(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
+                console.log(`resolve : ${value}`);
             });
             // window.setTimeout(() => {
             //     resolve();
             // }, FrimataReadTimeout);
-        }).then(result => {
-            // console.log(result);
-            console.log(`resolve : ${result}`);
         });
     }
 
@@ -1039,20 +1025,15 @@ class CoconutSPeripheral {
         if (typeof color === 'string') color = Colors[color];
 
         // runPackage(devices["RGBled"], 0, direction, color);
-        const datas = this._runPackage(Sensors.RGBled, 0, direction, color);
+        // const datas = this._runPackage(Sensors.RGBled, 0, direction, color);
+        // console.log(`rgbOn datas : ${datas}`);
 
-        console.log(`rgbOn datas : ${datas}`);
-
-        // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        // console.log(`isReady : ${this.isReady()}`);
-
-        // if (this.isConnected()) {
-        //     this.send(datas);
-        // }
+        const options = [Sensors.RGBled, 0, direction, color];
 
         return new Promise(resolve => {
-            this._firmata.rgbOn(Sensors.RGBled, 0, direction, color, value => {
-                resolve(value);
+            this._firmata.rgbOn(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
                 console.log(`resolve : ${value}`);
             });
             // window.setTimeout(() => {
@@ -1068,19 +1049,12 @@ class CoconutSPeripheral {
     rgbOff (direction) {
         if (typeof direction === 'string') direction = Directions[direction];
 
-        // runPackage(devices["RGBled"], 1, direction, 0);
-        // const datas = this._runPackage(Sensors.RGBled, 1, direction);
-
-        // console.log(`RGBoff datas : ${datas}`);
-        //
-        // console.log(`isReady : ${this.isReady()}`);
-        // if (this.isConnected()) {
-        //     this.send(datas);
-        // }
+        const options = [Sensors.RGBled, 1, direction, 0]; // color=0
 
         return new Promise(resolve => {
-            this._firmata.rgbOff(Sensors.RGBled, 1, direction, 0, value => {
-                resolve(value);
+            this._firmata.rgbOff(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
                 console.log(`resolve : ${value}`);
             });
             // window.setTimeout(() => {
@@ -1098,21 +1072,12 @@ class CoconutSPeripheral {
         if (typeof direction === 'string') direction = Directions[direction];
         if (typeof color === 'string') color = Colors[color];
 
-        // runPackage(devices["RGBled"], 1, direction, color);
-        // const datas = this._runPackage(Sensors.RGBled, 1, direction, color);
-        //
-        // console.log(`RGBoffColor datas : ${datas}`);
-        //
-        // // console.log(`_peripheral : ${JSON.stringify(options)}`);
-        // console.log(`isReady : ${this.isReady()}`);
-        //
-        // if (this.isConnected()) {
-        //     this.send(datas);
-        // }
+        const options = [Sensors.RGBled, 1, direction, color];
 
         return new Promise(resolve => {
-            this._firmata.rgbOff(Sensors.RGBled, 1, direction, color, value => {
-                resolve(value);
+            this._firmata.rgbOff(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
                 console.log(`resolve : ${value}`);
             });
             // window.setTimeout(() => {
@@ -1138,7 +1103,7 @@ class CoconutSPeripheral {
         if (typeof sec !== 'number') sec = 0;
         if (sec < 0) sec = 0;
 
-        sec *= 1000; // ms 변환
+        const ms = sec * 1000; // ms 변환
 
         // runPackage(devices["RGBled"], 3, direction, color, short2array(sec));
         // const datas = this._runPackage(Sensors.RGBled, 3, direction, color, this._short2array(sec));
@@ -1150,20 +1115,24 @@ class CoconutSPeripheral {
         //     this.send(datas);
         // }
 
+        const options = [Sensors.RGBled, 3, direction, color, ms];
+
         return new Promise(resolve => {
-            this._firmata.rgbOnTime(Sensors.RGBled, 3, direction, color, sec, value => {
-                resolve(value);
-                // console.log(`resolve : ${value}`);
+            this._firmata.rgbOnTime(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
+                console.log(`resolve : ${value}`);
             });
             // window.setTimeout(() => {
             //     resolve();
             // }, FrimataReadTimeout);
-        }).then(result => {
-            if (result !== true) {
-                resolve();
-            }
-            console.log(`resolve : ${result}`);
         });
+        //     .then(result => {
+        //     if (result !== true) {
+        //         resolve();
+        //     }
+        //     console.log(`resolve : ${result}`);
+        // });
     }
 
     /**
