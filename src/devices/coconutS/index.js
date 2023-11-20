@@ -2954,22 +2954,22 @@ class CoconutDevice {
                             description: 'coconut avoid mode'
                         }),
                         blockType: BlockType.COMMAND
-                    },
-                    {
-                        opcode: 'showCharacterDraw',
-                        text: formatMessage({
-                            id: 'coconut.hidden.showCharacterDraw',
-                            default: 'LED Matrix Character [MATRIX]',
-                            description: 'show character draw'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            MATRIX: {
-                                type: ArgumentType.MATRIX,
-                                defaultValue: '0101010101100010101000100'
-                            }
-                        }
                     }
+                    // {
+                    //     opcode: 'showCharacterDraw',
+                    //     text: formatMessage({
+                    //         id: 'coconut.hidden.showCharacterDraw',
+                    //         default: 'LED Matrix Character [MATRIX]',
+                    //         description: 'show character draw'
+                    //     }),
+                    //     blockType: BlockType.COMMAND,
+                    //     arguments: {
+                    //         MATRIX: {
+                    //             type: ArgumentType.MATRIX,
+                    //             defaultValue: '0101010101100010101000100'
+                    //         }
+                    //     }
+                    // }
                 ],
                 menus: {
                     MelodyMenu: {
@@ -3166,6 +3166,38 @@ class CoconutDevice {
                             }
                         }
                     },
+                    {
+                        opcode: 'getExtIR',
+                        text: formatMessage({
+                            id: 'coconut.sensor.getExtIR',
+                            default: 'external IR sensor [ANALOG_PIN]',
+                            description: 'read IR sensor'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            ANALOG_PIN: {
+                                type: ArgumentType.STRING,
+                                menu: 'AnalogPinsMenu',
+                                defaultValue: Pins.A2
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'getExtCds',
+                        text: formatMessage({
+                            id: 'coconut.sensor.getExtCds',
+                            default: 'external Cds sensor [ANALOG_PIN]',
+                            description: 'read CDS sensor'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            ANALOG_PIN: {
+                                type: ArgumentType.STRING,
+                                menu: 'AnalogPinsMenu',
+                                defaultValue: Pins.A2
+                            }
+                        }
+                    }
                 ],
                 menus: {
                     DirectionExtMenu: {
@@ -3802,6 +3834,30 @@ class CoconutDevice {
         console.log(`args= ${JSON.stringify(args)}`);
 
         return this._peripheral.getMikeSensor(Cast.toNumber(args.ANALOG_PIN));
+    }
+
+    /**
+     * read external IR sensor
+     * @param args
+     * @returns {Promise<unknown>}
+     */
+    getExtIR (args) {
+        console.log(`getExtIR :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.getExtIR(Cast.toNumber(args.ANALOG_PIN));
+    }
+
+    /**
+     * read external CDS sensor
+     * @param args
+     * @returns {*}
+     */
+    getExtCds (args) {
+        console.log(`getExtCds :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.getExtCds(Cast.toNumber(args.ANALOG_PIN));
     }
 
     /**

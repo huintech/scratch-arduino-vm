@@ -60,8 +60,10 @@ const Sensors = {
     Motor: 26,
     LedMatrix: 27, // 0x1b
     Speaker: 41,
+    ExtIR: 42,
     ServoMotor: 43,
     ExtLed: 44,
+    ExtCds: 45,
     ExtMotor: 46,
     Touch: 47,
     Mike: 48
@@ -2555,6 +2557,38 @@ class CoconutSPeripheral {
         return new Promise(resolve => {
             setTimeout(() => {
                 this._firmata.getMikeSensor(...options, value => {
+                    resolve(value);
+
+                    // console.log(`resolve= ${value}`);
+                });
+            });
+
+        });
+    }
+
+    getExtIR (pin) {
+        const options = [Sensors.ExtIR, pin];
+        const timeoutMS = FirmataReadTimeout;
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this._firmata.getExtIR(...options, value => {
+                    resolve(value);
+
+                    // console.log(`resolve= ${value}`);
+                });
+            });
+
+        });
+    }
+
+    getExtCds (pin) {
+        const options = [Sensors.ExtCds, pin];
+        // const timeoutMS = FirmataReadTimeout;
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this._firmata.getExtCds(...options, value => {
                     resolve(value);
 
                     // console.log(`resolve= ${value}`);

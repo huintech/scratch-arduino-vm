@@ -83,8 +83,10 @@ const RGB_RESPONSE = 0x19;
 const MOTOR = 0x1A;
 const MATRIX_RESPONSE = 0x1B;
 const SPEAKER = 0x29;       // 41
+const EXT_IR = 0x2A;        // 42
 const SERVO_MOTOR = 0x2B;   // 43
 const EXT_LED = 0x2C;       // 44
+const EXT_CDS = 0x2D;       // 45
 const EXT_MOTOR = 0x2E;     // 46
 const TOUCH_SENSOR = 0x2F;  // 47
 const MIKE_SENSOR = 0x30;   // 48
@@ -1391,6 +1393,60 @@ const SYSEX_RESPONSE = {
         }
 
         board.emit(`mike-${pin}`, value);
+    },
+    /**
+     * Handles a external IR sensor response and emits the 'extIR-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [EXT_IR] (board) {
+        console.log(`EVENT : External IR sensor`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+
+        console.log(`handler : extIR-${pin}`);
+
+        let value;
+        if (action === ACTION.GET) {
+            value = getSensorValue(board.buffer);
+            // value = (value === 1); // return boolean
+            console.log(`value= ${value}`);
+        }
+        else {
+            value = error;
+        }
+
+        board.emit(`extIR-${pin}`, value);
+    },
+    /**
+     * Handles a external CDS sensor response and emits the 'extCds-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [EXT_CDS] (board) {
+        console.log(`EVENT : External CDS sensor`);
+        console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+
+        console.log(`handler : extCds-${pin}`);
+
+        let value;
+        if (action === ACTION.GET) {
+            value = getSensorValue(board.buffer);
+            // value = (value === 1); // return boolean
+            console.log(`value= ${value}`);
+        }
+        else {
+            value = error;
+        }
+
+        board.emit(`extCds-${pin}`, value);
     }
 };
 
@@ -4533,6 +4589,38 @@ class Firmata extends Emitter {
 
         this.removeAllListeners(`mike-${pin}`);
         this.once(`mike-${pin}`, callback);
+    }
+
+    /**
+     * read IR sensor
+     * @param sensor
+     * @param pin
+     * @param callback
+     */
+    getExtIR (sensor, pin, callback) {
+        const datas = this._getPackage(sensor, pin);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`extIR-${pin}`);
+        this.once(`extIR-${pin}`, callback);
+    }
+
+    /**
+     * read external CDS sensor
+     * @param sensor
+     * @param pin
+     * @param callback
+     */
+    getExtCds (sensor, pin, callback) {
+        const datas = this._getPackage(sensor, pin);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`extCds-${pin}`);
+        this.once(`extCds-${pin}`, callback);
     }
 }
 
