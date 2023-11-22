@@ -138,28 +138,10 @@ const DirectionValues = {
         value: '0'
     }
 };
-// const DirectionValues = {
-//     FORWARD: 3,
-//     BACKWARD: 4,
-//     LEFT: 1,
-//     RIGHT: 2,
-//     ALL: 0,
-//     BOTH: 0
-// };
 
 /**
  * RGB LED color
  */
-// const LEDColorValues = {
-//     BLACK: 0,
-//     WHITE: 1,
-//     RED: 2,
-//     GREEN: 3,
-//     BLUE: 4,
-//     YELLOW: 5,
-//     CYAN: 6,
-//     MAGENTA: 7
-// };
 const LEDColorValues = {
     BLACK: {
         text: 'Black',
@@ -194,31 +176,11 @@ const LEDColorValues = {
         value: '7'
     }
 };
-// const LEDColorValues = {
-//     RED: 'Red',
-//     GREEN: 'Green',
-//     BLUE: 'Blue',
-//     YELLOW: 'Yellow',
-//     CYAN: 'Cyan',
-//     MAGENTA: 'Magenta',
-//     WHITE: 'White',
-//     BLACK: 'Black'
-// };
-
 
 /**
  * Note values
  * @type {{}}
  */
-// const NoteValues = {
-//     NOTE_C: 67,
-//     NOTE_D: 68,
-//     NOTE_E: 69,
-//     NOTE_F: 70,
-//     NOTE_G: 71,
-//     NOTE_A: 65,
-//     NOTE_B: 66
-// };
 const NoteValues = {
     NOTE_C: {
         text: 'NOTE_C',
@@ -249,20 +211,10 @@ const NoteValues = {
         value: '66'
     }
 };
-// const NoteValues = {
-//     NOTE_C: 'NOTE_C',
-//     NOTE_D: 'NOTE_D',
-//     NOTE_E: 'NOTE_E',
-//     NOTE_F: 'NOTE_F',
-//     NOTE_G: 'NOTE_G',
-//     NOTE_A: 'NOTE_A',
-//     NOTE_B: 'NOTE_B'
-// };
 
-// const SharpValues = {NONE: '-', SHARP: '#', FLAT: 'b'};
 /**
  * Sharp and flat values
- * @type {{SHARP: {text: string, value: number}, FLAT: {text: string, value: number}, NONE: {text: string, value: number}}}
+ * @type {{SHARP: {text: string, value: string}, FLAT: {text: string, value: string}, NONE: {text: string, value: string}}}
  */
 const SharpValues = {
     NONE: {
@@ -278,7 +230,6 @@ const SharpValues = {
         value: '98'
     }
 };
-// const SharpValues = {NONE: 0, SHARP: 35, FLAT: 98};
 
 /**
  * beat values
@@ -361,13 +312,6 @@ const BeatRestValues = {
         value: '1000'
     }
 };
-// const BeatRestValues = {
-//     HALF: 'Half_rest',
-//     QUARTER: 'Quarter_rest',
-//     EIGHTH: 'Eighth_rest',
-//     SIXTEENTH: 'Sixteenth_rest',
-//     WHOLE: 'Whole_rest'
-// };
 
 /**
  * detect values
@@ -416,7 +360,6 @@ const OnOffValues = {
 /**
  * Manage communication with a Arduino Uno peripheral over a Scratch Arduino Link client socket.
  */
-// class Coconut extends ArduinoPeripheral {
 class Coconut extends CoconutPeripheral {
     /**
      * Construct a Arduino communication object.
@@ -440,7 +383,6 @@ class CoconutDevice {
         return 'coconutS';
     }
 
-    // eslint-disable-next-line valid-jsdoc
     /**
      * forward or backward direction menus
      * @returns {[{text: (*|string), value: string},{text: (*|string), value: string}]}
@@ -641,7 +583,7 @@ class CoconutDevice {
 
     /**
      * NOTE menu
-     * @returns {[{text: (*|string), value: number},{text: (*|string), value: number},{text: (*|string), value: number},{text: (*|string), value: number},{text: (*|string), value: number},null,null]}
+     * @returns {[{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string},null,null]}
      * @constructor
      */
     get NOTE_MENU () {
@@ -1158,38 +1100,39 @@ class CoconutDevice {
                 }),
                 value: DirectionValues.BOTH.value
             },
-            {
-                text: '1',
-                value: '1'
-            },
-            {
-                text: '2',
-                value: '2'
-            },
-            {
-                text: '3',
-                value: '3'
-            },
-            {
-                text: '4',
-                value: '4'
-            },
-            {
-                text: '5',
-                value: '5'
-            },
-            {
-                text: '6',
-                value: '6'
-            },
-            {
-                text: '7',
-                value: '7'
-            },
-            {
-                text: '8',
-                value: '8'
-            }
+            '1', '2', '3', '4', '5', '6', '7', '8'
+            // {
+            //     text: '1',
+            //     value: '1'
+            // },
+            // {
+            //     text: '2',
+            //     value: '2'
+            // },
+            // {
+            //     text: '3',
+            //     value: '3'
+            // },
+            // {
+            //     text: '4',
+            //     value: '4'
+            // },
+            // {
+            //     text: '5',
+            //     value: '5'
+            // },
+            // {
+            //     text: '6',
+            //     value: '6'
+            // },
+            // {
+            //     text: '7',
+            //     value: '7'
+            // },
+            // {
+            //     text: '8',
+            //     value: '8'
+            // }
         ];
     }
 
@@ -1699,7 +1642,7 @@ class CoconutDevice {
                     default: 'Twinkle Twinkle little star',
                     description: 'Twinkle Twinkle little star'
                 }),
-                value: 1
+                value: '1'
             },
             {
                 text: formatMessage({
@@ -1707,7 +1650,7 @@ class CoconutDevice {
                     default: 'Three bears',
                     description: 'Three bears'
                 }),
-                value: 2
+                value: '2'
             },
             {
                 text: formatMessage({
@@ -1715,7 +1658,7 @@ class CoconutDevice {
                     default: 'Mozart\'s Lullaby',
                     description: 'Mozart\'s Lullaby'
                 }),
-                value: 3
+                value: '3'
             },
             {
                 text: formatMessage({
@@ -1723,7 +1666,7 @@ class CoconutDevice {
                     default: 'Do-Re-Mi',
                     description: 'Do-Re-Mi'
                 }),
-                value: 4
+                value: '4'
             },
             {
                 text: formatMessage({
@@ -1731,14 +1674,14 @@ class CoconutDevice {
                     default: 'Butterfly',
                     description: 'Butterfly'
                 }),
-                value: 5
+                value: '5'
             }
         ];
     }
 
     /**
      * External motor direction menu
-     * @returns {[{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string}]}
+     * @returns {[{text: (*|string), value: number},{text: (*|string), value: number},{text: (*|string), value: number},{text: (*|string), value: number}]}
      * @constructor
      */
     get DIRECTION_EXT_MENU () {
@@ -1746,34 +1689,34 @@ class CoconutDevice {
             {
                 text: formatMessage({
                     id: 'coconut.dirMenu.forward',
-                    default: 'Forward',
+                    default: DirectionValues.FORWARD,
                     description: 'forward direction'
                 }),
-                value: DirectionValues.FORWARD
+                value: DirectionValues.FORWARD.value
             },
             {
                 text: formatMessage({
                     id: 'coconut.dirMenu.backward',
-                    default: 'Backward',
+                    default: DirectionValues.BACKWARD,
                     description: 'backward direction'
                 }),
-                value: DirectionValues.BACKWARD
+                value: DirectionValues.BACKWARD.value
             },
             {
                 text: formatMessage({
                     id: 'coconut.dirMenu.left',
-                    default: 'Left',
+                    default: DirectionValues.LEFT,
                     description: 'left direction'
                 }),
-                value: DirectionValues.LEFT
+                value: DirectionValues.LEFT.value
             },
             {
                 text: formatMessage({
                     id: 'coconut.dirMenu.right',
-                    default: 'Right',
+                    default: DirectionValues.RIGHT,
                     description: 'right direction'
                 }),
-                value: DirectionValues.RIGHT
+                value: DirectionValues.RIGHT.value
             }
         ];
     }
@@ -1783,29 +1726,29 @@ class CoconutDevice {
      * @constructor
      */
     get MOTOR_SPEED_MENU () {
-        // return [0,50, 100, 150, 255];
-        return [
-            {
-                text: '0',
-                value: 0
-            },
-            {
-                text: '50',
-                value: 50
-            },
-            {
-                text: '100',
-                value: 100
-            },
-            {
-                text: '150',
-                value: 150
-            },
-            {
-                text: '255',
-                value: 255
-            }
-        ];
+        return ['0', '50', '100', '150', '200', '255'];
+        // return [
+        //     {
+        //         text: '0',
+        //         value: '0'
+        //     },
+        //     {
+        //         text: '50',
+        //         value: '50'
+        //     },
+        //     {
+        //         text: '100',
+        //         value: '100'
+        //     },
+        //     {
+        //         text: '150',
+        //         value: '150'
+        //     },
+        //     {
+        //         text: '255',
+        //         value: '255'
+        //     }
+        // ];
     }
 
     // eslint-disable-next-line valid-jsdoc
@@ -1814,37 +1757,38 @@ class CoconutDevice {
      * @returns {[{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},null,null]}
      * @constructor
      */
-    get MOTOR_SPEED2_MENU () {
-        return [
-            {
-                text: '255',
-                value: 255
-            },
-            {
-                text: '100',
-                value: 100
-            },
-            {
-                text: '50',
-                value: 50
-            },
-            {
-                text: '0',
-                value: 0
-            },
-            {
-                text: '-50',
-                value: -50
-            },
-            {
-                text: '-100',
-                value: -100
-            },
-            {
-                text: '-255',
-                value: -255
-            }
-        ];
+    get EXT_MOTOR_SPEED_MENU () {
+        return ['255', '200', '150', '100', '50', '0', '-50', '-100', '-150', '-200', '-255'];
+        // return [
+        //     {
+        //         text: '255',
+        //         value: '255'
+        //     },
+        //     {
+        //         text: '100',
+        //         value: '100'
+        //     },
+        //     {
+        //         text: '50',
+        //         value: '50'
+        //     },
+        //     {
+        //         text: '0',
+        //         value: '0'
+        //     },
+        //     {
+        //         text: '-50',
+        //         value: '-50'
+        //     },
+        //     {
+        //         text: '-100',
+        //         value: '-100'
+        //     },
+        //     {
+        //         text: '-255',
+        //         value: '-255'
+        //     }
+        // ];
     }
 
     /**
@@ -1883,37 +1827,11 @@ class CoconutDevice {
 
     /**
      * servo angle menu
-     * @returns {[{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},null]}
+     * @returns {string[]}
      * @constructor
      */
     get SERVO_ANGLE_MENU () {
-        // [0, 60, 90, 120, 150, 180]
-        return [
-            {
-                text: '0',
-                value: 0
-            },
-            {
-                text: '60',
-                value: 60
-            },
-            {
-                text: '90',
-                value: 90
-            },
-            {
-                text: '120',
-                value: 120
-            },
-            {
-                text: '150',
-                value: 150
-            },
-            {
-                text: '180',
-                value: 180
-            }
-        ];
+        return ['0', '30', '60', '90', '120', '150', '180'];
     }
 
     /**
@@ -1948,91 +1866,6 @@ class CoconutDevice {
             {
                 text: 'A3',
                 value: Pins.A3
-            }
-        ];
-    }
-
-    get PINS_MENU () {
-        return [
-            {
-                text: '0',
-                value: Pins.D0
-            },
-            {
-                text: '1',
-                value: Pins.D1
-            },
-            {
-                text: '2',
-                value: Pins.D2
-            },
-            {
-                text: '3',
-                value: Pins.D3
-            },
-            {
-                text: '4',
-                value: Pins.D4
-            },
-            {
-                text: '5',
-                value: Pins.D5
-            },
-            {
-                text: '6',
-                value: Pins.D6
-            },
-            {
-                text: '7',
-                value: Pins.D7
-            },
-            {
-                text: '8',
-                value: Pins.D8
-            },
-            {
-                text: '9',
-                value: Pins.D9
-            },
-            {
-                text: '10',
-                value: Pins.D10
-            },
-            {
-                text: '11',
-                value: Pins.D11
-            },
-            {
-                text: '12',
-                value: Pins.D12
-            },
-            {
-                text: '13',
-                value: Pins.D13
-            },
-            {
-                text: 'A0',
-                value: Pins.A0
-            },
-            {
-                text: 'A1',
-                value: Pins.A1
-            },
-            {
-                text: 'A2',
-                value: Pins.A2
-            },
-            {
-                text: 'A3',
-                value: Pins.A3
-            },
-            {
-                text: 'A4',
-                value: Pins.A4
-            },
-            {
-                text: 'A5',
-                value: Pins.A5
             }
         ];
     }
@@ -3036,9 +2869,9 @@ class CoconutDevice {
                         blockType: BlockType.COMMAND,
                         arguments: {
                             MELODY: {
-                                type: ArgumentType.NUMBER,
+                                type: ArgumentType.STRING,
                                 menu: 'MelodyMenu',
-                                defaultValue: 1
+                                defaultValue: '1'
                             }
                         }
                     },
@@ -3093,34 +2926,32 @@ class CoconutDevice {
                 color2: '#C94FC9',
                 color3: '#BD42BD',
                 blocks: [
+                    // {
+                    //     opcode: 'moveExtMotors',
+                    //     text: formatMessage({
+                    //         id: 'coconut.sensor.moveExtMotors',
+                    //         default: 'external Motor [DIRECTION_EXT] speed [MOTOR_SPEED]',
+                    //         description: 'external all motors run'
+                    //     }),
+                    //     blockType: BlockType.COMMAND,
+                    //     arguments: {
+                    //         DIRECTION_EXT: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'DirectionExtMenu',
+                    //             defaultValue: DirectionValues.FORWARD.value
+                    //         },
+                    //         MOTOR_SPEED: {
+                    //             type: ArgumentType.STRING,
+                    //             menu: 'MotorSpeedMenu',
+                    //             defaultValue: '50'
+                    //         }
+                    //     }
+                    // },
                     {
-                        opcode: 'moveExtMotors',
+                        opcode: 'moveExtMotorSingle',
                         text: formatMessage({
-                            id: 'coconut.sensor.moveExtMotors',
-                            default: 'external Motor [DIRECTION_EXT] speed [MOTOR_SPEED]',
-                            description: 'external all motors run'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            DIRECTION_EXT: {
-                                type: ArgumentType.STRING,
-                                menu: 'DirectionExtMenu',
-                                defaultValue: DirectionValues.FORWARD
-                            },
-                            MOTOR_SPEED: {
-                                type: ArgumentType.NUMBER,
-                                menu: 'MotorSpeedMenu',
-                                defaultValue: 50
-                            }
-                        }
-                    },
-                    // eslint-disable-next-line no-warning-comments
-                    // TODO: error: don't show block
-                    {
-                        opcode: 'extMotorControl',
-                        text: formatMessage({
-                            id: 'coconut.sensor.extMotorControl',
-                            default: 'set external Motor [DIRECTION_LR] speed [MOTOR_SPEED2]',
+                            id: 'coconut.sensor.moveExtMotorSingle',
+                            default: 'set external Motor [DIRECTION_LR] speed [EXT_MOTOR_SPEED]',
                             description: 'set speed to selected external motor'
                         }),
                         blockType: BlockType.COMMAND,
@@ -3128,16 +2959,15 @@ class CoconutDevice {
                             DIRECTION_LR: {
                                 type: ArgumentType.STRING,
                                 menu: 'DirectionLRMenu',
-                                defaultValue: DirectionValues.LEFT
+                                defaultValue: DirectionValues.LEFT.value
                             },
-                            MOTOR_SPEED2: {
-                                type: ArgumentType.NUMBER,
-                                menu: 'MotorSpeed2Menu',
-                                defaultValue: 50
+                            EXT_MOTOR_SPEED: {
+                                type: ArgumentType.STRING,
+                                menu: 'ExtMotorSpeedMenu',
+                                defaultValue: '50'
                             }
                         }
                     },
-                    '---',
                     {
                         opcode: 'runExtServo',
                         text: formatMessage({
@@ -3153,13 +2983,12 @@ class CoconutDevice {
                                 defaultValue: Pins.D4
                             },
                             SERVO_ANGLE: {
-                                type: ArgumentType.ANGLE,
+                                type: ArgumentType.STRING,
                                 menu: 'ServoAngleMenu',
-                                defaultValue: 90
+                                defaultValue: '90'
                             }
                         }
                     },
-                    '---',
                     {
                         opcode: 'extLedOn',
                         text: formatMessage({
@@ -3176,11 +3005,11 @@ class CoconutDevice {
                             },
                             TIME_SEC: {
                                 type: ArgumentType.NUMBER,
-                                // menu: 'ServoAngleMenu',
                                 defaultValue: 0.5
                             }
                         }
                     },
+                    '---',
                     {
                         opcode: 'extSpeakerOn',
                         text: formatMessage({
@@ -3311,8 +3140,11 @@ class CoconutDevice {
                     MotorSpeedMenu: {
                         items: this.MOTOR_SPEED_MENU
                     },
-                    MotorSpeed2Menu: {
-                        items: this.MOTOR_SPEED2_MENU
+                    DirectionLRMenu: {
+                        items: this.DIRECTION_LR_MENU
+                    },
+                    ExtMotorSpeedMenu: {
+                        items: this.EXT_MOTOR_SPEED_MENU
                     },
                     PinMenu: {
                         items: this.PIN_MENU
@@ -3771,7 +3603,7 @@ class CoconutDevice {
         console.log(`playMelody :`);
         console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.playMelody(args.MELODY);
+        return this._peripheral.playMelody(Cast.toNumber(args.MELODY));
     }
 
     /**
@@ -3827,17 +3659,22 @@ class CoconutDevice {
     moveExtMotors (args) {
         console.log(`moveExtMotor :`);
         console.log(`args= ${JSON.stringify(args)}`);
-        return this._peripheral.moveExtMotors(args.DIRECTION_EXT, args.MOTOR_SPEED);
+
+        return this._peripheral.moveExtMotors(
+            Cast.toNumber(args.DIRECTION_EXT), Cast.toNumber(args.MOTOR_SPEED));
     }
 
     /**
      * set speed to selected external motor
      * @param args
      */
-    extMotorControl (args) {
-        console.log(`extMotorControl :`);
+    moveExtMotorSingle (args) {
+        console.log(`moveExtMotorSingle :`);
         console.log(`args= ${JSON.stringify(args)}`);
-        return this._peripheral.extMotorControl(args.DIRECTION_LR, Cast.toNumber(args.MOTOR_SPEED2));
+
+        return this._peripheral.moveExtMotorSingle(
+            // Cast.toNumber(args.DIRECTION_LR), Cast.toNumber(args.MOTOR_SPEED2));
+            Cast.toNumber(args.DIRECTION_LR), Cast.toNumber(args.EXT_MOTOR_SPEED));
     }
 
     /**
@@ -3848,7 +3685,8 @@ class CoconutDevice {
         console.log(`runExtServo :`);
         console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.runExtServo(Cast.toNumber(args.PINS), Cast.toNumber(args.SERVO_ANGLE));
+        return this._peripheral.runExtServo(
+            Cast.toNumber(args.PINS), Cast.toNumber(args.SERVO_ANGLE));
     }
 
     /**
@@ -3859,7 +3697,8 @@ class CoconutDevice {
         console.log(`extLedOn :`);
         console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.extLedOn(Cast.toNumber(args.PINS), Cast.toNumber(args.TIME_SEC));
+        return this._peripheral.extLedOn(
+            Cast.toNumber(args.PINS), Cast.toNumber(args.TIME_SEC));
     }
 
     /**
@@ -3870,7 +3709,10 @@ class CoconutDevice {
         console.log(`extSpeakerOn :`);
         console.log(`args= ${JSON.stringify(args)}`);
 
-        return this._peripheral.extSpeakerOn(Cast.toNumber(args.PWM_PIN), Cast.toNumber(args.N_FREQUENCY), Cast.toNumber(args.TIME_SEC));
+        return this._peripheral.extSpeakerOn(
+            Cast.toNumber(args.PWM_PIN),
+            Cast.toNumber(args.N_FREQUENCY),
+            Cast.toNumber(args.TIME_SEC));
     }
 
     /**
@@ -3940,64 +3782,6 @@ class CoconutDevice {
         console.log(`args= ${JSON.stringify(args)}`);
 
         return this._peripheral.getExtCds(Cast.toNumber(args.ANALOG_PIN));
-    }
-
-    /**
-     * Set pin mode.
-     * @param {object} args - the block's arguments.
-     * @return {Promise} - a Promise that resolves after the set pin mode is done.
-     */
-    setPinMode (args) {
-        this._peripheral.setPinMode(args.PIN, args.MODE);
-        return Promise.resolve();
-    }
-
-    /**
-     * Set pin digital out level.
-     * @param {object} args - the block's arguments.
-     * @return {Promise} - a Promise that resolves after the set pin digital out level is done.
-     */
-    setDigitalOutput (args) {
-        this._peripheral.setDigitalOutput(args.PIN, args.LEVEL);
-        return Promise.resolve();
-    }
-
-    /**
-     * Set pin pwm out value.
-     * @param {object} args - the block's arguments.
-     * @return {Promise} - a Promise that resolves after the set pin pwm out value is done.
-     */
-    setPwmOutput (args) {
-        this._peripheral.setPwmOutput(args.PIN, args.OUT);
-        return Promise.resolve();
-    }
-
-    /**
-     * Read pin digital level.
-     * @param {object} args - the block's arguments.
-     * @return {boolean} - true if read high level, false if read low level.
-     */
-    readDigitalPin (args) {
-        return this._peripheral.readDigitalPin(args.PIN);
-    }
-
-    /**
-     * Read analog pin.
-     * @param {object} args - the block's arguments.
-     * @return {number} - analog value fo the pin.
-     */
-    readAnalogPin (args) {
-        return this._peripheral.readAnalogPin(args.PIN);
-    }
-
-    /**
-     * Set servo out put.
-     * @param {object} args - the block's arguments.
-     * @return {Promise} - a Promise that resolves after the set servo out value is done.
-     */
-    setServoOutput (args) {
-        this._peripheral.setServoOutput(args.PIN, args.OUT);
-        return Promise.resolve();
     }
 }
 

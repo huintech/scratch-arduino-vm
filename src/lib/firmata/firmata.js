@@ -860,6 +860,15 @@ const SYSEX_RESPONSE = {
             board.emit(`buzzer-change-${beat}`, value);
             break;
         }
+        case BUZZER_CMD.MELODY: {
+            const melody = board._sendBuffer[7];
+
+            console.log(`handler : buzzer-melody${melody}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`buzzer-melody${melody}`, value);
+            break;
+        }
         }
     },
     /**
@@ -1178,14 +1187,13 @@ const SYSEX_RESPONSE = {
      */
     [EXT_MOTOR] (board) {
         console.log(`EVENT : External Motor`);
-        console.log(`send buffer= ${board._sendBuffer}`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
 
         const action = board._sendBuffer[4];
         const command = board._sendBuffer[6];
 
-        let direction;
         const error = `Error: invalid response`;
-        let value;
+        let direction, value;
 
         switch (command) {
         case EXT_MOTOR_CMD.MOVE: {
@@ -1213,7 +1221,7 @@ const SYSEX_RESPONSE = {
      */
     [SERVO_MOTOR] (board) {
         console.log(`EVENT : Servo Motor`);
-        console.log(`send buffer= ${board._sendBuffer}`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
@@ -1232,7 +1240,7 @@ const SYSEX_RESPONSE = {
      */
     [EXT_LED] (board) {
         console.log(`EVENT : External Led`);
-        console.log(`send buffer= ${board._sendBuffer}`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
@@ -1250,17 +1258,18 @@ const SYSEX_RESPONSE = {
      */
     [SPEAKER] (board) {
         console.log(`EVENT : External Speaker`);
-        console.log(`send buffer= ${board._sendBuffer}`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
+        const frequency = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
 
         const error = `Error: invalid response`;
 
-        console.log(`handler : speaker-${pin}`);
+        console.log(`handler : speaker-${pin}-${frequency}`);
 
         const value = (action === ACTION.RUN) ? true : error;
-        board.emit(`speaker-${pin}`, value);
+        board.emit(`speaker-${pin}-${frequency}`, value);
     },
     /**
      * Handles a external Touch sensor response and emits the 'touch-' + n event where n is command of the block parameter
@@ -1268,19 +1277,18 @@ const SYSEX_RESPONSE = {
      */
     [TOUCH_SENSOR] (board) {
         console.log(`EVENT : External Touch`);
-        console.log(`send buffer= ${board._sendBuffer}`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
 
         const len = board._sendBuffer[2];
         const action = board._sendBuffer[4];
-        const pin = board._sendBuffer[6];
+        // const pin = board._sendBuffer[6];
 
-        let direction;
         const error = `Error: invalid response`;
-        let value;
+        let value, pin;
 
         // read touch sensor
         if (len === 4) {
-            const pin = board._sendBuffer[6];
+            pin = board._sendBuffer[6];
             console.log(`handler : touch-pressed-${pin}`);
 
             if (action === ACTION.GET) {
@@ -1295,12 +1303,11 @@ const SYSEX_RESPONSE = {
         }
         // read touch sensor pressed
         else if (len === 5) {
-            const pin = board._sendBuffer[7];
+            pin = board._sendBuffer[7];
             console.log(`handler : touch-${pin}`);
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
-                // value = (value === 1); // return boolean
                 console.log(`value= ${value}`);
             } else {
                 value = error;
@@ -4355,13 +4362,11 @@ class Firmata extends Emitter {
     playMelody (sensor, cmd, melody, callback) {
         const datas = this._runPackage(sensor, cmd, melody);
         this._sendBuffer = datas.slice();
-        // const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
-        // const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
 
         writeToTransport(this, datas);
 
-        this.removeAllListeners(`buzzer-melody-${melody}`);
-        this.once(`buzzer-melody-${melody}`, callback);
+        this.removeAllListeners(`buzzer-melody${melody}`);
+        this.once(`buzzer-melody${melody}`, callback);
     }
 
     /**
@@ -4407,25 +4412,28 @@ class Firmata extends Emitter {
      */
     moveExtMotors (sensor, cmd, direction, speed, callback) {
         const datas = this._runPackage(sensor, cmd, direction, speed);
+        // const datas = this._runPackage(sensor, cmd, direction, this._short2array(speed));
         this._sendBuffer = datas.slice();
 
         writeToTransport(this, datas);
 
+        // this.removeAllListeners(`ext-motor-set-${direction}`);
         this.removeAllListeners(`ext-motor-${direction}`);
         this.once(`ext-motor-${direction}`, callback);
+        // this.once(`ext-motor-set-${direction}`, callback);
     }
 
     /**
      * set speed to selected external motor
-     // eslint-disable-next-line valid-jsdoc
      * @param sensor
      * @param cmd
      * @param direction
      * @param speed
      * @param callback
      */
-    extMotorControl (sensor, cmd, direction, speed, callback) {
-        const datas = this._runPackage(sensor, cmd, direction, this._short2array(speed));
+    moveExtMotorSingle (sensor, cmd, direction, speed, callback) {
+        const datas = this._runPackage(
+            sensor, cmd, direction, this._short2array(speed));
         this._sendBuffer = datas.slice();
 
         writeToTransport(this, datas);
@@ -4437,7 +4445,6 @@ class Firmata extends Emitter {
     /**
      * set servo motor
      * @param sensor
-     * @param cmd
      * @param pin
      * @param angle
      * @param callback
@@ -4461,13 +4468,16 @@ class Firmata extends Emitter {
      * @param callback
      */
     extSpeakerOn (sensor, pin, freq, ms, callback) {
-        const datas = this._runPackage(sensor, pin, this._short2array(freq), this._short2array(ms));
+        const datas = this._runPackage(
+            sensor, pin, this._short2array(freq), this._short2array(ms));
         this._sendBuffer = datas.slice();
+
+        const frequency = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
 
         writeToTransport(this, datas);
 
-        this.removeAllListeners(`speaker-${pin}`);
-        this.once(`speaker-${pin}`, callback);
+        this.removeAllListeners(`speaker-${pin}-${frequency}`);
+        this.once(`speaker-${pin}-${frequency}`, callback);
     }
 
     /**
