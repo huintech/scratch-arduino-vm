@@ -1322,19 +1322,18 @@ const SYSEX_RESPONSE = {
      */
     [MIKE_SENSOR] (board) {
         console.log(`EVENT : External Mike sensor`);
-        console.log(`send buffer= ${board._sendBuffer}`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
 
         const error = `Error: invalid response`;
+        let value;
 
         console.log(`handler : mike-${pin}`);
 
-        let value;
         if (action === ACTION.GET) {
             value = getSensorValue(board.buffer);
-            // value = (value === 1); // return boolean
             console.log(`value= ${value}`);
         }
         else {
@@ -1349,19 +1348,18 @@ const SYSEX_RESPONSE = {
      */
     [EXT_IR] (board) {
         console.log(`EVENT : External IR sensor`);
-        console.log(`send buffer= ${board._sendBuffer}`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
 
         const error = `Error: invalid response`;
+        let value;
 
         console.log(`handler : extIR-${pin}`);
 
-        let value;
         if (action === ACTION.GET) {
             value = getSensorValue(board.buffer);
-            // value = (value === 1); // return boolean
             console.log(`value= ${value}`);
         }
         else {
@@ -1376,19 +1374,18 @@ const SYSEX_RESPONSE = {
      */
     [EXT_CDS] (board) {
         console.log(`EVENT : External CDS sensor`);
-        console.log(`send buffer= ${board._sendBuffer}`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
 
         const error = `Error: invalid response`;
+        let value;
 
         console.log(`handler : extCds-${pin}`);
 
-        let value;
         if (action === ACTION.GET) {
             value = getSensorValue(board.buffer);
-            // value = (value === 1); // return boolean
             console.log(`value= ${value}`);
         }
         else {

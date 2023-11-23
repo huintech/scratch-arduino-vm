@@ -2036,30 +2036,25 @@ class CoconutSPeripheral {
      */
     getMikeSensor (pin) {
         const options = [Sensors.Mike, pin];
-        const timeoutMS = FirmataReadTimeout;
 
         return new Promise(resolve => {
             setTimeout(() => {
                 this._firmata.getMikeSensor(...options, value => {
                     resolve(value);
-
-                    // console.log(`resolve= ${value}`);
+                    console.log(`resolve= ${value}`);
                 });
             });
-
         });
     }
 
     getExtIR (pin) {
         const options = [Sensors.ExtIR, pin];
-        const timeoutMS = FirmataReadTimeout;
 
         return new Promise(resolve => {
             setTimeout(() => {
                 this._firmata.getExtIR(...options, value => {
                     resolve(value);
-
-                    // console.log(`resolve= ${value}`);
+                    console.log(`resolve= ${value}`);
                 });
             });
 
@@ -2068,17 +2063,14 @@ class CoconutSPeripheral {
 
     getExtCds (pin) {
         const options = [Sensors.ExtCds, pin];
-        // const timeoutMS = FirmataReadTimeout;
 
         return new Promise(resolve => {
             setTimeout(() => {
                 this._firmata.getExtCds(...options, value => {
                     resolve(value);
-
-                    // console.log(`resolve= ${value}`);
+                    console.log(`resolve= ${value}`);
                 });
             });
-
         });
     }
 }
