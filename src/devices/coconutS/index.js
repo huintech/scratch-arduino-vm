@@ -2828,26 +2828,26 @@ class CoconutDevice {
                  }
             },
             // 강제 정지
-            {
-                id: 'reset',
-                name: formatMessage({
-                    id: 'coconut.category.reset',
-                    default: 'Reset',
-                    description: 'Reset block'
-                }),
-                color1: '#9966FF',
-                blocks: [
-                    {
-                        opcode: 'stopAll',
-                        text: formatMessage({
-                            id: 'coconut.reset.stopAll',
-                            default: 'stop all',
-                            description: 'stop all block'
-                        }),
-                        blockType: BlockType.COMMAND
-                    }
-                ]
-            },
+            // {
+            //     id: 'reset',
+            //     name: formatMessage({
+            //         id: 'coconut.category.reset',
+            //         default: 'Reset',
+            //         description: 'Reset block'
+            //     }),
+            //     color1: '#9966FF',
+            //     blocks: [
+            //         {
+            //             opcode: 'stopAll',
+            //             text: formatMessage({
+            //                 id: 'coconut.reset.stopAll',
+            //                 default: 'stop all',
+            //                 description: 'stop all block'
+            //             }),
+            //             blockType: BlockType.COMMAND
+            //         }
+            //     ]
+            // },
             {
                 id: 'hidden',
                 name: formatMessage({
