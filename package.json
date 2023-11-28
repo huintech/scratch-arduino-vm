@@ -1,13 +1,13 @@
 {
   "name": "scratch-arduino-vm",
   "version": "0.2.20",
-  "description": "Virtual Machine for Scratch Arduino",
+  "description": "Virtual Machine for Scratch",
   "author": "Massachusetts Institute of Technology",
   "license": "BSD-3-Clause",
-  "homepage": "https://github.com/ottawastem/scratch-arduino-vm#readme",
+  "homepage": "https://github.com/huintech/scratch-arduino-vm#readme",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/ottawastem/scratch-arduino-vm.git",
+    "url": "git+ssh://git@github.com/huintech/scratch-arduino-vm.git",
     "sha": "$(git log -n1 --pretty=format:%H)"
   },
   "main": "./dist/node/scratch-arduino-vm.js",
@@ -18,7 +18,7 @@
     "deploy": "touch playground/.nojekyll",
     "docs": "jsdoc -c .jsdoc.json",
     "i18n:src": "mkdirp translations/core && format-message extract --out-file translations/core/en.json src/extensions/**/**.js src/devices/**/**.js",
-    "i18n:push": "tx-push-src scratch-arduino-editor extensions translations/core/en.json",
+    "i18n:push": "tx-push-src scratch-editor extensions translations/core/en.json",
     "lint": "eslint . && format-message lint src/**/*.js",
     "start": "webpack-dev-server",
     "tap": "",
