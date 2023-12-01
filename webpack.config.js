@@ -44,8 +44,8 @@ module.exports = [
     defaultsDeep({}, base, {
         target: 'web',
         entry: {
-            'scratch-arduino-vm': './src/index.js',
-            'scratch-arduino-vm.min': './src/index.js'
+            '@huintech/scratch-arduino-vm': './src/index.js',
+            '@huintech/scratch-arduino-vm.min': './src/index.js'
         },
         output: {
             libraryTarget: 'umd',
@@ -64,7 +64,7 @@ module.exports = [
     defaultsDeep({}, base, {
         target: 'node',
         entry: {
-            'scratch-arduino-vm': './src/index.js'
+            '@huintech/scratch-arduino-vm': './src/index.js'
         },
         output: {
             libraryTarget: 'commonjs2',
@@ -108,7 +108,7 @@ module.exports = [
                     loader: 'script-loader'
                 },
                 {
-                    test: require.resolve('scratch-arduino-blocks/dist/vertical.js'),
+                    test: require.resolve('@huintech/scratch-arduino-blocks/dist/vertical.js'),
                     loader: 'expose-loader?Blockly'
                 },
                 {
@@ -130,7 +130,7 @@ module.exports = [
         },
         plugins: base.plugins.concat([
             new CopyWebpackPlugin([{
-                from: 'node_modules/scratch-arduino-blocks/media',
+                from: 'node_modules/@huintech/scratch-arduino-blocks/media',
                 to: 'media'
             }, {
                 from: 'node_modules/scratch-storage/dist/web'

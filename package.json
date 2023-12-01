@@ -1,6 +1,6 @@
 {
-  "name": "scratch-arduino-vm",
-  "version": "0.2.20",
+  "name": "@huintech/scratch-arduino-vm",
+  "version": "0.8.0",
   "description": "Virtual Machine for Scratch",
   "author": "Massachusetts Institute of Technology",
   "license": "BSD-3-Clause",
@@ -9,6 +9,9 @@
     "type": "git",
     "url": "git+ssh://git@github.com/huintech/scratch-arduino-vm.git",
     "sha": "$(git log -n1 --pretty=format:%H)"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "main": "./dist/node/scratch-arduino-vm.js",
   "browser": "./src/index.js",
@@ -72,8 +75,8 @@
     "json": "^9.0.4",
     "lodash.defaultsdeep": "4.6.1",
     "pngjs": "^3.3.2",
-    "scratch-arduino-blocks": "latest",
-    "scratch-arduino-l10n": "latest",
+    "@huintech/scratch-arduino-blocks": "0.8.0",
+    "@huintech/coconut-scratch-l10n": "0.8.0",
     "scratch-audio": "latest",
     "scratch-render": "latest",
     "scratch-render-fonts": "^1.0.0-prerelease.20210401210003",
