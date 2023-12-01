@@ -1,6 +1,6 @@
 {
   "name": "@huintech/scratch-arduino-vm",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Virtual Machine for Scratch",
   "author": "Massachusetts Institute of Technology",
   "license": "BSD-3-Clause",
@@ -17,6 +17,7 @@
   "browser": "./src/index.js",
   "scripts": {
     "build": "npm run docs && webpack --progress --colors --bail",
+    "build2": "webpack --progress --colors --bail",
     "coverage": "tap ./test/{unit,integration}/*.js --coverage --coverage-report=lcov",
     "deploy": "touch playground/.nojekyll",
     "docs": "jsdoc -c .jsdoc.json",

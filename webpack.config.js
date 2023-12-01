@@ -44,8 +44,8 @@ module.exports = [
     defaultsDeep({}, base, {
         target: 'web',
         entry: {
-            '@huintech/scratch-arduino-vm': './src/index.js',
-            '@huintech/scratch-arduino-vm.min': './src/index.js'
+            'scratch-arduino-vm': './src/index.js',
+            'scratch-arduino-vm.min': './src/index.js'
         },
         output: {
             libraryTarget: 'umd',
@@ -64,7 +64,7 @@ module.exports = [
     defaultsDeep({}, base, {
         target: 'node',
         entry: {
-            '@huintech/scratch-arduino-vm': './src/index.js'
+            'scratch-arduino-vm': './src/index.js'
         },
         output: {
             libraryTarget: 'commonjs2',
