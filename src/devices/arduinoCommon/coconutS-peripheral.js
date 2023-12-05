@@ -289,6 +289,8 @@ class CoconutSPeripheral {
         this._serialport = null;
         this._runtime.registerPeripheralExtension(deviceId, this);
         this._runtime.setRealtimeBaudrate(this.serialConfig.baudRate);
+        // TODO: stop-all, coconut stop all
+        this._runtime.on('PROJECT_STOP_ALL', this.stopAll.bind(this));
 
         /**
          * The id of the peripheral this peripheral belongs to.
@@ -1763,24 +1765,7 @@ class CoconutSPeripheral {
      * forced stop all block
      */
     stopAll () {
-        // const options = [0xff, 0x55, 0x02, 0x00, 0x04];
-        // this.send(options);
-        // return Promise.resolve();
-        // return new Promise(resolve => {
-        //     this._firmata.stopAll(value => {
-        //         resolve(value);
-        //
-        //         console.log(`resolve= ${value}`);
-        //     });
-        //     // window.setTimeout(() => {
-        //     //     resolve();
-        //     // }, FirmataReadTimeout);
-        // });
-
-        const jobDurationMS = 3000;
-        const timeoutMS = 2000;
-
-        const job = new Promise(resolve => {
+        new Promise(resolve => {
             this._firmata.stopAll(value => {
                 if (value === true) resolve();
                 else resolve(value);
@@ -1788,22 +1773,7 @@ class CoconutSPeripheral {
                 console.log(`resolve= ${value}`);
             });
         });
-
-        let timer;
-        Promise.race([
-            job,
-            new Promise(resolve => {
-                timer = setTimeout(() => resolve('timeout'), FirmataReadTimeout);
-            })
-        ])
-            .then(result => {
-                if (result === 'timeout') {
-                    console.log('시간이 초과되었습니다!');
-                } else {
-                    console.log('시간 내에 작업을 완료하였습니다.');
-                }
-            })
-            .finally(() => clearTimeout(timer));
+        // return Promise.resolve();
     }
 
     playMelody (melody) {

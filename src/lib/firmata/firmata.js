@@ -101,23 +101,6 @@ const ACTION = {
 };
 
 /**
- * sensor ID in Coconut
- * @type {{IRdistance: number, LineTracer: number, Temperature: number, Motor: number, LedMatrix: number, Accelerometer: number, Buzzer: number, IR: number, RGBled: number, LightSensor: number}}
- */
-// const SENSOR = {
-//     LightSensor: 14,
-//     Accelerometer: 18,
-//     Temperature: 21,
-//     Buzzer: 3,
-//     IRdistance: 5,
-//     LineTracer: 7,
-//     IR: 9,
-//     RGBled: 25,
-//     Motor: 26,
-//     LedMatrix: 27 // 0x1b
-// };
-
-/**
  * Motor command
  * @type {{MOVE: number, STOP: number, CM: number, DEGREE: number, RGB: number}}
  */
@@ -4345,7 +4328,6 @@ class Firmata extends Emitter {
         writeToTransport(this, datas);
 
         this.removeAllListeners(); // all event listeners
-        // this.removeAllListeners(`stop-all`);
         this.once(`stop-all`, callback);
     }
 

@@ -2243,7 +2243,7 @@ class Runtime extends EventEmitter {
         return newThreads;
     }
 
-    
+
     /**
      * Dispose all targets. Return to clean state.
      */
