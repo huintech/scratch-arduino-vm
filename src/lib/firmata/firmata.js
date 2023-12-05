@@ -19,7 +19,7 @@ const ANALOG_MESSAGE = 0xE0;
 const CAPABILITY_QUERY = 0x6B;
 const CAPABILITY_RESPONSE = 0x6C;
 const DIGITAL_MESSAGE = 0x90;
-const END_SYSEX = 0xF7;
+const END_SYSEX = 0xF7; // 0x0A;
 const EXTENDED_ANALOG = 0x6F;
 const I2C_CONFIG = 0x78;
 const I2C_REPLY = 0x77;
@@ -58,13 +58,135 @@ const SERIAL_REPLY = 0x40;
 // const SERIAL_CLOSE = 0x50;
 // const SERIAL_FLUSH = 0x60;
 // const SERIAL_LISTEN = 0x70;
-const START_SYSEX = 0xF0;
+const START_SYSEX = 0xF0; // 0xFF; //
 const STEPPER = 0x72;
 const ACCELSTEPPER = 0x62;
 const STRING_DATA = 0x71;
 const SYSTEM_RESET = 0xFF;
 
 const MAX_PIN_COUNT = 128;
+
+/**
+ * coconutS response ID
+ * @type {number}
+ */
+const RESET_RESPONSE = 0x04;
+
+const BUZZER = 0x03;
+const DISTANCE = 0x05;
+const LINE_TRACER = 0x07;
+const LIGHT = 0x0E;
+const ACCELEROMETER = 0x12;
+const TEMPERATURE = 0x15;
+const RGB_LED = 0x19;
+const MOTOR = 0x1A;
+const LED_MATRIX = 0x1B;
+const SPEAKER = 0x29;       // 41
+const EXT_IR = 0x2A;        // 42
+const SERVO_MOTOR = 0x2B;   // 43
+const EXT_LED = 0x2C;       // 44
+const EXT_CDS = 0x2D;       // 45
+const EXT_MOTOR = 0x2E;     // 46
+const TOUCH_SENSOR = 0x2F;  // 47
+const MIKE_SENSOR = 0x30;   // 48
+
+/**
+ * action type
+ * @type {{GET: number, RUN: number, RESET: number}}
+ */
+const ACTION = {
+    GET: 0x01,
+    RUN: 0x02,
+    RESET: 0x04
+};
+
+/**
+ * Motor command
+ * @type {{MOVE: number, STOP: number, CM: number, DEGREE: number, RGB: number}}
+ */
+const MOTOR_CMD = {
+    MOVE: 0x00,
+    STOP: 0x01,
+    TIME: 0x03,
+    RGB: 0x05,
+    CM: 0x0A,
+    DEGREE: 0x0B
+};
+
+/**
+ * RGB LED command
+ * @type {{ON_TIME: number, RAINBOW: number, ON_COLOR: number, OFF: number}}
+ */
+const RGB_CMD = {
+    ON_COLOR: 0x00,
+    OFF: 0x01,
+    ON_TIME: 0x03,
+    RAINBOW: 0x04
+};
+
+/**
+ * Buzzer command
+ * @type {{}}
+ */
+const BUZZER_CMD = {
+    ON: 0x00,
+    REST_BEAT: 0x01,
+    NOTE: 0x02,
+    NOTE_RGB: 0x03,
+    NOTE_BEAT: 0x04,
+    NOTE_BEAT_RGB: 0x05,
+    MELODY: 0x06,
+    CHANGE_BEAT: 0x07
+};
+
+/**
+ * LineTracer command
+ * @type {{MOVE: number, STOP: number, CM: number, DEGREE: number, RGB: number}}
+ */
+const LINE_TRACER_CMD = {
+    GET_RAW: 0x00,
+    DETECT_SINGLE: 0x01,
+    FOLLOW: 0x03,
+    DETECT_ALL: 0x04,
+    TURN_BLACK: 0x05,
+    DETECT_NONE: 0x06
+};
+
+/**
+ * IR Distance sensor command
+ * @type {{DETECT_ALL: number, AVOID: number, GET_RAW: number, DETECT: number, OFF: number}}
+ */
+const DISTANCE_CMD = {
+    GET_RAW: 0x00,
+    DETECT: 0x01,
+    DETECT_ALL: 0x02,
+    AVOID: 0x03,
+    OFF: 0x04
+};
+
+/**
+ * LED Matrix command
+ * @type {{NUMBER: number, EN_LARGE: number, OFF_ALL: number, ON_ALL: number, EN_SMALL: number, FREE: number, ON: number, KOREAN: number}}
+ */
+const MATRIX_CMD = {
+    ON: 0x00,
+    NUMBER: 0x01,
+    EN_SMALL: 0x02,
+    EN_CAPITAL: 0x03,
+    KOREAN: 0x04,
+    OFF_ALL: 0x05,
+    ON_ALL: 0x06,
+    FREE: 0x07
+};
+
+/**
+ * External motor command
+ * @type {{SET_SPEED: number, MOVE: number}}
+ */
+const EXT_MOTOR_CMD = {
+    SET_SPEED: 0x01,
+    MOVE: 0x02
+};
 
 const symbolSendOneWireSearch = Symbol('sendOneWireSearch');
 const symbolSendOneWireRequest = Symbol('sendOneWireRequest');
@@ -534,10 +656,829 @@ const SYSEX_RESPONSE = {
             }
             board.emit(`serial-data-${portId}`, reply);
         }
+    },
+    /**
+     * stop all blocks
+     * remove all event listeners, stop all
+      * @param board
+     */
+    [RESET_RESPONSE] (board) {
+        console.log(`EVENT : STOP ALL`);
+        board.emit(`stop-all`, true);
+    },
+    /**
+     * Handles a Motor response and emits the 'coconut-motor-move-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [MOTOR] (board) {
+        console.log(`EVENT : Motor`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+        const error = 'Error: invalid response';
+
+        let direction, value;
+
+        // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
+        // ff 55 04 00 02 1a(26) 01 / stop motor
+        switch (command) {
+        // 전/후진, 좌/우회전
+            case MOTOR_CMD.MOVE:
+            direction = board._sendBuffer[7];
+            console.log(`handler : move-motor-${direction}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`move-motor-${direction}`, value);
+            break;
+            // 정지
+        case MOTOR_CMD.STOP:
+            console.log(`handler : stop-motor`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit('stop-motor', value);
+            break;
+            // 전/후진/좌/우회전 + 시간
+        case MOTOR_CMD.TIME:
+            direction = board._sendBuffer[7];
+            console.log(`handler : move-motor-time-${direction}`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`move-motor-time-${direction}`, value);
+            break;
+            // 전/후진/좌/우회전 + RGB
+        case MOTOR_CMD.RGB:
+            console.log(`handler : motor-rgb-{direction}-{rgb}`);
+            direction = board._sendBuffer[7];
+            const color = board._sendBuffer[9];
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`motor-rgb-${direction}-${color}`, value);
+            break;
+        case MOTOR_CMD.CM:
+            console.log(`handler : motor-cm-{direction}`);
+            direction = board._sendBuffer[7];
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`motor-cm-${direction}`, value);
+            break;
+        case MOTOR_CMD.DEGREE:
+            direction = board._sendBuffer[7];
+            console.log(`handler : motor-degree-${direction}`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`motor-degree-${direction}`, value);
+            break;
+        }
+
+    },
+    /**
+     * Handles a RGB LED response and emits the 'rgb-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [RGB_LED] (board) {
+        console.log(`EVENT : RGB`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+        const error = 'Error: invalid response';
+        let direction, color, value;
+
+        // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
+        // ff 55 04 00 02 1a(26) 01 / stop motor
+        switch (command) {
+        // RGB on
+        case RGB_CMD.ON_COLOR:
+            direction = board._sendBuffer[7];
+            color = board._sendBuffer[8];
+            console.log(`handler : rgb-on-${direction}-${color}`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`rgb-on-${direction}-${color}`, value);
+            break;
+            // RGB off
+        case RGB_CMD.OFF:
+            direction = board._sendBuffer[7];
+            color = board._sendBuffer[8];
+            console.log(`handler : rgb-off-${direction}-${color}`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`rgb-off-${direction}-${color}`, value);
+            break;
+        case RGB_CMD.ON_TIME:
+            direction = board._sendBuffer[7];
+            color = board._sendBuffer[8];
+            console.log(`handler : rgb-time-${direction}-${color}`);
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`rgb-time-${direction}-${color}`, value);
+            break;
+        }
+    },
+    /**
+     * Handles a Buzzer response and emits the 'buzzer-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [BUZZER] (board) {
+        console.log(`EVENT : BUZZER`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+        const error = 'Error: invalid response';
+        let direction, color, value;
+        // let color;
+
+        // ff 55 06 00 02 1a(26) 0 03 3c(60) / move motor forward/backward
+        // ff 55 04 00 02 1a(26) 01 / stop motor
+        switch (command) {
+        // buzzer on
+        case BUZZER_CMD.ON: {
+            console.log(`handler : buzzer-{on|time|freq|off}`);
+
+            const freq = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+            const duration = `${board._sendBuffer[9]}${board._sendBuffer[10]}`;
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`buzzer-on`, value);
+            board.emit(`buzzer-time-${freq}-${duration}`, value);
+            board.emit(`buzzer-freq-${freq}-${duration}`, value);
+            board.emit(`buzzer-off-${freq}-${duration}`, value);
+            break;
+        }
+        case BUZZER_CMD.NOTE_BEAT: {
+            const note = board._sendBuffer[7];
+            const octave = board._sendBuffer[8];
+            const sharp = board._sendBuffer[9];
+
+            console.log(`handler : buzzer-note-${note}-${octave}-${sharp}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`buzzer-note-${note}-${octave}-${sharp}`, value);
+            break;
+        }
+        case BUZZER_CMD.REST_BEAT: {
+            // const freq = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+            const duration = `${board._sendBuffer[9]}${board._sendBuffer[10]}`;
+
+            console.log(`handler : buzzer-rest-${duration}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`buzzer-rest-${duration}`, value);
+            break;
+        }
+        case BUZZER_CMD.NOTE_BEAT_RGB: {
+            const note = board._sendBuffer[7];
+            const octave = board._sendBuffer[8];
+            const sharp = board._sendBuffer[9];
+            const beat = `${board._sendBuffer[10]}${board._sendBuffer[11]}`;
+            const direction = board._sendBuffer[12];
+            const color = board._sendBuffer[13];
+
+            console.log(`handler : buzzer-note-color-${note}${octave}${sharp}-${beat}-${direction}-${color}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`buzzer-note-color-${note}${octave}${sharp}-${beat}-${direction}-${color}`, value);
+            break;
+        }
+        case BUZZER_CMD.CHANGE_BEAT: {
+            const beat = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+
+            console.log(`handler : buzzer-change-${beat}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`buzzer-change-${beat}`, value);
+            break;
+        }
+        case BUZZER_CMD.MELODY: {
+            const melody = board._sendBuffer[7];
+
+            console.log(`handler : buzzer-melody${melody}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`buzzer-melody${melody}`, value);
+            break;
+        }
+        }
+    },
+    /**
+     * Handles a Line-tracer response and emits the 'line-tracer-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [LINE_TRACER] (board) {
+        console.log(`EVENT : Line Tracer`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let direction, value;
+
+        switch (command) {
+        case LINE_TRACER_CMD.GET_RAW:
+            direction = board._sendBuffer[7];
+            console.log(`handler : line-tracer-read-${direction}`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit(`line-tracer-read-${direction}`, value);
+            break;
+        case LINE_TRACER_CMD.DETECT_SINGLE:
+            direction = board._sendBuffer[7];
+            const detect = board._sendBuffer[8];
+
+            console.log(`handler : line-tracer-detect-${direction}-${detect}`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+                value = (value === 1);
+            } else {
+                value = error;
+            }
+
+            board.emit(`line-tracer-detect-${direction}-${detect}`, value);
+            break;
+        case LINE_TRACER_CMD.DETECT_ALL:
+            console.log(`handler : line-tracer-detects`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit('line-tracer-detects', value);
+            break;
+        case LINE_TRACER_CMD.TURN_BLACK:
+            const exCmd = board._sendBuffer[7];
+            console.log(`handler : line-tracer-command-${exCmd}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+
+            board.emit(`line-tracer-command-${exCmd}`, value);
+            break;
+        case LINE_TRACER_CMD.FOLLOW: {
+            console.log(`handler : follow-line`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`follow-line`, value);
+            break;
+        }
+        }
+    },
+    /**
+     * Handles a IR Distance sensor response and emits the 'distance-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [DISTANCE] (board) {
+        console.log(`EVENT : IR Distance`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let direction, value;
+
+        switch (command) {
+        case DISTANCE_CMD.GET_RAW:
+            direction = board._sendBuffer[7];
+            console.log(`handler : distance-read-${direction}`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit(`distance-read-${direction}`, value);
+            break;
+        case DISTANCE_CMD.DETECT: {
+            direction = board._sendBuffer[7];
+            const detect = board._sendBuffer[8];
+            console.log(`handler : distance-detect-${direction}-${detect}`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                value = (value === 1);
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit(`distance-detect-${direction}-${detect}`, value);
+            break;
+        }
+        case DISTANCE_CMD.DETECT_ALL: {
+            console.log(`handler : distance-detect-all`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                value = (value === 1); // return boolean
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit(`distance-detect-all`, value);
+            break;
+        }
+        case DISTANCE_CMD.AVOID: {
+            console.log(`handler : avoid-mode`);
+
+            if (action === ACTION.RUN) {
+                value = true;
+            } else {
+                value = error;
+            }
+
+            board.emit(`avoid-mode`, value);
+            break;
+        }
+        }
+    },
+    /**
+     * Handles a LED Matrix response and emits the 'matrix-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [LED_MATRIX] (board) {
+        console.log(`EVENT : LED Matrix`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        switch (command) {
+        case MATRIX_CMD.ON: {
+            const row = board._sendBuffer[7];
+            const col = board._sendBuffer[8];
+            const on = board._sendBuffer[9];
+
+            console.log(`handler : matrix-${row}-${col}-${on}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-${row}-${col}-${on}`, value);
+            break;
+        }
+        case MATRIX_CMD.ON_ALL: {
+            console.log(`handler : matrix-on-all`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-on-all`, value);
+            break;
+        }
+        case MATRIX_CMD.OFF_ALL: {
+            console.log(`handler : matrix-off-all`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-off-all`, value);
+            break;
+        }
+        case MATRIX_CMD.NUMBER: {
+            const num = board._sendBuffer[7];
+            console.log(`handler : matrix-num-${num}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-num-${num}`, value);
+            break;
+        }
+        case MATRIX_CMD.EN_SMALL: {
+            const letter = board._sendBuffer[7];
+            console.log(`handler : matrix-small-${letter}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-small-${letter}`, value);
+            break;
+        }
+        case MATRIX_CMD.EN_CAPITAL: {
+            const letter = board._sendBuffer[7];
+            console.log(`handler : matrix-capital-${letter}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-capital-${letter}`, value);
+            break;
+        }
+        case MATRIX_CMD.KOREAN: {
+            const letter = board._sendBuffer[7];
+            console.log(`handler : matrix-kr-${letter}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-kr-${letter}`, value);
+            break;
+        }
+        }
+    },
+    /**
+     * Handles a Light sensor response and emits the 'light-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [LIGHT] (board) {
+        console.log(`EVENT : Light`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        switch (command) {
+        case 0: {
+            console.log(`handler : light`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit(`light`, value);
+            break;
+        }
+        }
+    },
+    /**
+     * Handles a Temperature sensor response and emits the 'temperature-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [TEMPERATURE] (board) {
+        console.log(`EVENT : Temperature`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        switch (command) {
+        case 0: {
+            console.log(`handler : temperature`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit(`temperature`, value);
+            break;
+        }
+        }
+    },
+    /**
+     * Handles a Accelerometer sensor response and emits the 'acc-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [ACCELEROMETER] (board) {
+        console.log(`EVENT : Accelerometer`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        switch (command) {
+        case 0: {
+            const axis = board._sendBuffer[7];
+            console.log(`handler : acc-${axis}`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit(`acc-${axis}`, value);
+            break;
+        }
+        }
+    },
+    /**
+     * Handles a External motor response and emits the 'ext-motor-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [EXT_MOTOR] (board) {
+        console.log(`EVENT : External Motor`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let direction, value;
+
+        switch (command) {
+        case EXT_MOTOR_CMD.MOVE: {
+            direction = board._sendBuffer[7];
+            console.log(`handler : ext-motor-${direction}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`ext-motor-${direction}`, value);
+            break;
+        }
+        case EXT_MOTOR_CMD.SET_SPEED: {
+            direction = board._sendBuffer[7];
+            console.log(`handler : ext-motor-set-${direction}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`ext-motor-set-${direction}`, value);
+            break;
+        }
+        }
+    },
+    /**
+     * Handles a servo motor response and emits the 'servo-motor-' + n event where n is command of the block parameter
+     // eslint-disable-next-line valid-jsdoc
+     * @param board
+     */
+    [SERVO_MOTOR] (board) {
+        console.log(`EVENT : Servo Motor`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+        const angle = board._sendBuffer[7];
+
+        const error = `Error: invalid response`;
+
+        console.log(`handler : servo-motor-${pin}-${angle}`);
+
+        const value = (action === ACTION.RUN) ? true : error;
+        board.emit(`servo-motor-${pin}-${angle}`, value);
+    },
+    /**
+     * Handles a external LED sensor response and emits the 'ext-led-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [EXT_LED] (board) {
+        console.log(`EVENT : External Led`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+
+        console.log(`handler : ext-led-${pin}`);
+
+        const value = (action === ACTION.RUN) ? true : error;
+        board.emit(`ext-led-${pin}`, value);
+    },
+    /**
+     * Handles a external Speaker sensor response and emits the 'speaker-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [SPEAKER] (board) {
+        console.log(`EVENT : External Speaker`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+        const frequency = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+
+        const error = `Error: invalid response`;
+
+        console.log(`handler : speaker-${pin}-${frequency}`);
+
+        const value = (action === ACTION.RUN) ? true : error;
+        board.emit(`speaker-${pin}-${frequency}`, value);
+    },
+    /**
+     * Handles a external Touch sensor response and emits the 'touch-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [TOUCH_SENSOR] (board) {
+        console.log(`EVENT : External Touch`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const len = board._sendBuffer[2];
+        const action = board._sendBuffer[4];
+        // const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value, pin;
+
+        // read touch sensor
+        if (len === 4) {
+            pin = board._sendBuffer[6];
+            console.log(`handler : touch-pressed-${pin}`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                value = (value === 1); // return boolean
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit(`touch-pressed-${pin}`, value);
+        }
+        // read touch sensor pressed
+        else if (len === 5) {
+            pin = board._sendBuffer[7];
+            console.log(`handler : touch-${pin}`);
+
+            if (action === ACTION.GET) {
+                value = getSensorValue(board.buffer);
+                console.log(`value= ${value}`);
+            } else {
+                value = error;
+            }
+
+            board.emit(`touch-${pin}`, value);
+        }
+    },
+    /**
+     * Handles a external Mike sensor response and emits the 'mike-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [MIKE_SENSOR] (board) {
+        console.log(`EVENT : External Mike sensor`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        console.log(`handler : mike-${pin}`);
+
+        if (action === ACTION.GET) {
+            value = getSensorValue(board.buffer);
+            console.log(`value= ${value}`);
+        }
+        else {
+            value = error;
+        }
+
+        board.emit(`mike-${pin}`, value);
+    },
+    /**
+     * Handles a external IR sensor response and emits the 'extIR-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [EXT_IR] (board) {
+        console.log(`EVENT : External IR sensor`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        console.log(`handler : extIR-${pin}`);
+
+        if (action === ACTION.GET) {
+            value = getSensorValue(board.buffer);
+            console.log(`value= ${value}`);
+        }
+        else {
+            value = error;
+        }
+
+        board.emit(`extIR-${pin}`, value);
+    },
+    /**
+     * Handles a external CDS sensor response and emits the 'extCds-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [EXT_CDS] (board) {
+        console.log(`EVENT : External CDS sensor`);
+        // console.log(`send buffer= ${board._sendBuffer}`);
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        console.log(`handler : extCds-${pin}`);
+
+        if (action === ACTION.GET) {
+            value = getSensorValue(board.buffer);
+            console.log(`value= ${value}`);
+        }
+        else {
+            value = error;
+        }
+
+        board.emit(`extCds-${pin}`, value);
+    }
+};
+
+const parseShort = (a, b) => (a << 8) | (b << 0);
+
+// const readShort = function (arr, position) {
+const readShort = (arr, position) => {
+    const s = [arr[position + 1], arr[position]];
+    console.log(`${JSON.stringify(s)}`);
+    return parseShort(...s);
+}; // function
+
+/**
+ * convert byte array (4 bytes) to float
+ * @param data
+ * @returns {number}
+ */
+const parseFloat = function (data) {
+    // var data =  [64, 226, 157, 10];
+
+    // Create a buffer
+    const buf = new ArrayBuffer(4);
+    // Create a data view of it
+    const view = new DataView(buf);
+
+    // set bytes
+    data.forEach((b, i) => {
+        view.setUint8(i, b);
+    });
+
+    // Read the bits as a float; note that by doing this, we're implicitly
+    // converting it from a 32-bit float into JavaScript's native 64-bit double
+    const num = view.getFloat32(0);
+    // Done
+    console.log(`float = ${num}`);
+    return num;
+};
+
+const readFloat = function (arr, position) {
+    // const f = [arr[position], arr[position + 1], arr[position + 2], arr[position + 3]];
+    const f = [arr[position + 3], arr[position + 2], arr[position + 1], arr[position]];
+    return parseFloat(f);
+}; // function
+
+
+const readDouble = function (arr, position) {
+    return readFloat(arr, position);
+};// function
+
+const readString = function (arr, position, len) {
+    let value = '';
+    for (let ii = 0; ii < len; ii++) {
+        value += String.fromCharCode(arr[ii + position]);
+    }// for
+
+    return value;
+};// function
+
+/**
+ * read sensor value
+ * @param data
+ * @returns {number}
+ */
+// const getSensorValue = function (data) {
+const getSensorValue = data => {
+    let position = 2;
+    const extId = data[position];
+    position++;
+    const type = data[position];
+    position++;
+
+    // data type check
+    let value;
+    switch (type) {
+    case 1:
+        value = data[position];
+        position++;
+        break;
+    case 2:
+        value = readFloat(data, position);
+        position += 4;
+        if ((value < -255) || (value > 1023)) value = 0;
+        break;
+    case 3:
+        value = readShort(data, position);
+        position += 2;
+        break;
+    case 4:
+        const lv = data[position];
+        position++;
+        value = readString(data, position, lv);
+        break;
+    case 5:
+        value = readDouble(data, position);
+        position += 4;
+        break;
     }
 
+    console.log(`type= ${type} value=${value}`);
 
+    return value;
 };
+
 
 /**
  * @class The Board object represents an arduino board.
@@ -558,6 +1499,9 @@ const SYSEX_RESPONSE = {
  * @property {SerialPort} sp The serial port object used to communicate with the arduino.
  */
 
+/**
+ *
+ */
 class Firmata extends Emitter {
     constructor (transportWrite, options) {
         super();
@@ -674,10 +1618,16 @@ class Firmata extends Emitter {
         this.version = {};
         this.firmware = {};
         this.buffer = [];
-        this.versionReceived = false;
+        // this.versionReceived = false;
+        this.versionReceived = true;
         this.name = 'Firmata';
         this.settings = settings;
         this.digitalPortQueue = 0x0000;
+
+        // 수신 데이터 처리
+        this._isParseStart = false;
+        this._isParseStartIndex = 0;
+        this._sendBuffer = [];
 
         // if we have not received the version within the allotted
         // time specified by the reportVersionTimeout (user or default),
@@ -739,7 +1689,224 @@ class Firmata extends Emitter {
         });
     }
 
+    /**
+     * receive data event handler
+     * @param data
+     */
     onReciveData (data) {
+        // console.log(`onreciveData data= ${data} len= ${data.length}`);
+        if (this.buffer.length > 30) this.buffer.length = 0;
+
+        for (let i = 0; i < data.length; i++) {
+            const byte = data[i];
+            this.buffer.push(byte);
+
+            if (this.buffer.length >= 2) {
+                const start1 = this.buffer[this.buffer.length - 2];
+                const start2 = this.buffer[this.buffer.length - 1];
+
+                // start bit is 0xff55
+                if (!this._isParseStart) {
+                    if ((start1 === 0xff) && (start2 === 0x55)) {
+                        this._isParseStart = true;
+                        this._isParseStartIndex = this.buffer.length - 2;
+                        this.buffer.length = 0;
+                        this.buffer[0] = start1;
+                        this.buffer[1] = start2;
+                    }
+                    // else {
+                    //     this.buffer.length = 0;
+                    // }
+                }
+
+                // console.log(`this.buffer= ${this.buffer}`);
+
+                // end bit is 0x0d0a
+                if (this._isParseStart && (start1 === 0xd) && (start2 === 0xa)) {
+                    this._isParseStart = false;
+
+                    // console.log(`len= ${this.buffer.length} this.buffer= ${this.buffer}`);
+
+                    // run type response [ff, 55, 0d, 0a]
+                    if ((this.buffer.length === 4) && (this.buffer[0] === 0xff && this.buffer[1] === 0x55)) {
+                        // console.log(`RUN type..`);
+                        console.log(`send buffer= ${this._sendBuffer}`);
+
+                        // const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
+                        // if (handler) handler(this);
+                        // console.log(`handler = ${handler}`);
+
+                        // this.buffer.length = 0;
+                    }
+                    // get type response
+                    else {
+                        // console.log(`GET type...`);
+
+                        // let position = this._isParseStartIndex + 2;
+                        // const extId = this.buffer[position];
+                        // position++;
+                        // const type = this.buffer[position];
+                        // position++;
+
+                        // data type check
+                        // let value;
+                        // switch (type) {
+                        // case 1:
+                        //     value = this.buffer[position];
+                        //     position++;
+                        //     break;
+                        // case 2:
+                        //     value = this._readFloat(this.buffer, position);
+                        //     position += 4;
+                        //     if ((value < -255) || (value > 1023)) value = 0;
+                        //     break;
+                        // case 3:
+                        //     value = this._readShort(this.buffer, position);
+                        //     position += 2;
+                        //     break;
+                        // case 4:
+                        //     const lv = this.buffer[position];
+                        //     position++;
+                        //     value = this._readString(this.buffer, position, lv);
+                        //     break;
+                        // case 5:
+                        //     value = this._readDouble(this.buffer, position);
+                        //     position += 4;
+                        //     break;
+                        // }
+                        //
+                        // console.log(`type= ${type} value=${value}`);
+
+                        // const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
+                        // if (handler) handler(this);
+                    }
+
+                    let handler;
+                    // stop all
+                    if (this._sendBuffer[4] === 0x04) {
+                        handler = SYSEX_RESPONSE[this._sendBuffer[4]];
+                    } else {
+                        handler = SYSEX_RESPONSE[this._sendBuffer[5]];
+                    }
+
+                    if (handler) handler(this);
+
+                    console.log(`this.buffer= ${this.buffer}`);
+
+                    // if (type <= 5) {
+                    //     if (values[extId] != undefined) {
+                    //
+                    //     }
+                    // }
+
+                    // 보드에 다음 중 하나가 활성화된 이전 실행의 기존 활동이 있을 수 있습니다.
+                    //
+                    //    - ANALOG_MESSAGE
+                    //    - SERIAL_READ
+                    //    - I2C_REQUEST, CONTINUOUS_READ
+                    //
+                    // 이는 핸드셰이크가 발생하기 전에 전송 "open"에서 이러한 메시지를 수신한다는 의미입니다.
+                    // REPORT_VERSION 메시지가 수신된 후에만 이 버퍼를 처리할 것이라고 주장해야 합니다.
+                    // 그렇지 않으면 프로그램이 "hanging 멈추는" 모습을 보일 것입니다.
+                    //
+                    // _after_REPORT_VERSION까지 이 데이터로 아무 것도 할 수 없으므로 삭제합니다.
+                    this.buffer.length = 0;
+                }
+
+
+            }
+
+            // const first = this.buffer[0];
+            // const last = this.buffer[this.buffer.length - 1];
+            //
+            // // [START_SYSEX, ... END_SYSEX]
+            // if (first === START_SYSEX && last === END_SYSEX) {
+            //
+            //     const handler = SYSEX_RESPONSE[this.buffer[1]];
+            //     console.log(`handler = ${handler}`);
+            //
+            //     // Ensure a valid SYSEX_RESPONSE handler exists
+            //     // Only process these AFTER the REPORT_VERSION
+            //     // message has been received and processed.
+            //     if (handler && this.versionReceived) {
+            //         handler(this);
+            //     }
+            //
+            //     // 보드에 다음 중 하나가 활성화된 이전 실행의 기존 활동이 있을 수 있습니다.
+            //     //
+            //     //    - ANALOG_MESSAGE
+            //     //    - SERIAL_READ
+            //     //    - I2C_REQUEST, CONTINUOUS_READ
+            //     //
+            //     // 이는 핸드셰이크가 발생하기 전에 전송 "open"에서 이러한 메시지를 수신한다는 의미입니다.
+            //     // REPORT_VERSION 메시지가 수신된 후에만 이 버퍼를 처리할 것이라고 주장해야 합니다.
+            //     // 그렇지 않으면 프로그램이 "hanging 멈추는" 모습을 보일 것입니다.
+            //     //
+            //     // _after_REPORT_VERSION까지 이 데이터로 아무 것도 할 수 없으므로 삭제합니다.
+            //     this.buffer.length = 0;
+            //
+            // } else if (first === START_SYSEX && (this.buffer.length > 0)) {
+            //     // we have a new command after an incomplete sysex command
+            //     const currByte = data[i];
+            //     if (currByte > 0x7F) {
+            //         this.buffer.length = 0;
+            //         this.buffer.push(currByte);
+            //     }
+            // } else {
+            //     // eslint-disable-next-line no-lonely-if
+            //     if (first !== START_SYSEX) {
+            //         // Check if data gets out of sync: first byte in buffer
+            //         // must be a valid response if not START_SYSEX
+            //         // Identify response on first byte
+            //         const response = first < START_SYSEX ? (first & START_SYSEX) : first;
+            //
+            //         // Check if the first byte is possibly
+            //         // a valid MIDI_RESPONSE (handler)
+            //         /* istanbul ignore else */
+            //         if (response !== REPORT_VERSION &&
+            //             response !== ANALOG_MESSAGE &&
+            //             response !== DIGITAL_MESSAGE) {
+            //             // If not valid, then we received garbage and can discard
+            //             // whatever bytes have been been queued.
+            //             this.buffer.length = 0;
+            //         }
+            //     }
+            // }
+            //
+            // // There are 3 bytes in the buffer and the first is not START_SYSEX:
+            // // Might have a MIDI Command
+            // if (this.buffer.length === 3 && first !== START_SYSEX) {
+            //     // response bytes under 0xF0 we have a multi byte operation
+            //     const response = first < START_SYSEX ? (first & START_SYSEX) : first;
+            //
+            //     /* istanbul ignore else */
+            //     if (MIDI_RESPONSE[response]) {
+            //         // It's ok that this.versionReceived will be set to
+            //         // true every time a valid MIDI_RESPONSE is received.
+            //         // This condition is necessary to ensure that REPORT_VERSION
+            //         // is called first.
+            //         if (this.versionReceived || first === REPORT_VERSION) {
+            //             this.versionReceived = true;
+            //             MIDI_RESPONSE[response](this);
+            //         }
+            //         this.buffer.length = 0;
+            //     } else {
+            //         // A bad serial read must have happened.
+            //         // Reseting the buffer will allow recovery.
+            //         this.buffer.length = 0;
+            //     }
+            // }
+        }
+        // }
+
+    }
+
+    /**
+     * receive data handler backup
+     * @param data
+     */
+    onReciveDataBak (data) {
+        console.log(`recv : ${data}`);
         for (let i = 0; i < data.length; i++) {
             const byte = data[i];
             // we dont want to push 0 as the first byte on our buffer
@@ -752,9 +1919,11 @@ class Firmata extends Emitter {
                 const last = this.buffer[this.buffer.length - 1];
 
                 // [START_SYSEX, ... END_SYSEX]
-                if (first === START_SYSEX && last === END_SYSEX) {
+                if (first === 0xff && last === 0x0a) {
+                    // if (first === START_SYSEX && last === END_SYSEX) {
 
                     const handler = SYSEX_RESPONSE[this.buffer[1]];
+                    console.log(`handler = ${handler}`);
 
                     // Ensure a valid SYSEX_RESPONSE handler exists
                     // Only process these AFTER the REPORT_VERSION
@@ -2421,6 +3590,971 @@ class Firmata extends Emitter {
         }
 
         return decoded;
+    }
+
+    // ------ coconutS blocks ------
+
+    /**
+     * @brief 모듈 실행
+     */
+    _runPackage () {
+        let bytes = [0xff, 0x55, 0, 0, 2];
+
+        for (let i = 0; i < arguments.length; i++) {
+            // console.log(`type: ${arguments[i].constructor}, val= ${arguments[i]}`);
+            // console.log(`type: ${(typeof arguments[i])}, val= ${arguments[i]}`);
+            // if (arguments[i].constructor == '[class Array]') {
+            if (typeof arguments[i] === 'object') {
+                bytes = bytes.concat(arguments[i]);
+            } else {
+                bytes.push(arguments[i]);
+            }
+        } // for
+
+        bytes[2] = bytes.length - 3; // data length
+        // console.log(`package bytes array: ${bytes}, length ${bytes.length}`);
+        // 장치에 ArrayBuffer data 전송
+        // device.send(bytes);
+        return bytes;
+    } // function
+
+    /**
+     * move motor
+     * @param motor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param callback
+     */
+    moveMotor (motor, cmd, direction, speed, callback) {
+        const datas = this._runPackage(motor, cmd, direction, speed);
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+        // this.removeAllListeners(`analog-read-${pin}`);
+        this.once(`move-motor-${direction}`, callback);
+    }
+
+    /**
+     * stop motor
+     * @param motor
+     * @param index
+     * @param callback
+     */
+    stopMotor (motor, index, callback) {
+        const datas = this._runPackage(motor, index);
+        //
+        // // console.log(`moveMotors : options : ${JSON.stringify(options)}`);
+        // console.log(`moveMotor :  ${JSON.stringify(datas)}`);
+        //
+        // // writeToTransport(this, datas);
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+        // this.removeAllListeners(`analog-read-${pin}`);
+        this.once(`stop-motor`, callback);
+        // this.once(`coconutS-move-motors`, callback);
+    }
+
+    /**
+     * turn motor
+     * @param motor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param callback
+     */
+    turnMotor (motor, cmd, direction, speed, callback) {
+        const datas = this._runPackage(motor, cmd, direction, speed);
+        //
+        // // console.log(`moveMotors : options : ${JSON.stringify(options)}`);
+        // console.log(`moveMotor :  ${JSON.stringify(datas)}`);
+        //
+        // // writeToTransport(this, datas);
+        // this._sendBuffer = datas;
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+        // this.removeAllListeners(`analog-read-${pin}`);
+        this.once(`move-motor-${direction}`, callback);
+    }
+
+    /**
+     * Turn on RGB LED while rotating the motor
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param color
+     * @param callback
+     */
+    moveMotorColor (sensor, cmd, direction, speed, color, callback) {
+        const datas = this._runPackage(sensor, cmd, direction, speed, color);
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+        // this.removeAllListeners(`analog-read-${pin}`);
+        this.once(`motor-rgb-${direction}-${color}`, callback);
+    }
+
+
+    /**
+     * convert integer to 2 byte array
+     // eslint-disable-next-line valid-jsdoc
+     * @param short
+     * @returns {number[]}
+     * @private
+     */
+    _short2array (short) {
+        // Create a 2-byte array (16 bits) using an Int16Array
+        const byteArray = new Int16Array(1);
+        byteArray[0] = short;
+
+        // Convert the Int16Array to a regular byte array (Uint8Array)
+        const byteView = new Uint8Array(byteArray.buffer);
+
+        console.log(`short ${short} => bytes ${JSON.stringify(byteView)}`);
+
+        return Array.from(byteView);
+    }
+
+    /**
+     * Move the motor for the entered time
+     * @param motor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param sec
+     * @param callback
+     */
+    moveGoTime (motor, cmd, direction, speed, sec, callback) {
+        const datas = this._runPackage(motor, cmd, direction, speed, this._short2array(sec));
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`move-motor-time-${direction}`);
+        this.once(`move-motor-time-${direction}`, callback);
+    }
+
+    /**
+     * Move by the entered distance
+     * @param motor
+     * @param cmd
+     * @param direction
+     * @param cm
+     * @param callback
+     */
+    moveGoCm (motor, cmd, direction, cm, callback) {
+        const datas = this._runPackage(motor, cmd, direction, cm);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`motor-cm-${direction}`);
+        this.once(`motor-cm-${direction}`, callback);
+    }
+
+    /**
+     *
+     * @param motor
+     * @param cmd
+     * @param direction
+     * @param degree
+     * @param callback
+     */
+    turnMotorDegree (motor, cmd, direction, degree, callback) {
+        const datas = this._runPackage(motor, cmd, direction, this._short2array(degree));
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`motor-cm-${direction}`);
+        this.once(`motor-degree-${direction}`, callback);
+    }
+
+    /**
+     * turn on RGB LED
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param color
+     * @param callback
+     */
+    rgbOn (sensor, cmd, direction, color, callback) {
+        const datas = this._runPackage(sensor, cmd, direction, color);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`motor-cm-${direction}`);
+        this.once(`rgb-on-${direction}-${color}`, callback);
+    }
+
+    /**
+     * turn off RGB LED
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param color - 0: none
+     * @param callback
+     */
+    rgbOff (sensor, cmd, direction, color, callback) {
+        const datas = this._runPackage(sensor, cmd, direction, color);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`motor-cm-${direction}`);
+        this.once(`rgb-off-${direction}-${color}`, callback);
+    }
+
+    /**
+     * turn on RGB LED for entered time
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param color
+     * @param ms    millisecond
+     * @param callback
+     */
+    rgbOnTime (sensor, cmd, direction, color, ms, callback) {
+        const datas = this._runPackage(sensor, 3, direction, color, this._short2array(ms));
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`rgb-time-${direction}-${color}`);
+        this.once(`rgb-time-${direction}-${color}`, callback);
+    }
+
+    /**
+     * @brief   버저 제어
+     * @details
+     * @param   seq     순번 (0: 연주, 1: 박자쉬기, 2: 음표 연주)
+     * @param   tone    주파수
+     * @param   beat    박자
+     */
+    _buzzerControl (seq, tone, beat) {
+        // if (typeof tone == "string") tone = tones[tone];
+        if (typeof beat === 'string') beat = Beats[beat];
+
+        return this._runPackage(Sensors.Buzzer, seq, this._short2array(tone), this._short2array(beat));
+    }
+
+    /**
+     * beep
+     * @param sensor
+     * @param cmd
+     * @param tone
+     * @param beat
+     * @param callback
+     */
+    beep (sensor, cmd, tone, beat, callback) {
+        // const datas = this._buzzerControl(0, 262, 50);
+        const datas = this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-on`);
+        this.once(`buzzer-on`, callback);
+    }
+
+    /**
+     * The buzzer sounds for the entered time.
+     * @param sensor
+     * @param cmd
+     * @param tone
+     * @param beat
+     * @param callback
+     */
+    playBuzzerTime (sensor, cmd, tone, beat, callback) {
+        const datas = this._runPackage(sensor, cmd, this._short2array(tone), this._short2array(beat));
+        this._sendBuffer = datas.slice();
+
+        const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-time-${freq}-${duration}`);
+        this.once(`buzzer-time-${freq}-${duration}`, callback);
+    }
+
+    /**
+     * The buzzer sounds at the entered frequency for the entered time.
+     * @param sensor
+     * @param cmd
+     * @param tone
+     * @param beat
+     * @param callback
+     */
+    playBuzzerFreq (sensor, cmd, tone, beat, callback) {
+        const datas = this._runPackage(
+            sensor, cmd, this._short2array(tone), this._short2array(beat));
+        this._sendBuffer = datas.slice();
+
+        const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-freq-${freq}-${duration}`);
+        this.once(`buzzer-freq-${freq}-${duration}`, callback);
+    }
+
+    /**
+     * buzzer off
+     * @param sensor
+     * @param cmd
+     * @param tone
+     * @param beat
+     * @param callback
+     */
+    buzzerOff (sensor, cmd, tone, beat, callback) {
+        const datas = this._runPackage(
+            sensor, cmd, this._short2array(tone), this._short2array(beat));
+        this._sendBuffer = datas.slice();
+
+        const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-off-${freq}-${duration}`);
+        this.once(`buzzer-off-${freq}-${duration}`, callback);
+    }
+
+    /**
+     * play note
+     * @param sensor
+     * @param cmd
+     * @param note
+     * @param octave
+     * @param sharp
+     * @param beat
+     * @param callback
+     */
+    playNote (sensor, cmd, note, octave, sharp, beat, callback) {
+        const datas = this._runPackage(
+            sensor, cmd, note, octave, sharp, this._short2array(beat));
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-note-${note}-${octave}-${sharp}`);
+        this.once(`buzzer-note-${note}-${octave}-${sharp}`, callback);
+    }
+
+    /**
+     * rest beat
+	 * @param sensor
+	 * @param cmd
+	 * @param tone
+	 * @param beat
+	 * @param callback
+	 */
+    restBeat (sensor, cmd, tone, beat, callback) {
+        const datas = this._runPackage(
+            sensor, cmd, this._short2array(tone), this._short2array(beat));
+        this._sendBuffer = datas.slice();
+        // const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        const duration = `${this._sendBuffer[9]}${this._sendBuffer[10]}`;
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-rest-${duration}`);
+        this.once(`buzzer-rest-${duration}`, callback);
+    }
+
+    /**
+     * play note with RGB LED
+     * @param sensor
+     * @param cmd
+     * @param note
+     * @param octave
+     * @param sharp
+     * @param beat
+     * @param direction
+     * @param color
+     * @param callback
+     */
+    playNoteColor (sensor, cmd, note, octave, sharp, beat, direction, color, callback) {
+        const datas = this._runPackage(
+            sensor, cmd, note, octave, sharp, this._short2array(beat), direction, color);
+        this._sendBuffer = datas.slice();
+        // const freq = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+        const duration = `${this._sendBuffer[10]}${this._sendBuffer[11]}`;
+
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`buzzer-note-color-${note}${octave}${sharp}-${direction}-${color}`);
+        this.once(
+            `buzzer-note-color-${note}${octave}${sharp}-${duration}-${direction}-${color}`,
+            callback);
+    }
+
+    /**
+     * change beat
+     * @param sensor
+     * @param cmd
+     * @param beat
+     * @param direction
+     * @param color
+     * @param callback
+     */
+    changeBeat (sensor, cmd, beat, callback) {
+        const datas = this._runPackage(sensor, cmd, this._short2array(beat));
+        this._sendBuffer = datas.slice();
+        const duration = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`buzzer-note-color-${note}${octave}${sharp}-${direction}-${color}`);
+        this.once(`buzzer-change-${duration}`, callback);
+    }
+
+    /**
+     * @brief   센서값 읽기
+     *
+     */
+    _getPackage () {
+        // var nextID = arguments[0];
+        const len = arguments.length;
+
+        console.log(`len = ${arguments.length}`);
+
+        const bytes = [0xff, 0x55];
+        bytes.push(len + 2);
+        bytes.push(0);
+        bytes.push(1);
+
+        for (let i = 0; i < len; i++) {
+            bytes.push(arguments[i]);
+        }// for
+
+        // device.send(bytes);
+        return bytes;
+    } // function getPackage
+
+    /**
+     * read line tracer
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param callback
+     */
+    getLineTracer (sensor, cmd, direction, callback) {
+        const datas = this._getPackage(sensor, cmd, direction);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`line-tracer-read-${direction}`);
+        this.once(`line-tracer-read-${direction}`, callback);
+    }
+
+    /**
+     * if detect the black line
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param detect
+     * @param callback
+     */
+    isLineDetected (sensor, cmd, direction, detect, callback) {
+        const datas = this._getPackage(sensor, cmd, direction, detect);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`line-tracer-detect-${direction}-${detect}`);
+        this.once(`line-tracer-detect-${direction}-${detect}`, callback);
+    }
+
+    /**
+     * get left and right line tracer detecting code
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    getLineTracerDetectAll (sensor, cmd, callback) {
+        const datas = this._getPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`line-tracer-detects`);
+        this.once(`line-tracer-detects`, callback);
+    }
+
+    /**
+     * turn motor until meet the black line
+     * @param sensor
+     * @param cmd
+     * @param exCmd
+     * @param callback
+     */
+    lineTracerCmd (sensor, cmd, exCmd, callback) {
+        const datas = this._runPackage(sensor, cmd, exCmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`line-tracer-command-${exCmd}`);
+        this.once(`line-tracer-command-${exCmd}`, callback);
+    }
+
+    /**
+     * read IR Distance sensor
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param callback
+     */
+    getDistance (sensor, cmd, direction, callback) {
+        const datas = this._getPackage(sensor, cmd, direction);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`distance-read-${direction}`);
+        this.once(`distance-read-${direction}`, callback);
+    }
+
+    /**
+     * get obstacle detecting
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param detect
+     * @param callback
+     */
+    isDetectObstacle (sensor, cmd, direction, detect, callback) {
+        const datas = this._getPackage(sensor, cmd, direction, detect);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`distance-detect-${direction}-${detect}`);
+        this.once(`distance-detect-${direction}-${detect}`, callback);
+    }
+
+    /**
+     * get detecting value of left and right IR distance sensor
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    isDetectObstacleAll (sensor, cmd, callback) {
+        const datas = this._getPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`distance-detect-all`);
+        this.once(`distance-detect-all`, callback);
+    }
+
+    /**
+     * led matrix on/off (row, col)
+     * @param sensor
+     * @param cmd
+     * @param row
+     * @param col
+     * @param on
+     * @param callback
+     */
+    ledMatrixOn (sensor, cmd, row, col, on, callback) {
+        const datas = this._runPackage(sensor, cmd, row, col, on);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-${row}-${col}-${on}`);
+        this.once(`matrix-${row}-${col}-${on}`, callback);
+    }
+
+    /**
+     * turn on all LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    ledMatrixOnAll (sensor, cmd, callback) {
+        const datas = this._runPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-on-all`);
+        this.once(`matrix-on-all`, callback);
+    }
+
+    /**
+     * turn off all LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    ledMatrixClear (sensor, cmd, callback) {
+        const datas = this._runPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-off-all`);
+        this.once(`matrix-off-all`, callback);
+    }
+
+    /**
+     * show number on LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param num
+     * @param callback
+     */
+    showLedMatrixNumber (sensor, cmd, num, callback) {
+        const datas = this._runPackage(sensor, cmd, num);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-num-${num}`);
+        this.once(`matrix-num-${num}`, callback);
+    }
+
+    /**
+     * show english small letter on LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param letter
+     * @param callback
+     */
+    showLedMatrixSmall (sensor, cmd, letter, callback) {
+        const datas = this._runPackage(sensor, cmd, letter);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-small-${letter}`);
+        this.once(`matrix-small-${letter}`, callback);
+    }
+
+    /**
+     * show english capital letter on LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param letter
+     * @param callback
+     */
+    showLedMatrixCapital (sensor, cmd, letter, callback) {
+        const datas = this._runPackage(sensor, cmd, letter);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-capital-${letter}`);
+        this.once(`matrix-capital-${letter}`, callback);
+    }
+
+    /**
+     * show korean letter on LED Matrix
+     * @param sensor
+     * @param cmd
+     * @param letter
+     * @param callback
+     */
+    showLedMatrixKorean (sensor, cmd, letter, callback) {
+        const datas = this._runPackage(sensor, cmd, letter);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-kr-${letter}`);
+        this.once(`matrix-kr-${letter}`, callback);
+    }
+
+    /**
+     * read value of light sensor
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    getLightSensor (sensor, cmd, callback) {
+        const datas = this._getPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`light`);
+        this.once(`light`, callback);
+    }
+
+    /**
+     * read temperature on board
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    getTemperature (sensor, cmd, callback) {
+        const datas = this._getPackage(sensor, cmd);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`temperature`);
+        this.once(`temperature`, callback);
+    }
+
+    /**
+     * read 3-Axis Accelerometer sensor
+     * @param sensor
+     * @param cmd
+     * @param axis
+     * @param callback
+     */
+    getAccelerometer (sensor, cmd, axis, callback) {
+        const datas = this._getPackage(sensor, cmd, axis);
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`acc-${axis}`);
+        this.once(`acc-${axis}`, callback);
+    }
+
+    /**
+     * stop all blocks
+     */
+    stopAll (callback) {
+        const datas = [0xff, 0x55, 0x02, 0x00, 0x04];
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(); // all event listeners
+        this.once(`stop-all`, callback);
+    }
+
+    /**
+     * play melody
+     * @param sensor
+     * @param cmd
+     * @param melody
+     * @param callback
+     */
+    playMelody (sensor, cmd, melody, callback) {
+        const datas = this._runPackage(sensor, cmd, melody);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`buzzer-melody${melody}`);
+        this.once(`buzzer-melody${melody}`, callback);
+    }
+
+    /**
+     * follow the line
+     * @param sensor
+     * @param cmd
+     * @param speed
+     * @param callback
+     */
+    followLine (sensor, cmd, speed, callback) {
+        const datas = this._runPackage(sensor, cmd, speed);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`follow-line`);
+        this.once(`follow-line`, callback);
+    }
+
+    /**
+     * avoid mode
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    avoidMode (sensor, cmd, callback) {
+        const datas = this._runPackage(sensor, cmd);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`avoid-mode`);
+        this.once(`avoid-mode`, callback);
+    }
+
+    /**
+     * Move External motor
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param callback
+     */
+    moveExtMotors (sensor, cmd, direction, speed, callback) {
+        const datas = this._runPackage(sensor, cmd, direction, speed);
+        // const datas = this._runPackage(sensor, cmd, direction, this._short2array(speed));
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        // this.removeAllListeners(`ext-motor-set-${direction}`);
+        this.removeAllListeners(`ext-motor-${direction}`);
+        this.once(`ext-motor-${direction}`, callback);
+        // this.once(`ext-motor-set-${direction}`, callback);
+    }
+
+    /**
+     * set speed to selected external motor
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param callback
+     */
+    moveExtMotorSingle (sensor, cmd, direction, speed, callback) {
+        const datas = this._runPackage(
+            sensor, cmd, direction, this._short2array(speed));
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`ext-motor-set-${direction}`);
+        this.once(`ext-motor-set-${direction}`, callback);
+    }
+
+    /**
+     * set servo motor
+     * @param sensor
+     * @param pin
+     * @param angle
+     * @param callback
+     */
+    runExtServo (sensor, pin, angle, callback) {
+        const datas = this._runPackage(sensor, pin, angle);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`servo-motor-${pin}-${angle}`);
+        this.once(`servo-motor-${pin}-${angle}`, callback);
+    }
+
+    /**
+     * external speaker sensor on
+     * @param sensor
+     * @param pin
+     * @param freq
+     * @param ms
+     * @param callback
+     */
+    extSpeakerOn (sensor, pin, freq, ms, callback) {
+        const datas = this._runPackage(
+            sensor, pin, this._short2array(freq), this._short2array(ms));
+        this._sendBuffer = datas.slice();
+
+        const frequency = `${this._sendBuffer[7]}${this._sendBuffer[8]}`;
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`speaker-${pin}-${frequency}`);
+        this.once(`speaker-${pin}-${frequency}`, callback);
+    }
+
+    /**
+     * external led on
+     * @param sensor
+     * @param pin
+     * @param ms
+     * @param callback
+     */
+    extLedOn (sensor, pin, ms, callback) {
+        const datas = this._runPackage(sensor, pin, this._short2array(ms));
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`ext-led-${pin}`);
+        this.once(`ext-led-${pin}`, callback);
+    }
+
+    /**
+     * read external touch sensor
+     * @param sensor
+     * @param pin
+     * @param callback
+     */
+    getTouchPressed (sensor, pin, callback) {
+        const datas = this._getPackage(sensor, pin);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`touch-pressed-${pin}`);
+        this.once(`touch-pressed-${pin}`, callback);
+    }
+
+    /**
+     * read external touch sensor pressed
+     * @param sensor
+     * @param cmd
+     * @param pin
+     * @param callback
+     */
+    getTouchSensor (sensor, cmd, pin, callback) {
+        const datas = this._getPackage(sensor, cmd, pin);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`touch-${pin}`);
+        this.once(`touch-${pin}`, callback);
+    }
+
+    /**
+     * read mike sensor
+     * @param sensor
+     * @param pin
+     * @param callback
+     */
+    getMikeSensor (sensor, pin, callback) {
+        const datas = this._getPackage(sensor, pin);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`mike-${pin}`);
+        this.once(`mike-${pin}`, callback);
+    }
+
+    /**
+     * read IR sensor
+     * @param sensor
+     * @param pin
+     * @param callback
+     */
+    getExtIR (sensor, pin, callback) {
+        const datas = this._getPackage(sensor, pin);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`extIR-${pin}`);
+        this.once(`extIR-${pin}`, callback);
+    }
+
+    /**
+     * read external CDS sensor
+     * @param sensor
+     * @param pin
+     * @param callback
+     */
+    getExtCds (sensor, pin, callback) {
+        const datas = this._getPackage(sensor, pin);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`extCds-${pin}`);
+        this.once(`extCds-${pin}`, callback);
     }
 }
 

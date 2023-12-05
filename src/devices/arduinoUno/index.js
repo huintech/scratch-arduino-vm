@@ -17,7 +17,9 @@ const PNPID_LIST = [
     'USB\\VID_2A03&PID_0043',
     'USB\\VID_2341&PID_0243',
     // For chinese clones that use CH340
-    'USB\\VID_1A86&PID_7523'
+    'USB\\VID_1A86&PID_7523',
+    // CP210x - dongle connection
+    'USB\\VID_10C4&PID_EA60'
 ];
 
 /**

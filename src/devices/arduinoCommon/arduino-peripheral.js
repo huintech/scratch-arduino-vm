@@ -43,6 +43,8 @@ const Mode = {
     InputPullup: 'INPUT_PULLUP'
 };
 
+const Directions = {"both": 0, "Left": 1, "Right": 2, "Forward": 3, "Backward": 4};
+
 /**
  * Manage communication with a Arduino peripheral over a Scratch Arduino Link client socket.
  */
@@ -240,6 +242,8 @@ class ArduinoPeripheral{
     send (message) {
         if (!this.isConnected()) return;
 
+        console.log(`send to coconut: heartbeat ${JSON.stringify(message)}`);
+
         const data = Base64Util.uint8ArrayToBase64(message);
         this._serialport.write(data, 'base64');
     }
@@ -357,6 +361,10 @@ class ArduinoPeripheral{
      * @return {boolean} - whether the peripheral is ready for realtime mode communication.
      */
     isReady () {
+        // TODO: for debug, delete after
+        console.log(`is realtimemode :  ${this._runtime.getCurrentIsRealtimeMode()}`);
+        console.log(`is firmata connected :  ${this._isFirmataConnected}`);
+
         if (this._runtime.getCurrentIsRealtimeMode() && this._isFirmataConnected) {
             return true;
         }
