@@ -17,3 +17,6 @@
 
 # Exclude already built packages from testing with npm pack
 /scratch-arduino-vm-*.{tar,tgz}
+
+# backup file
+*-bak*
