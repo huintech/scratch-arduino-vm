@@ -49,13 +49,14 @@ const Mode = {
  * @type {{IRdistance: number, LineTracer: number, Temperature: number, Motor: number, LedMatrix: number, Accelerometer: number, Buzzer: number, IR: number, RGBled: number, LightSensor: number}}
  */
 const Sensors = {
-    LightSensor: 14,
-    Accelerometer: 18,
-    Temperature: 21,
+    RemoteControl: 2,
     Buzzer: 3,
     IRdistance: 5,
     LineTracer: 7,
     IR: 9,
+    LightSensor: 14,
+    Accelerometer: 18,
+    Temperature: 21,
     RGBled: 25,
     Motor: 26,
     LedMatrix: 27, // 0x1b
@@ -2037,6 +2038,130 @@ class CoconutSPeripheral {
         return new Promise(resolve => {
             setTimeout(() => {
                 this._firmata.getExtCds(...options, value => {
+                    resolve(value);
+                    console.log(`resolve= ${value}`);
+                });
+            });
+        });
+    }
+
+    /**
+     * read channel of MRT remote control
+     * @returns {Promise<unknown>}
+     */
+    getRemoteChannel () {
+        const options = [Sensors.RemoteControl, 3];
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this._firmata.getRemoteChannel(...options, value => {
+                    resolve(value);
+                    console.log(`resolve= ${value}`);
+                });
+            });
+        });
+    }
+
+    /**
+     * save selected channel of MRT Remote control
+     * @param channel
+     * @returns {Promise<unknown>}
+     */
+    saveRemoteChannel (channel) {
+        const options = [Sensors.RemoteControl, 4, channel];
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this._firmata.saveRemoteChannel(...options, value => {
+                    resolve(value);
+                    console.log(`resolve= ${value}`);
+                });
+            });
+        });
+    }
+
+    /**
+     * receive value from saved channel of MRT Remote control
+     * @returns {Promise<unknown>}
+     */
+    receiveRemoteControlSavedChannel () {
+        const options = [Sensors.RemoteControl, 5];
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this._firmata.receiveRemoteControlSavedChannel(...options, value => {
+                    resolve(value);
+                    console.log(`resolve= ${value}`);
+                });
+            });
+        });
+    }
+
+    /**
+     * key pressed from saved channel of MRT Remote control
+     * @param button
+     * @returns {Promise<unknown>}
+     */
+    detectRemoteControlSavedChannel (button) {
+        const options = [Sensors.RemoteControl, 6, button];
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this._firmata.detectRemoteControlSavedChannel(...options, value => {
+                    resolve(value);
+                    console.log(`resolve= ${value}`);
+                });
+            });
+        });
+    }
+
+    /**
+     * key released from MRT Remote control
+     * @returns {Promise<unknown>}
+     */
+    getRemoteOff () {
+        const options = [Sensors.RemoteControl, 7];
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this._firmata.getRemoteOff(...options, value => {
+                    resolve(value);
+                    console.log(`resolve= ${value}`);
+                });
+            });
+        });
+    }
+
+    /**
+     * receive the data from selected channel of MRT Remote control
+     * @param channel
+     * @returns {Promise<unknown>}
+     */
+    receiveRemoteControl (channel) {
+        const options = [Sensors.RemoteControl, 2, channel];
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this._firmata.receiveRemoteControl(...options, value => {
+                    resolve(value);
+                    console.log(`resolve= ${value}`);
+                });
+            });
+        });
+    }
+
+    /**
+     * key pressed from selected channel of MRT Remote control
+     * @param button
+     * @param channel
+     * @returns {Promise<unknown>}
+     */
+    detectRemoteControl (button, channel) {
+        const options = [Sensors.RemoteControl, 1, button, channel];
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                this._firmata.detectRemoteControl(...options, value => {
                     resolve(value);
                     console.log(`resolve= ${value}`);
                 });

@@ -7,7 +7,7 @@ const ProgramModeType = require('../../extension-support/program-mode-type');
 const Cast = require('../../util/cast');
 const log = require('../../util/log');
 
-const CoconutPeripheral = require('../arduinoCommon/coconutS-peripheral');
+const CoconutPeripheral = require('../common/coconutS-peripheral');
 
 /**
  * The list of USB device filters.
@@ -1870,34 +1870,109 @@ class CoconutDevice {
         ];
     }
 
-    get MODE_MENU () {
+    /**
+     * MRT Remote control channel menu
+     * @returns {string[]}
+     * @constructor
+     */
+    get REMOTE_CHANNEL_MENU () {
+        return ['1', '2', '3', '4', '5', '6', '7', '8'];
+    }
+
+    /**
+     * MRT remote control button menu
+     * @returns {[{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string},{text: (*|string), value: string},null,null,null,null,null]}
+     * @constructor
+     */
+    get REMOTE_BUTTON_MENU () {
         return [
             {
                 text: formatMessage({
-                    id: 'arduino.modeMenu.input',
-                    default: 'input',
-                    description: 'label for input pin mode'
+                    id: 'coconut.remoteBtnMenu.upArrow',
+                    default: 'up arrow',
+                    description: 'up-arrow key'
                 }),
-                value: Mode.Input
+                value: '44'
             },
             {
                 text: formatMessage({
-                    id: 'arduino.modeMenu.output',
-                    default: 'output',
-                    description: 'label for output pin mode'
+                    id: 'coconut.remoteBtnMenu.downArrow',
+                    default: 'down arrow',
+                    description: 'down-arrow key'
                 }),
-                value: Mode.Output
+                value: '62'
             },
             {
                 text: formatMessage({
-                    id: 'arduino.modeMenu.inputPullup',
-                    default: 'input-pullup',
-                    description: 'label for input-pullup pin mode'
+                    id: 'coconut.remoteBtnMenu.leftArrow',
+                    default: 'left arrow',
+                    description: 'left-arrow key'
                 }),
-                value: Mode.InputPullup
+                value: '63'
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.remoteBtnMenu.rightArrow',
+                    default: 'right arrow',
+                    description: 'right-arrow key'
+                }),
+                value: '61'
+            },
+            {
+                text: 'F1',
+                value: '50'
+            },
+            {
+                text: 'F2',
+                value: '35'
+            },
+            {
+                text: 'F3',
+                value: '52'
+            },
+            {
+                text: 'F4',
+                value: '37'
+            },
+            {
+                text: 'F5',
+                value: '38'
+            },
+            {
+                text: 'F6',
+                value: '55'
             }
         ];
     }
+
+    // get MODE_MENU () {
+    //     return [
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.modeMenu.input',
+    //                 default: 'input',
+    //                 description: 'label for input pin mode'
+    //             }),
+    //             value: Mode.Input
+    //         },
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.modeMenu.output',
+    //                 default: 'output',
+    //                 description: 'label for output pin mode'
+    //             }),
+    //             value: Mode.Output
+    //         },
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.modeMenu.inputPullup',
+    //                 default: 'input-pullup',
+    //                 description: 'label for input-pullup pin mode'
+    //             }),
+    //             value: Mode.InputPullup
+    //         }
+    //     ];
+    // }
 
     // get ANALOG_PINS_MENU () {
     //     return [
@@ -1949,140 +2024,138 @@ class CoconutDevice {
         ];
     }
 
+    // get INTERRUPT_PINS_MENU () {
+    //     return [
+    //         {
+    //             text: '2',
+    //             value: Pins.D2
+    //         },
+    //         {
+    //             text: '3',
+    //             value: Pins.D3
+    //         }
+    //     ];
+    // }
 
+    // get INTERRUP_MODE_MENU () {
+    //     return [
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.InterrupModeMenu.risingEdge',
+    //                 default: 'rising edge',
+    //                 description: 'label for rising edge interrup'
+    //             }),
+    //             value: InterrupMode.Rising
+    //         },
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.InterrupModeMenu.fallingEdge',
+    //                 default: 'falling edge',
+    //                 description: 'label for falling edge interrup'
+    //             }),
+    //             value: InterrupMode.Falling
+    //         },
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.InterrupModeMenu.changeEdge',
+    //                 default: 'change edge',
+    //                 description: 'label for change edge interrup'
+    //             }),
+    //             value: InterrupMode.Change
+    //         },
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.InterrupModeMenu.low',
+    //                 default: 'low',
+    //                 description: 'label for low interrup'
+    //             }),
+    //             value: InterrupMode.Low
+    //         }
+    //     ];
+    // }
 
-    get INTERRUPT_PINS_MENU () {
-        return [
-            {
-                text: '2',
-                value: Pins.D2
-            },
-            {
-                text: '3',
-                value: Pins.D3
-            }
-        ];
-    }
+    // get BAUDTATE_MENU () {
+    //     return [
+    //         {
+    //             text: '4800',
+    //             value: Buadrate.B4800
+    //         },
+    //         {
+    //             text: '9600',
+    //             value: Buadrate.B9600
+    //         },
+    //         {
+    //             text: '19200',
+    //             value: Buadrate.B19200
+    //         },
+    //         {
+    //             text: '38400',
+    //             value: Buadrate.B38400
+    //         },
+    //         {
+    //             text: '57600',
+    //             value: Buadrate.B57600
+    //         },
+    //         {
+    //             text: '76800',
+    //             value: Buadrate.B76800
+    //         },
+    //         {
+    //             text: '115200',
+    //             value: Buadrate.B115200
+    //         }
+    //     ];
+    // }
 
-    get INTERRUP_MODE_MENU () {
-        return [
-            {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.risingEdge',
-                    default: 'rising edge',
-                    description: 'label for rising edge interrup'
-                }),
-                value: InterrupMode.Rising
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.fallingEdge',
-                    default: 'falling edge',
-                    description: 'label for falling edge interrup'
-                }),
-                value: InterrupMode.Falling
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.changeEdge',
-                    default: 'change edge',
-                    description: 'label for change edge interrup'
-                }),
-                value: InterrupMode.Change
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.InterrupModeMenu.low',
-                    default: 'low',
-                    description: 'label for low interrup'
-                }),
-                value: InterrupMode.Low
-            }
-        ];
-    }
+    // get EOL_MENU () {
+    //     return [
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.eolMenu.warp',
+    //                 default: 'warp',
+    //                 description: 'label for warp print'
+    //             }),
+    //             value: Eol.Warp
+    //         },
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.eolMenu.noWarp',
+    //                 default: 'no-warp',
+    //                 description: 'label for no warp print'
+    //             }),
+    //             value: Eol.NoWarp
+    //         }
+    //     ];
+    // }
 
-    get BAUDTATE_MENU () {
-        return [
-            {
-                text: '4800',
-                value: Buadrate.B4800
-            },
-            {
-                text: '9600',
-                value: Buadrate.B9600
-            },
-            {
-                text: '19200',
-                value: Buadrate.B19200
-            },
-            {
-                text: '38400',
-                value: Buadrate.B38400
-            },
-            {
-                text: '57600',
-                value: Buadrate.B57600
-            },
-            {
-                text: '76800',
-                value: Buadrate.B76800
-            },
-            {
-                text: '115200',
-                value: Buadrate.B115200
-            }
-        ];
-    }
-
-    get EOL_MENU () {
-        return [
-            {
-                text: formatMessage({
-                    id: 'arduino.eolMenu.warp',
-                    default: 'warp',
-                    description: 'label for warp print'
-                }),
-                value: Eol.Warp
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.eolMenu.noWarp',
-                    default: 'no-warp',
-                    description: 'label for no warp print'
-                }),
-                value: Eol.NoWarp
-            }
-        ];
-    }
-
-    get DATA_TYPE_MENU () {
-        return [
-            {
-                text: formatMessage({
-                    id: 'arduino.dataTypeMenu.integer',
-                    default: 'integer',
-                    description: 'label for integer'
-                }),
-                value: DataType.Integer
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.dataTypeMenu.decimal',
-                    default: 'decimal',
-                    description: 'label for decimal number'
-                }),
-                value: DataType.Decimal
-            },
-            {
-                text: formatMessage({
-                    id: 'arduino.dataTypeMenu.string',
-                    default: 'string',
-                    description: 'label for string'
-                }),
-                value: DataType.String
-            }
-        ];
-    }
+    // get DATA_TYPE_MENU () {
+    //     return [
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.dataTypeMenu.integer',
+    //                 default: 'integer',
+    //                 description: 'label for integer'
+    //             }),
+    //             value: DataType.Integer
+    //         },
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.dataTypeMenu.decimal',
+    //                 default: 'decimal',
+    //                 description: 'label for decimal number'
+    //             }),
+    //             value: DataType.Decimal
+    //         },
+    //         {
+    //             text: formatMessage({
+    //                 id: 'arduino.dataTypeMenu.string',
+    //                 default: 'string',
+    //                 description: 'label for string'
+    //             }),
+    //             value: DataType.String
+    //         }
+    //     ];
+    // }
 
     /**
      * Construct a set of Arduino blocks.
@@ -2549,7 +2622,8 @@ class CoconutDevice {
                             default: 'line tracer detection',
                             description: 'line tracer detection result'
                         }),
-                        blockType: BlockType.REPORTER
+                        blockType: BlockType.REPORTER,
+                        disableMonitor: true
                     },
                     {
                         opcode: 'lineTracerCmd',
@@ -2732,7 +2806,8 @@ class CoconutDevice {
                             default: 'light sensor',
                             description: 'read value of light sensor'
                         }),
-                        blockType: BlockType.REPORTER
+                        blockType: BlockType.REPORTER,
+                        disableMonitor: true
                     },
                     {
                         opcode: 'getTemperature',
@@ -2741,7 +2816,8 @@ class CoconutDevice {
                             default: 'temperature',
                             description: 'read value of temperature sensor'
                         }),
-                        blockType: BlockType.REPORTER
+                        blockType: BlockType.REPORTER,
+                        disableMonitor: true
                     },
                     {
                         opcode: 'getAccelerometer',
@@ -3131,6 +3207,110 @@ class CoconutDevice {
                                 defaultValue: Pins.A2
                             }
                         }
+                    },
+                    '---',
+                    {
+                        opcode: 'getRemoteChannel',
+                        text: formatMessage({
+                            id: 'coconut.sensor.getRemoteChannel',
+                            default: 'read Remote Control Channel',
+                            description: 'read Remote control channel'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        disableMonitor: true,
+                        arguments: {}
+                    },
+                    {
+                        opcode: 'saveRemoteChannel',
+                        text: formatMessage({
+                            id: 'coconut.sensor.saveRemoteChannel',
+                            default: 'save Remote Control Channel [REMOTE_CHANNEL]',
+                            description: 'save Remote Control Channel'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            REMOTE_CHANNEL: {
+                                type: ArgumentType.STRING,
+                                menu: 'RemoteChannelMenu',
+                                defaultValue: '1'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'receiveRemoteControlSavedChannel',
+                        text: formatMessage({
+                            id: 'coconut.sensor.receiveRemoteControlSavedChannel',
+                            default: 'received value from Remote Control (saved channel)',
+                            description: 'received value from saved channel of Remote Control'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        disableMonitor: true,
+                        arguments: {}
+                    },
+                    {
+                        opcode: 'detectRemoteControlSavedChannel',
+                        text: formatMessage({
+                            id: 'coconut.sensor.detectRemoteControlSavedChannel',
+                            default: 'Remote Control [REMOTE_BUTTON] key pressed (saved channel)',
+                            description: 'Remote control key pressed'
+                        }),
+                        blockType: BlockType.BOOLEAN,
+                        arguments: {
+                            REMOTE_BUTTON: {
+                                type: ArgumentType.STRING,
+                                menu: 'RemoteButtonMenu',
+                                defaultValue: '44'
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'getRemoteOff',
+                        text: formatMessage({
+                            id: 'coconut.sensor.getRemoteOff',
+                            default: 'Remote Control Key Off',
+                            description: 'Remote Control Key released'
+                        }),
+                        blockType: BlockType.BOOLEAN,
+                        arguments: {}
+                    },
+                    '---',
+                    {
+                        opcode: 'receiveRemoteControl',
+                        text: formatMessage({
+                            id: 'coconut.sensor.receiveRemoteControl',
+                            default: 'received value from Remote Control Channel [REMOTE_CHANNEL]',
+                            description: 'received value from selected channel of Remote Control'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            REMOTE_CHANNEL: {
+                                type: ArgumentType.STRING,
+                                menu: 'RemoteChannelMenu',
+                                defaultValue: '1'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'detectRemoteControl',
+                        text: formatMessage({
+                            id: 'coconut.sensor.detectRemoteControl',
+                            default: 'Remote Control [REMOTE_BUTTON] key pressed ( Channel [REMOTE_CHANNEL] )',
+                            description: 'key pressed from selected channel of Remote Control'
+                        }),
+                        blockType: BlockType.BOOLEAN,
+                        arguments: {
+                            REMOTE_BUTTON: {
+                                type: ArgumentType.STRING,
+                                menu: 'RemoteButtonMenu',
+                                defaultValue: '44'
+                            },
+                            REMOTE_CHANNEL: {
+                                type: ArgumentType.STRING,
+                                menu: 'RemoteChannelMenu',
+                                defaultValue: '1'
+                            }
+                        }
                     }
                 ],
                 menus: {
@@ -3157,6 +3337,12 @@ class CoconutDevice {
                     },
                     AnalogPinsMenu: {
                         items: this.ANALOG_PINS_MENU
+                    },
+                    RemoteChannelMenu: {
+                        items: this.REMOTE_CHANNEL_MENU
+                    },
+                    RemoteButtonMenu: {
+                        items: this.REMOTE_BUTTON_MENU
                     }
                 }
             }
@@ -3782,6 +3968,86 @@ class CoconutDevice {
         console.log(`args= ${JSON.stringify(args)}`);
 
         return this._peripheral.getExtCds(Cast.toNumber(args.ANALOG_PIN));
+    }
+
+    /**
+     * read channel of MRT remote control
+     * @returns {Promise | Promise<unknown>}
+     */
+    getRemoteChannel () {
+        console.log(`getRemoteChannel :`);
+
+        return this._peripheral.getRemoteChannel();
+    }
+
+    /**
+     * save selected channel of MRT remote control
+     * @param args
+     * @returns {*}
+     */
+    saveRemoteChannel (args) {
+        console.log(`saveRemoteChannel :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.saveRemoteChannel(Cast.toNumber(args.REMOTE_CHANNEL));
+    }
+
+    /**
+     * receive value from saved channel of MRT Remote control
+     * @returns {*}
+     */
+    receiveRemoteControlSavedChannel () {
+        console.log(`receiveRemoteControlSavedChannel :`);
+
+        return this._peripheral.receiveRemoteControlSavedChannel();
+    }
+
+    /**
+     * key pressed from saved channel of MRT Remote control
+     * @param args
+     * @returns {Promise<*>}
+     */
+    detectRemoteControlSavedChannel (args) {
+        console.log(`detectRemoteControlSavedChannel :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.detectRemoteControlSavedChannel(Cast.toNumber(args.REMOTE_BUTTON));
+    }
+
+    /**
+     * key released from MRT Remote control
+     * @returns {Promise<*>}
+     */
+    getRemoteOff () {
+        console.log(`getRemoteOff :`);
+
+        return this._peripheral.getRemoteOff();
+    }
+
+    /**
+     * receive the data from selected channel of MRT Remote control
+     * @param args
+     * @returns {*}
+     */
+    receiveRemoteControl (args) {
+        console.log(`receiveRemoteControl :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.receiveRemoteControl(Cast.toNumber(args.REMOTE_CHANNEL));
+    }
+
+    /**
+     * key pressed from selected channel of MRT Remote control
+     * @param args
+     * @returns {Promise<*>}
+     */
+    detectRemoteControl (args) {
+        console.log(`detectRemoteControl :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.detectRemoteControl(
+            Cast.toNumber(args.REMOTE_BUTTON),
+            Cast.toNumber(args.REMOTE_CHANNEL));
     }
 }
 

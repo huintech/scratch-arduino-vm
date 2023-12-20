@@ -35,11 +35,7 @@ const builtinExtensions = {
 // VM: src/coconutS/index.js -> class CoconutDevice
 const builtinDevices = {
     coconutS: () => require('../devices/coconutS'),
-    ottoRobot: () => require('../devices/ottoRobot'),
-    FastLED: () => require('../devices/FastLED'),
     arduinoUno: () => require('../devices/arduinoUno')
-    // arduinoNano: () => require('../devices/arduinoNano'),
-    // arduinoEsp32: () => require('../devices/arduinoEsp32'),
 };
 
 /**

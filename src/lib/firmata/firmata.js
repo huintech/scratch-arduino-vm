@@ -72,6 +72,7 @@ const MAX_PIN_COUNT = 128;
  */
 const RESET_RESPONSE = 0x04;
 
+const REMOTE_CONTROL = 0x02;
 const BUZZER = 0x03;
 const DISTANCE = 0x05;
 const LINE_TRACER = 0x07;
@@ -1376,6 +1377,125 @@ const SYSEX_RESPONSE = {
         }
 
         board.emit(`extCds-${pin}`, value);
+    },
+    /**
+     * Handles a MRT Remote control response and emits the 'remoteControl-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [REMOTE_CONTROL] (board) {
+        console.log(`EVENT : Remote Control`);
+
+        const action = board._sendBuffer[4];
+        const command = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        // console.log(`handler : extCds-${pin}`);
+
+        switch (command) {
+            // key pressed from selected channel
+            case 1: {
+                const button = board._sendBuffer[7];
+                const channel = board._sendBuffer[8];
+                console.log(`handler : remoteControl-detect${button}-ch${channel}`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    value = (value === 1); // return boolean
+                    console.log(`value= ${value}`);
+                } else {
+                    value = error;
+                }
+
+                board.emit(`remoteControl-detect${button}-ch${channel}`, value);
+                break;
+            }
+            // receive data from selected channel
+            case 2: {
+                const channel = board._sendBuffer[7];
+                console.log(`handler : remoteControl-receive-ch${channel}`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    console.log(`value= ${value}`);
+                } else {
+                    value = error;
+                }
+
+                board.emit(`remoteControl-receive-ch${channel}`, value);
+                break;
+            }
+            // read channel
+            case 3: {
+                // const axis = board._sendBuffer[7];
+                console.log(`handler : remoteControl-${command}`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    console.log(`value= ${value}`);
+                } else {
+                    value = error;
+                }
+
+                board.emit(`remoteControl-${command}`, value);
+                break;
+            }
+            // save channel
+            case 4: {
+                const channel = board._sendBuffer[7];
+                console.log(`handler : remoteControl-${command}-${channel}`);
+
+                value = (action === ACTION.RUN) ? true : error;
+
+                board.emit(`remoteControl-${command}-${channel}`, value);
+                break;
+            }
+            // receive value from saved channel
+            case 5: {
+                console.log(`handler : remoteControl-receive-saved`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    console.log(`value= ${value}`);
+                } else {
+                    value = error;
+                }
+
+                board.emit(`remoteControl-receive-saved`, value);
+                break;
+            }
+            // key pressed from saved channel
+            case 6: {
+                const button = board._sendBuffer[7];
+                console.log(`handler : remoteControl-detect${button}-saved`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    value = (value === 1); // return boolean
+                    console.log(`value= ${value}`);
+                } else {
+                    value = error;
+                }
+
+                board.emit(`remoteControl-detect${button}-saved`, value);
+                break;
+            }
+            case 7: {
+                console.log(`handler : remoteControl-released`);
+
+                if (action === ACTION.GET) {
+                    value = getSensorValue(board.buffer);
+                    value = (value === 1); // return boolean
+                    console.log(`value= ${value}`);
+                } else {
+                    value = error;
+                }
+
+                board.emit(`remoteControl-released`, value);
+                break;
+            }
+        }
     }
 };
 
@@ -4555,6 +4675,123 @@ class Firmata extends Emitter {
 
         this.removeAllListeners(`extCds-${pin}`);
         this.once(`extCds-${pin}`, callback);
+    }
+
+    /**
+     * read channel of MRT Remote control
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    getRemoteChannel (sensor, cmd, callback) {
+        const datas = this._getPackage(sensor, cmd);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`remoteControl-${cmd}`);
+        this.once(`remoteControl-${cmd}`, callback);
+    }
+
+    /**
+     * save selected channel of MRT Remote control
+     * @param sensor
+     * @param cmd
+     * @param channel
+     * @param callback
+     */
+    saveRemoteChannel (sensor, cmd, channel, callback) {
+        const datas = this._runPackage(sensor, cmd, channel);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`remoteControl-${cmd}-${channel}`);
+        this.once(`remoteControl-${cmd}-${channel}`, callback);
+    }
+
+    /**
+     * receive value from saved channel of MRT Remote control
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    receiveRemoteControlSavedChannel (sensor, cmd, callback) {
+        const datas = this._getPackage(sensor, cmd);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`remoteControl-receive-saved`);
+        this.once(`remoteControl-receive-saved`, callback);
+    }
+
+    /**
+     * key pressed from saved channel of MRT Remote control
+     * @param sensor
+     * @param cmd
+     * @param button
+     * @param callback
+     */
+    detectRemoteControlSavedChannel (sensor, cmd, button, callback) {
+        const datas = this._getPackage(sensor, cmd, button);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`remoteControl-detect${button}-saved`);
+        this.once(`remoteControl-detect${button}-saved`, callback);
+    }
+
+    /**
+     * key released from MRT Remote control
+     * @param sensor
+     * @param cmd
+     * @param callback
+     */
+    getRemoteOff (sensor, cmd, callback) {
+        const datas = this._getPackage(sensor, cmd);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`remoteControl-released`);
+        this.once(`remoteControl-released`, callback);
+    }
+
+    /**
+     * receive the data from selected channel of MRT Remote control
+     * @param sensor
+     * @param cmd
+     * @param channel
+     * @param callback
+     */
+    receiveRemoteControl (sensor, cmd, channel, callback) {
+        const datas = this._getPackage(sensor, cmd, channel);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`remoteControl-receive-ch${channel}`);
+        this.once(`remoteControl-receive-ch${channel}`, callback);
+    }
+
+    /**
+     * key pressed from selected channel of MRT Remote control
+     * @param sensor
+     * @param cmd
+     * @param button
+     * @param channel
+     * @param callback
+     */
+    detectRemoteControl (sensor, cmd, button, channel, callback) {
+        const datas = this._getPackage(sensor, cmd, button, channel);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`remoteControl-detect${button}-ch${channel}`);
+        this.once(`remoteControl-detect${button}-ch${channel}`, callback);
     }
 }
 
