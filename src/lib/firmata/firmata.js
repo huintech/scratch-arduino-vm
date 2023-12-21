@@ -876,7 +876,7 @@ const SYSEX_RESPONSE = {
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
-                console.log(`value= ${value}`);
+                // console.log(`value= ${value}`);
             } else {
                 value = error;
             }
@@ -891,7 +891,7 @@ const SYSEX_RESPONSE = {
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
-                console.log(`value= ${value}`);
+                // console.log(`value= ${value}`);
                 value = (value === 1);
             } else {
                 value = error;
@@ -904,7 +904,7 @@ const SYSEX_RESPONSE = {
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
-                console.log(`value= ${value}`);
+                // console.log(`value= ${value}`);
             } else {
                 value = error;
             }
@@ -949,7 +949,7 @@ const SYSEX_RESPONSE = {
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
-                console.log(`value= ${value}`);
+                // console.log(`value= ${value}`);
             } else {
                 value = error;
             }
@@ -964,7 +964,7 @@ const SYSEX_RESPONSE = {
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
                 value = (value === 1);
-                console.log(`value= ${value}`);
+                // console.log(`value= ${value}`);
             } else {
                 value = error;
             }
@@ -978,7 +978,7 @@ const SYSEX_RESPONSE = {
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
                 value = (value === 1); // return boolean
-                console.log(`value= ${value}`);
+                // console.log(`value= ${value}`);
             } else {
                 value = error;
             }
@@ -1094,7 +1094,7 @@ const SYSEX_RESPONSE = {
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
-                console.log(`value= ${value}`);
+                // console.log(`value= ${value}`);
             } else {
                 value = error;
             }
@@ -1124,7 +1124,7 @@ const SYSEX_RESPONSE = {
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
-                console.log(`value= ${value}`);
+                // console.log(`value= ${value}`);
             } else {
                 value = error;
             }
@@ -1155,7 +1155,7 @@ const SYSEX_RESPONSE = {
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
-                console.log(`value= ${value}`);
+                // console.log(`value= ${value}`);
             } else {
                 value = error;
             }
@@ -1278,7 +1278,7 @@ const SYSEX_RESPONSE = {
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
                 value = (value === 1); // return boolean
-                console.log(`value= ${value}`);
+                // console.log(`value= ${value}`);
             } else {
                 value = error;
             }
@@ -1292,7 +1292,7 @@ const SYSEX_RESPONSE = {
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
-                console.log(`value= ${value}`);
+                // console.log(`value= ${value}`);
             } else {
                 value = error;
             }
@@ -1318,7 +1318,7 @@ const SYSEX_RESPONSE = {
 
         if (action === ACTION.GET) {
             value = getSensorValue(board.buffer);
-            console.log(`value= ${value}`);
+            // console.log(`value= ${value}`);
         }
         else {
             value = error;
@@ -1344,7 +1344,7 @@ const SYSEX_RESPONSE = {
 
         if (action === ACTION.GET) {
             value = getSensorValue(board.buffer);
-            console.log(`value= ${value}`);
+            // console.log(`value= ${value}`);
         }
         else {
             value = error;
@@ -1370,7 +1370,7 @@ const SYSEX_RESPONSE = {
 
         if (action === ACTION.GET) {
             value = getSensorValue(board.buffer);
-            console.log(`value= ${value}`);
+            // console.log(`value= ${value}`);
         }
         else {
             value = error;
@@ -1403,7 +1403,7 @@ const SYSEX_RESPONSE = {
                 if (action === ACTION.GET) {
                     value = getSensorValue(board.buffer);
                     value = (value === 1); // return boolean
-                    console.log(`value= ${value}`);
+                    // console.log(`value= ${value}`);
                 } else {
                     value = error;
                 }
@@ -1418,7 +1418,7 @@ const SYSEX_RESPONSE = {
 
                 if (action === ACTION.GET) {
                     value = getSensorValue(board.buffer);
-                    console.log(`value= ${value}`);
+                    // console.log(`value= ${value}`);
                 } else {
                     value = error;
                 }
@@ -1433,7 +1433,7 @@ const SYSEX_RESPONSE = {
 
                 if (action === ACTION.GET) {
                     value = getSensorValue(board.buffer);
-                    console.log(`value= ${value}`);
+                    // console.log(`value= ${value}`);
                 } else {
                     value = error;
                 }
@@ -1457,7 +1457,7 @@ const SYSEX_RESPONSE = {
 
                 if (action === ACTION.GET) {
                     value = getSensorValue(board.buffer);
-                    console.log(`value= ${value}`);
+                    // console.log(`value= ${value}`);
                 } else {
                     value = error;
                 }
@@ -1473,7 +1473,7 @@ const SYSEX_RESPONSE = {
                 if (action === ACTION.GET) {
                     value = getSensorValue(board.buffer);
                     value = (value === 1); // return boolean
-                    console.log(`value= ${value}`);
+                    // console.log(`value= ${value}`);
                 } else {
                     value = error;
                 }
@@ -1487,7 +1487,7 @@ const SYSEX_RESPONSE = {
                 if (action === ACTION.GET) {
                     value = getSensorValue(board.buffer);
                     value = (value === 1); // return boolean
-                    console.log(`value= ${value}`);
+                    // console.log(`value= ${value}`);
                 } else {
                     value = error;
                 }
@@ -1594,7 +1594,7 @@ const getSensorValue = data => {
         break;
     }
 
-    console.log(`type= ${type} value=${value}`);
+    console.log(`getSensorValue: type= ${type} value=${value}`);
 
     return value;
 };
@@ -4135,10 +4135,9 @@ class Firmata extends Emitter {
      *
      */
     _getPackage () {
-        // var nextID = arguments[0];
         const len = arguments.length;
 
-        console.log(`len = ${arguments.length}`);
+        // console.log(`len = ${arguments.length}`);
 
         const bytes = [0xff, 0x55];
         bytes.push(len + 2);
