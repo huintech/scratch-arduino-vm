@@ -1,6 +1,6 @@
 {
   "name": "@huintech/scratch-arduino-vm",
-  "version": "0.8.4",
+  "version": "0.8.5",
   "description": "Virtual Machine for Scratch",
   "author": "Massachusetts Institute of Technology",
   "license": "BSD-3-Clause",
@@ -76,8 +76,8 @@
     "json": "^9.0.4",
     "lodash.defaultsdeep": "4.6.1",
     "pngjs": "^3.3.2",
-    "@huintech/scratch-arduino-blocks": "0.8.3",
-    "@huintech/coconut-scratch-l10n": "0.8.3",
+    "@huintech/scratch-arduino-blocks": "0.8.4",
+    "@huintech/coconut-scratch-l10n": "0.8.4",
     "scratch-audio": "latest",
     "scratch-render": "latest",
     "scratch-render-fonts": "^1.0.0-prerelease.20210401210003",

@@ -1727,68 +1727,15 @@ class CoconutDevice {
      */
     get MOTOR_SPEED_MENU () {
         return ['0', '50', '100', '150', '200', '255'];
-        // return [
-        //     {
-        //         text: '0',
-        //         value: '0'
-        //     },
-        //     {
-        //         text: '50',
-        //         value: '50'
-        //     },
-        //     {
-        //         text: '100',
-        //         value: '100'
-        //     },
-        //     {
-        //         text: '150',
-        //         value: '150'
-        //     },
-        //     {
-        //         text: '255',
-        //         value: '255'
-        //     }
-        // ];
     }
 
-    // eslint-disable-next-line valid-jsdoc
     /**
-     * external motor speed
-     * @returns {[{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},{text: string, value: number},null,null]}
+     * external motor speed, CW and CCW
+     * @returns {string[]}
      * @constructor
      */
     get EXT_MOTOR_SPEED_MENU () {
         return ['255', '200', '150', '100', '50', '0', '-50', '-100', '-150', '-200', '-255'];
-        // return [
-        //     {
-        //         text: '255',
-        //         value: '255'
-        //     },
-        //     {
-        //         text: '100',
-        //         value: '100'
-        //     },
-        //     {
-        //         text: '50',
-        //         value: '50'
-        //     },
-        //     {
-        //         text: '0',
-        //         value: '0'
-        //     },
-        //     {
-        //         text: '-50',
-        //         value: '-50'
-        //     },
-        //     {
-        //         text: '-100',
-        //         value: '-100'
-        //     },
-        //     {
-        //         text: '-255',
-        //         value: '-255'
-        //     }
-        // ];
     }
 
     /**
@@ -2188,6 +2135,8 @@ class CoconutDevice {
                 color1: '#009297',
                 color2: '#004B4C',
                 color3: '#004B4C',
+                // menuIconURI: menuIconURI,
+                // blockIconURI: blockIconURI,
                 blocks: [
                     // [앞으로/뒤로] 움직이기
                     {
@@ -2998,31 +2947,41 @@ class CoconutDevice {
                     default: 'Sensor',
                     description: 'The name of the Coconut-S device Extended sensor category'
                 }),
-                color1: '#CF63CF',
-                color2: '#C94FC9',
-                color3: '#BD42BD',
+                color1: '#c041c0',
+                color2: '#861b86',
+                color3: '#861b86',
                 blocks: [
-                    // {
-                    //     opcode: 'moveExtMotors',
-                    //     text: formatMessage({
-                    //         id: 'coconut.sensor.moveExtMotors',
-                    //         default: 'external Motor [DIRECTION_EXT] speed [MOTOR_SPEED]',
-                    //         description: 'external all motors run'
-                    //     }),
-                    //     blockType: BlockType.COMMAND,
-                    //     arguments: {
-                    //         DIRECTION_EXT: {
-                    //             type: ArgumentType.STRING,
-                    //             menu: 'DirectionExtMenu',
-                    //             defaultValue: DirectionValues.FORWARD.value
-                    //         },
-                    //         MOTOR_SPEED: {
-                    //             type: ArgumentType.STRING,
-                    //             menu: 'MotorSpeedMenu',
-                    //             defaultValue: '50'
-                    //         }
-                    //     }
-                    // },
+                    {
+                        opcode: 'moveExtMotors',
+                        text: formatMessage({
+                            id: 'coconut.sensor.moveExtMotors',
+                            default: 'set DC Motor [DIRECTION_EXT] speed [MOTOR_SPEED]',
+                            description: 'all DC motors run'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_EXT: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionMotorMenu',
+                                defaultValue: DirectionValues.FORWARD.value
+                            },
+                            MOTOR_SPEED: {
+                                type: ArgumentType.STRING,
+                                menu: 'MotorSpeedMenu',
+                                defaultValue: '50'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'stopDCMotors',
+                        text: formatMessage({
+                            id: 'coconut.sensor.stopDCMotors',
+                            default: 'stop DC Motors',
+                            description: 'stop DC motors'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {}
+                    },
                     {
                         opcode: 'moveExtMotorSingle',
                         text: formatMessage({
@@ -3044,6 +3003,44 @@ class CoconutDevice {
                             }
                         }
                     },
+                    {
+                        opcode: 'stopDCMotor',
+                        text: formatMessage({
+                            id: 'coconut.sensor.stopDCMotor',
+                            default: 'stop DC Motor [DIRECTION_LR]',
+                            description: 'stop DC Motor'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIRECTION_LR: {
+                                type: ArgumentType.STRING,
+                                menu: 'DirectionLRMenu',
+                                defaultValue: DirectionValues.LEFT.value
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'moveDCMotorLR',
+                        text: formatMessage({
+                            id: 'coconut.sensor.moveDCMotorLR',
+                            default: 'Move to left DC motor speed [LEFT_DC_MOTOR_SPEED] right DC motor speed [RIGHT_DC_MOTOR_SPEED]',
+                            description: 'move left and right DC Motor'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            LEFT_DC_MOTOR_SPEED: {
+                                type: ArgumentType.STRING,
+                                menu: 'ExtMotorSpeedMenu',
+                                defaultValue: '50'
+                            },
+                            RIGHT_DC_MOTOR_SPEED: {
+                                type: ArgumentType.STRING,
+                                menu: 'ExtMotorSpeedMenu',
+                                defaultValue: '50'
+                            }
+                        }
+                    },
+                    '---',
                     {
                         opcode: 'runExtServo',
                         text: formatMessage({
@@ -3263,7 +3260,6 @@ class CoconutDevice {
                             }
                         }
                     },
-                    '---',
                     {
                         opcode: 'getRemoteOff',
                         text: formatMessage({
@@ -3274,7 +3270,6 @@ class CoconutDevice {
                         blockType: BlockType.BOOLEAN,
                         arguments: {}
                     },
-                    '---',
                     {
                         opcode: 'receiveRemoteControl',
                         text: formatMessage({
@@ -3314,7 +3309,7 @@ class CoconutDevice {
                     }
                 ],
                 menus: {
-                    DirectionExtMenu: {
+                    DirectionMotorMenu: {
                         items: this.DIRECTION_EXT_MENU
                     },
                     MotorSpeedMenu: {
@@ -3851,6 +3846,16 @@ class CoconutDevice {
     }
 
     /**
+     * stop external DC motors
+     * @returns {*}
+     */
+    stopDCMotors () {
+        console.log(`stopDCMotors : `);
+
+        return this._peripheral.stopDCMotors();
+    }
+
+    /**
      * set speed to selected external motor
      * @param args
      */
@@ -3859,8 +3864,31 @@ class CoconutDevice {
         console.log(`args= ${JSON.stringify(args)}`);
 
         return this._peripheral.moveExtMotorSingle(
-            // Cast.toNumber(args.DIRECTION_LR), Cast.toNumber(args.MOTOR_SPEED2));
             Cast.toNumber(args.DIRECTION_LR), Cast.toNumber(args.EXT_MOTOR_SPEED));
+    }
+
+    /**
+     * stop DC motor
+     * @param args
+     * @returns {Promise<unknown>}
+     */
+    stopDCMotor (args) {
+        console.log(`stopDCMotor :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.stopDCMotor(Cast.toNumber(args.DIRECTION_LR));
+    }
+
+    /**
+     * move to left and right DC Motor
+     * @param args
+     * @returns {*}
+     */
+    moveDCMotorLR (args) {
+        console.log(`moveDCMotorLR :`);
+        console.log(`args= ${JSON.stringify(args)}`);
+
+        return this._peripheral.moveDCMotorLR(Cast.toNumber(args.LEFT_DC_MOTOR_SPEED), Cast.toNumber(args.RIGHT_DC_MOTOR_SPEED));
     }
 
     /**

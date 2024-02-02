@@ -6,6 +6,7 @@ const Serialport = require('../../io/serialport');
 const Base64Util = require('../../util/base64-util');
 
 const Firmata = require('../../lib/firmata/firmata');
+const {Sensor} = require("@vernier/godirect/src/Sensor");
 
 /**
  * A string to report connect firmata timeout.
@@ -1877,6 +1878,22 @@ class CoconutSPeripheral {
     }
 
     /**
+     * stop external DC motors
+     */
+    stopDCMotors () {
+        // forward, speed=0
+        const options = [Sensors.ExtMotor, 2, 3, 0];
+
+        return new Promise(resolve => {
+            this._firmata.stopDCMotors(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
+                console.log(`resolve= ${value}`);
+            });
+        });
+    }
+
+    /**
      * set speed to selected external motor
      * @param direction
      * @param speed
@@ -1888,6 +1905,62 @@ class CoconutSPeripheral {
 
         return new Promise(resolve => {
             this._firmata.moveExtMotorSingle(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
+                console.log(`resolve= ${value}`);
+            });
+        });
+    }
+
+    /**
+     * stop DC motor
+     * @param direction
+     * @returns {Promise<unknown>}
+     */
+    stopDCMotor (direction) {
+        if (typeof direction === 'string') direction = Directions[direction];
+
+        const speed = 0;
+        const options = [Sensors.ExtMotor, 1, direction, speed];
+
+        return new Promise(resolve => {
+            this._firmata.stopDCMotor(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
+                console.log(`resolve= ${value}`);
+            });
+        });
+    }
+
+    /**
+     * set left and right DC motor speed
+     * @param leftSpeed
+     * @param rightSpeed
+     * @returns {Promise<unknown>}
+     */
+    moveDCMotorLR (leftSpeed, rightSpeed) {
+        // set direction and speed
+        let direction = Directions.Forward;
+
+        // set direction
+        if (leftSpeed < 0 && rightSpeed < 0) {
+            direction = Directions.Backward;
+            leftSpeed *= (-1);
+            rightSpeed *= (-1);
+        }
+        else if (rightSpeed < 0) {
+            direction = Directions.Right;
+            rightSpeed *= (-1);
+        }
+        else if (leftSpeed < 0) {
+            direction = Directions.Left;
+            leftSpeed *= (-1);
+        }
+
+        const options = [Sensors.ExtMotor, 3, direction, leftSpeed, rightSpeed];
+
+        return new Promise(resolve => {
+            this._firmata.moveDCMotorLR(...options, value => {
                 if (value === true) resolve();
                 else resolve(value);
                 console.log(`resolve= ${value}`);

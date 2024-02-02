@@ -183,10 +183,12 @@ const MATRIX_CMD = {
 /**
  * External motor command
  * @type {{SET_SPEED: number, MOVE: number}}
+ * @date 24.01.31 add command (0x03)
  */
 const EXT_MOTOR_CMD = {
     SET_SPEED: 0x01,
-    MOVE: 0x02
+    MOVE: 0x02,
+    SET_SPEED_LR: 0x03
 };
 
 const symbolSendOneWireSearch = Symbol('sendOneWireSearch');
@@ -1177,25 +1179,36 @@ const SYSEX_RESPONSE = {
         const command = board._sendBuffer[6];
 
         const error = `Error: invalid response`;
-        let direction, value;
+        let direction, value, speed;
 
         switch (command) {
-        case EXT_MOTOR_CMD.MOVE: {
-            direction = board._sendBuffer[7];
-            console.log(`handler : ext-motor-${direction}`);
+            case EXT_MOTOR_CMD.MOVE: {
+                direction = board._sendBuffer[7];
+                speed = board._sendBuffer[8];
+                console.log(`handler : ext-motor-${direction}-${speed}`);
 
-            value = (action === ACTION.RUN) ? true : error;
-            board.emit(`ext-motor-${direction}`, value);
-            break;
-        }
-        case EXT_MOTOR_CMD.SET_SPEED: {
-            direction = board._sendBuffer[7];
-            console.log(`handler : ext-motor-set-${direction}`);
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`ext-motor-${direction}-${speed}`, value);
+                break;
+            }
+            case EXT_MOTOR_CMD.SET_SPEED: {
+                direction = board._sendBuffer[7];
+                speed = `${board._sendBuffer[8]}${board._sendBuffer[9]}`;
+                console.log(`handler : ext-motor-set-${direction}-${speed}`);
 
-            value = (action === ACTION.RUN) ? true : error;
-            board.emit(`ext-motor-set-${direction}`, value);
-            break;
-        }
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`ext-motor-set-${direction}-${speed}`, value);
+                break;
+            }
+            case EXT_MOTOR_CMD.SET_SPEED_LR: {
+                const leftSpeed = board._sendBuffer[8];
+                const rightSpeed = board._sendBuffer[9];
+                console.log(`handler : ext-motor-set-l${leftSpeed}-r${rightSpeed}`);
+
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`ext-motor-set-l${leftSpeed}-r${rightSpeed}`, value);
+                break;
+            }
         }
     },
     /**
@@ -4510,15 +4523,30 @@ class Firmata extends Emitter {
      */
     moveExtMotors (sensor, cmd, direction, speed, callback) {
         const datas = this._runPackage(sensor, cmd, direction, speed);
-        // const datas = this._runPackage(sensor, cmd, direction, this._short2array(speed));
         this._sendBuffer = datas.slice();
 
         writeToTransport(this, datas);
 
-        // this.removeAllListeners(`ext-motor-set-${direction}`);
-        this.removeAllListeners(`ext-motor-${direction}`);
-        this.once(`ext-motor-${direction}`, callback);
-        // this.once(`ext-motor-set-${direction}`, callback);
+        this.removeAllListeners(`ext-motor-${direction}-${speed}`);
+        this.once(`ext-motor-${direction}-${speed}`, callback);
+    }
+
+    /**
+     * stop external DC motors
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param callback
+     */
+    stopDCMotors (sensor, cmd, direction, speed, callback) {
+        const datas = this._runPackage(sensor, cmd, direction, speed);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`ext-motor-${direction}-${speed}`);
+        this.once(`ext-motor-${direction}-${speed}`, callback);
     }
 
     /**
@@ -4536,8 +4564,46 @@ class Firmata extends Emitter {
 
         writeToTransport(this, datas);
 
-        this.removeAllListeners(`ext-motor-set-${direction}`);
-        this.once(`ext-motor-set-${direction}`, callback);
+        this.removeAllListeners(`ext-motor-set-${direction}-${datas[8]}${datas[9]}`);
+        this.once(`ext-motor-set-${direction}-${datas[8]}${datas[9]}`, callback);
+    }
+
+    /**
+     * stop DC motor
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param callback
+     */
+    stopDCMotor (sensor, cmd, direction, speed, callback) {
+        const datas = this._runPackage(
+            sensor, cmd, direction, this._short2array(speed));
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`ext-motor-set-${direction}-${datas[8]}${datas[9]}`);
+        this.once(`ext-motor-set-${direction}-${datas[8]}${datas[9]}`, callback);
+    }
+
+    /**
+     * set direction and left and right DC Motor speed
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param leftSpeed
+     * @param rightSpeed
+     * @param callback
+     */
+    moveDCMotorLR (sensor, cmd, direction, leftSpeed, rightSpeed, callback) {
+        const datas = this._runPackage(sensor, cmd, direction, leftSpeed, rightSpeed);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`ext-motor-set-l${leftSpeed}-r${rightSpeed}`);
+        this.once(`ext-motor-set-l${leftSpeed}-r${rightSpeed}`, callback);
     }
 
     /**
