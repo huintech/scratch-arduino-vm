@@ -9,6 +9,12 @@ const Firmata = require('../../lib/firmata/firmata');
 const {Sensor} = require("@vernier/godirect/src/Sensor");
 
 /**
+ * debug mode enable
+ * @type {boolean} true: debug mode enable, false: debug mode disable
+ */
+const DEBUG_EN = true;
+
+/**
  * A string to report connect firmata timeout.
  * @type {formatMessage}
  */
@@ -458,7 +464,7 @@ class CoconutSPeripheral {
     send (message) {
         if (!this.isConnected()) return;
 
-        console.log(`send to coconut: ${JSON.stringify(message)}`);
+        if (DEBUG_EN) console.log(`send to coconut: ${JSON.stringify(message)}`);
 
         // const data = Base64Util.uint8ArrayToBase64(message);
         // this._serialport.write(data);
@@ -582,7 +588,9 @@ class CoconutSPeripheral {
     _onMessage (base64) {
         // parse data
         const data = Base64Util.base64ToUint8Array(base64);
-        console.log(`_onMessage: data = ${data}`);
+
+        if (DEBUG_EN) console.log(`_onMessage: data = ${data}`);
+
         this._firmata.onReciveData(data);
     }
 
@@ -1772,10 +1780,9 @@ class CoconutSPeripheral {
                 if (value === true) resolve();
                 else resolve(value);
 
-                console.log(`resolve= ${value}`);
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
             });
         });
-        // return Promise.resolve();
     }
 
     playMelody (melody) {
@@ -1872,7 +1879,8 @@ class CoconutSPeripheral {
             this._firmata.moveExtMotors(...options, value => {
                 if (value === true) resolve();
                 else resolve(value);
-                console.log(`resolve= ${value}`);
+
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
             });
         });
     }
@@ -1888,7 +1896,8 @@ class CoconutSPeripheral {
             this._firmata.stopDCMotors(...options, value => {
                 if (value === true) resolve();
                 else resolve(value);
-                console.log(`resolve= ${value}`);
+
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
             });
         });
     }
@@ -1907,7 +1916,8 @@ class CoconutSPeripheral {
             this._firmata.moveExtMotorSingle(...options, value => {
                 if (value === true) resolve();
                 else resolve(value);
-                console.log(`resolve= ${value}`);
+
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
             });
         });
     }
@@ -1927,7 +1937,8 @@ class CoconutSPeripheral {
             this._firmata.stopDCMotor(...options, value => {
                 if (value === true) resolve();
                 else resolve(value);
-                console.log(`resolve= ${value}`);
+
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
             });
         });
     }
@@ -1963,7 +1974,8 @@ class CoconutSPeripheral {
             this._firmata.moveDCMotorLR(...options, value => {
                 if (value === true) resolve();
                 else resolve(value);
-                console.log(`resolve= ${value}`);
+
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
             });
         });
     }
@@ -1980,7 +1992,8 @@ class CoconutSPeripheral {
             this._firmata.runExtServo(...options, value => {
                 if (value === true) resolve();
                 else resolve(value);
-                console.log(`resolve= ${value}`);
+
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
             });
         });
     }
@@ -2000,7 +2013,8 @@ class CoconutSPeripheral {
             this._firmata.extLedOn(...options, value => {
                 if (value === true) resolve();
                 else resolve(value);
-                console.log(`resolve= ${value}`);
+
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
             });
         });
     }
@@ -2021,7 +2035,8 @@ class CoconutSPeripheral {
             this._firmata.extSpeakerOn(...options, value => {
                 if (value === true) resolve();
                 else resolve(value);
-                console.log(`resolve= ${value}`);
+
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
             });
         });
     }
@@ -2037,7 +2052,8 @@ class CoconutSPeripheral {
             this._firmata.extSpeakerOn(...options, value => {
                 if (value === true) resolve();
                 else resolve(value);
-                console.log(`resolve= ${value}`);
+
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
             });
         });
     }
@@ -2052,7 +2068,8 @@ class CoconutSPeripheral {
         return new Promise(resolve => {
             this._firmata.getTouchSensor(...options, value => {
                 resolve(value);
-                console.log(`resolve= ${value}`);
+
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
             });
         });
     }
@@ -2068,7 +2085,8 @@ class CoconutSPeripheral {
             setTimeout(() => {
                 this._firmata.getTouchPressed(...options, value => {
                     resolve(value);
-                    console.log(`resolve= ${value}`);
+
+                    if (DEBUG_EN) console.log(`resolve= ${value}`);
                 });
             });
         });
@@ -2085,7 +2103,8 @@ class CoconutSPeripheral {
             setTimeout(() => {
                 this._firmata.getMikeSensor(...options, value => {
                     resolve(value);
-                    console.log(`resolve= ${value}`);
+
+                    if (DEBUG_EN) console.log(`resolve= ${value}`);
                 });
             });
         });
@@ -2098,7 +2117,7 @@ class CoconutSPeripheral {
             setTimeout(() => {
                 this._firmata.getExtIR(...options, value => {
                     resolve(value);
-                    console.log(`resolve= ${value}`);
+                    if (DEBUG_EN) console.log(`resolve= ${value}`);
                 });
             });
 
@@ -2112,7 +2131,8 @@ class CoconutSPeripheral {
             setTimeout(() => {
                 this._firmata.getExtCds(...options, value => {
                     resolve(value);
-                    console.log(`resolve= ${value}`);
+
+                    if (DEBUG_EN) console.log(`resolve= ${value}`);
                 });
             });
         });

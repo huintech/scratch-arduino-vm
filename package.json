@@ -1,6 +1,6 @@
 {
   "name": "@huintech/scratch-arduino-vm",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "description": "Virtual Machine for Scratch",
   "author": "Massachusetts Institute of Technology",
   "license": "BSD-3-Clause",
@@ -60,6 +60,8 @@
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
+    "@huintech/coconut-scratch-l10n": "0.8.5",
+    "@huintech/scratch-arduino-blocks": "0.8.4",
     "adm-zip": "0.4.11",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
@@ -76,8 +78,6 @@
     "json": "^9.0.4",
     "lodash.defaultsdeep": "4.6.1",
     "pngjs": "^3.3.2",
-    "@huintech/scratch-arduino-blocks": "0.8.4",
-    "@huintech/coconut-scratch-l10n": "0.8.4",
     "scratch-audio": "latest",
     "scratch-render": "latest",
     "scratch-render-fonts": "^1.0.0-prerelease.20210401210003",
@@ -89,7 +89,7 @@
     "tiny-worker": "^2.1.1",
     "uglifyjs-webpack-plugin": "1.2.7",
     "webpack": "^4.16.5",
-    "webpack-cli": "^3.1.0",
+    "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.1.5"
   }
 }

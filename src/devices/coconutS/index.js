@@ -10,6 +10,12 @@ const log = require('../../util/log');
 const CoconutPeripheral = require('../common/coconutS-peripheral');
 
 /**
+ * debug mode enable
+ * @type {boolean} true: debug mode enable, false: debug mode disable
+ */
+const DEBUG_EN = false;
+
+/**
  * The list of USB device filters.
  * @readonly
  */
@@ -40,9 +46,9 @@ const SERIAL_CONFIG = {
  * @readonly
  */
 const DIVECE_OPT = {
-    type: 'arduino',
+    type: 'coconut',
     fqbn: 'arduino:avr:uno',
-    firmware: 'arduinoUno.standardFirmata.ino.hex'
+    firmware: 'coconut-s_firmware.ino.hex'
 };
 
 const Pins = {
@@ -2917,22 +2923,37 @@ class CoconutDevice {
                             description: 'coconut avoid mode'
                         }),
                         blockType: BlockType.COMMAND
+                    },
+                    {
+                        opcode: 'showCharacterDraw',
+                        text: formatMessage({
+                            id: 'coconut.hidden.showCharacterDraw',
+                            default: 'LED Matrix Character [MATRIX8]',
+                            description: 'show character draw'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            MATRIX8: {
+                                type: ArgumentType.MATRIX8,
+                                defaultValue: '0000000000000000000000000000000000000000000000000000000000000000'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'showImage',
+                        text: formatMessage({
+                            id: 'microbit.display.showImage',
+                            default: 'show image [VALUE]',
+                            description: 'microbit show image'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            VALUE: {
+                                type: ArgumentType.MATRIX,
+                                defaultValue: '0101010101100010101000100'
+                            }
+                        }
                     }
-                    // {
-                    //     opcode: 'showCharacterDraw',
-                    //     text: formatMessage({
-                    //         id: 'coconut.hidden.showCharacterDraw',
-                    //         default: 'LED Matrix Character [MATRIX]',
-                    //         description: 'show character draw'
-                    //     }),
-                    //     blockType: BlockType.COMMAND,
-                    //     arguments: {
-                    //         MATRIX: {
-                    //             type: ArgumentType.MATRIX,
-                    //             defaultValue: '0101010101100010101000100'
-                    //         }
-                    //     }
-                    // }
                 ],
                 menus: {
                     MelodyMenu: {
@@ -3078,7 +3099,7 @@ class CoconutDevice {
                             },
                             TIME_SEC: {
                                 type: ArgumentType.NUMBER,
-                                defaultValue: 0.5
+                                defaultValue: 1
                             }
                         }
                     },
@@ -3810,7 +3831,7 @@ class CoconutDevice {
      * @param args
      */
     showCharacterDraw (args) {
-        const symbol = Cast.toString(args.MATRIX).replace(/\s/g, '');
+        const symbol = Cast.toString(args.MATRIX8).replace(/\s/g, '');
         const reducer = (accumulator, c, index) => {
             const value = (c === '0') ? accumulator : accumulator + Math.pow(2, index);
             return value;
@@ -3838,8 +3859,10 @@ class CoconutDevice {
      * @returns {*}
      */
     moveExtMotors (args) {
-        console.log(`moveExtMotor :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`moveExtMotors :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.moveExtMotors(
             Cast.toNumber(args.DIRECTION_EXT), Cast.toNumber(args.MOTOR_SPEED));
@@ -3850,7 +3873,9 @@ class CoconutDevice {
      * @returns {*}
      */
     stopDCMotors () {
-        console.log(`stopDCMotors : `);
+        if (DEBUG_EN) {
+            console.log(`stopDCMotors : `);
+        }
 
         return this._peripheral.stopDCMotors();
     }
@@ -3860,8 +3885,10 @@ class CoconutDevice {
      * @param args
      */
     moveExtMotorSingle (args) {
-        console.log(`moveExtMotorSingle :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`moveExtMotorSingle :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.moveExtMotorSingle(
             Cast.toNumber(args.DIRECTION_LR), Cast.toNumber(args.EXT_MOTOR_SPEED));
@@ -3873,8 +3900,10 @@ class CoconutDevice {
      * @returns {Promise<unknown>}
      */
     stopDCMotor (args) {
-        console.log(`stopDCMotor :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`stopDCMotor :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.stopDCMotor(Cast.toNumber(args.DIRECTION_LR));
     }
@@ -3885,8 +3914,10 @@ class CoconutDevice {
      * @returns {*}
      */
     moveDCMotorLR (args) {
-        console.log(`moveDCMotorLR :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`moveDCMotorLR :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.moveDCMotorLR(Cast.toNumber(args.LEFT_DC_MOTOR_SPEED), Cast.toNumber(args.RIGHT_DC_MOTOR_SPEED));
     }
@@ -3896,8 +3927,10 @@ class CoconutDevice {
      * @param args
      */
     runExtServo (args) {
-        console.log(`runExtServo :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`runExtServo :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.runExtServo(
             Cast.toNumber(args.PINS), Cast.toNumber(args.SERVO_ANGLE));
@@ -3908,8 +3941,10 @@ class CoconutDevice {
      * @param args
      */
     extLedOn (args) {
-        console.log(`extLedOn :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`extLedOn :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.extLedOn(
             Cast.toNumber(args.PINS), Cast.toNumber(args.TIME_SEC));
@@ -3920,8 +3955,10 @@ class CoconutDevice {
      * @param args
      */
     extSpeakerOn (args) {
-        console.log(`extSpeakerOn :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`extSpeakerOn :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.extSpeakerOn(
             Cast.toNumber(args.PWM_PIN),
@@ -3934,8 +3971,10 @@ class CoconutDevice {
      * @param args
      */
     extSpeakerOff (args) {
-        console.log(`extSpeakerOff :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`extSpeakerOff :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.extSpeakerOff(Cast.toNumber(args.PWM_PIN));
     }
@@ -3945,8 +3984,10 @@ class CoconutDevice {
      * @param args
      */
     getTouchSensor (args) {
-        console.log(`getTouchSensor :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`getTouchSensor :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.getTouchSensor(Cast.toNumber(args.PINS));
     }
@@ -3956,8 +3997,10 @@ class CoconutDevice {
      * @param args
      */
     getTouchPressed (args) {
-        console.log(`getTouchPressed :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`getTouchPressed :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.getTouchPressed(Cast.toNumber(args.PINS));
     }
@@ -3968,8 +4011,10 @@ class CoconutDevice {
      * @returns {Promise<unknown>}
      */
     getMikeSensor (args) {
-        console.log(`getMikeSensor :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`getMikeSensor :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.getMikeSensor(Cast.toNumber(args.ANALOG_PIN));
     }
@@ -3980,8 +4025,10 @@ class CoconutDevice {
      * @returns {Promise<unknown>}
      */
     getExtIR (args) {
-        console.log(`getExtIR :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`getExtIR :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.getExtIR(Cast.toNumber(args.ANALOG_PIN));
     }
@@ -3992,8 +4039,10 @@ class CoconutDevice {
      * @returns {*}
      */
     getExtCds (args) {
-        console.log(`getExtCds :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`getExtCds :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.getExtCds(Cast.toNumber(args.ANALOG_PIN));
     }
@@ -4076,6 +4125,34 @@ class CoconutDevice {
         return this._peripheral.detectRemoteControl(
             Cast.toNumber(args.REMOTE_BUTTON),
             Cast.toNumber(args.REMOTE_CHANNEL));
+    }
+
+    /**
+     * Display a predefined symbol on the 5x5 LED matrix.
+     * @param {object} args - the block's arguments.
+     * @return {Promise} - a Promise that resolves after a tick.
+     */
+    showImage (args) {
+        const symbol = cast.toString(args.VALUE).replace(/\s/g, '');
+        const reducer = (accumulator, c, index) => {
+            const value = (c === '0') ? accumulator : accumulator + Math.pow(2, index);
+            return value;
+        };
+        const hex = symbol.split('').reduce(reducer, 0);
+        if (hex !== null) {
+            this._peripheral.ledMatrixState[0] = hex & 0x1F;
+            this._peripheral.ledMatrixState[1] = (hex >> 5) & 0x1F;
+            this._peripheral.ledMatrixState[2] = (hex >> 10) & 0x1F;
+            this._peripheral.ledMatrixState[3] = (hex >> 15) & 0x1F;
+            this._peripheral.ledMatrixState[4] = (hex >> 20) & 0x1F;
+            this._peripheral.displayMatrix(this._peripheral.ledMatrixState);
+        }
+
+        return new Promise(resolve => {
+            setTimeout(() => {
+                resolve();
+            }, BLESendInterval);
+        });
     }
 }
 

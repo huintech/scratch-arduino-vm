@@ -34,6 +34,11 @@ const ArgumentType = {
     MATRIX: 'matrix',
 
     /**
+     * TODO: String value with matrix8 field
+     */
+    MATRIX8: 'matrix8',
+
+    /**
      * MIDI note number with note picker (piano) field
      */
     NOTE: 'note',
