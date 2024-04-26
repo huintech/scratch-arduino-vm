@@ -12,7 +12,7 @@ const i2cActive = new Map();
 /**
  * constants
  */
-
+const DEBUG_EN = true; // debug mode enable (true= enable, false= disable)
 const ANALOG_MAPPING_QUERY = 0x69;
 const ANALOG_MAPPING_RESPONSE = 0x6A;
 const ANALOG_MESSAGE = 0xE0;
@@ -183,10 +183,12 @@ const MATRIX_CMD = {
 /**
  * External motor command
  * @type {{SET_SPEED: number, MOVE: number}}
+ * @date 24.01.31 add command (0x03)
  */
 const EXT_MOTOR_CMD = {
     SET_SPEED: 0x01,
-    MOVE: 0x02
+    MOVE: 0x02,
+    SET_SPEED_LR: 0x03
 };
 
 const symbolSendOneWireSearch = Symbol('sendOneWireSearch');
@@ -1072,6 +1074,14 @@ const SYSEX_RESPONSE = {
             board.emit(`matrix-kr-${letter}`, value);
             break;
         }
+        case MATRIX_CMD.FREE: {
+            const letter = board._sendBuffer[7];
+            console.log(`handler : matrix-free-${letter}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-free-${letter}`, value);
+            break;
+        }
         }
     },
     /**
@@ -1170,32 +1180,46 @@ const SYSEX_RESPONSE = {
      * @param board
      */
     [EXT_MOTOR] (board) {
-        console.log(`EVENT : External Motor`);
-        // console.log(`send buffer= ${board._sendBuffer}`);
+        if (DEBUG_EN) {
+            console.log(`EVENT : External Motor`);
+            // console.log(`send buffer= ${board._sendBuffer}`);
+        }
 
         const action = board._sendBuffer[4];
         const command = board._sendBuffer[6];
 
         const error = `Error: invalid response`;
-        let direction, value;
+        let direction, value, speed;
 
         switch (command) {
-        case EXT_MOTOR_CMD.MOVE: {
-            direction = board._sendBuffer[7];
-            console.log(`handler : ext-motor-${direction}`);
+            case EXT_MOTOR_CMD.MOVE: {
+                direction = board._sendBuffer[7];
+                speed = board._sendBuffer[8];
+                if (DEBUG_EN) console.log(`handler : ext-motor-${direction}-${speed}`);
 
-            value = (action === ACTION.RUN) ? true : error;
-            board.emit(`ext-motor-${direction}`, value);
-            break;
-        }
-        case EXT_MOTOR_CMD.SET_SPEED: {
-            direction = board._sendBuffer[7];
-            console.log(`handler : ext-motor-set-${direction}`);
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`ext-motor-${direction}-${speed}`, value);
+                break;
+            }
+            case EXT_MOTOR_CMD.SET_SPEED: {
+                direction = board._sendBuffer[7];
+                speed = `${board._sendBuffer[8]}${board._sendBuffer[9]}`;
+                if (DEBUG_EN) console.log(`handler : ext-motor-set-${direction}-${speed}`);
 
-            value = (action === ACTION.RUN) ? true : error;
-            board.emit(`ext-motor-set-${direction}`, value);
-            break;
-        }
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`ext-motor-set-${direction}-${speed}`, value);
+                break;
+            }
+            case EXT_MOTOR_CMD.SET_SPEED_LR: {
+                const leftSpeed = board._sendBuffer[8];
+                const rightSpeed = board._sendBuffer[9];
+
+                if (DEBUG_EN) console.log(`handler : ext-motor-set-l${leftSpeed}-r${rightSpeed}`);
+
+                value = (action === ACTION.RUN) ? true : error;
+                board.emit(`ext-motor-set-l${leftSpeed}-r${rightSpeed}`, value);
+                break;
+            }
         }
     },
     /**
@@ -1204,8 +1228,10 @@ const SYSEX_RESPONSE = {
      * @param board
      */
     [SERVO_MOTOR] (board) {
-        console.log(`EVENT : Servo Motor`);
-        // console.log(`send buffer= ${board._sendBuffer}`);
+        if (DEBUG_EN) {
+            console.log(`EVENT : Servo Motor`);
+            // console.log(`send buffer= ${board._sendBuffer}`);
+        }
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
@@ -1213,7 +1239,7 @@ const SYSEX_RESPONSE = {
 
         const error = `Error: invalid response`;
 
-        console.log(`handler : servo-motor-${pin}-${angle}`);
+        if (DEBUG_EN) console.log(`handler : servo-motor-${pin}-${angle}`);
 
         const value = (action === ACTION.RUN) ? true : error;
         board.emit(`servo-motor-${pin}-${angle}`, value);
@@ -1223,15 +1249,16 @@ const SYSEX_RESPONSE = {
      * @param board
      */
     [EXT_LED] (board) {
-        console.log(`EVENT : External Led`);
-        // console.log(`send buffer= ${board._sendBuffer}`);
+        if (DEBUG_EN) {
+            console.log(`EVENT : External Led`);
+            // console.log(`send buffer= ${board._sendBuffer}`);
+        }
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
-
         const error = `Error: invalid response`;
 
-        console.log(`handler : ext-led-${pin}`);
+        if (DEBUG_EN) console.log(`handler : ext-led-${pin}`);
 
         const value = (action === ACTION.RUN) ? true : error;
         board.emit(`ext-led-${pin}`, value);
@@ -1241,8 +1268,10 @@ const SYSEX_RESPONSE = {
      * @param board
      */
     [SPEAKER] (board) {
-        console.log(`EVENT : External Speaker`);
-        // console.log(`send buffer= ${board._sendBuffer}`);
+        if (DEBUG_EN) {
+            console.log(`EVENT : External Speaker`);
+            // console.log(`send buffer= ${board._sendBuffer}`);
+        }
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
@@ -1250,7 +1279,7 @@ const SYSEX_RESPONSE = {
 
         const error = `Error: invalid response`;
 
-        console.log(`handler : speaker-${pin}-${frequency}`);
+        if (DEBUG_EN) console.log(`handler : speaker-${pin}-${frequency}`);
 
         const value = (action === ACTION.RUN) ? true : error;
         board.emit(`speaker-${pin}-${frequency}`, value);
@@ -1260,12 +1289,13 @@ const SYSEX_RESPONSE = {
      * @param board
      */
     [TOUCH_SENSOR] (board) {
-        console.log(`EVENT : External Touch`);
-        // console.log(`send buffer= ${board._sendBuffer}`);
+        if (DEBUG_EN) {
+            console.log(`EVENT : External Touch`);
+            // console.log(`send buffer= ${board._sendBuffer}`);
+        }
 
         const len = board._sendBuffer[2];
         const action = board._sendBuffer[4];
-        // const pin = board._sendBuffer[6];
 
         const error = `Error: invalid response`;
         let value, pin;
@@ -1273,7 +1303,7 @@ const SYSEX_RESPONSE = {
         // read touch sensor
         if (len === 4) {
             pin = board._sendBuffer[6];
-            console.log(`handler : touch-pressed-${pin}`);
+            if (DEBUG_EN) console.log(`handler : touch-pressed-${pin}`);
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
@@ -1288,7 +1318,7 @@ const SYSEX_RESPONSE = {
         // read touch sensor pressed
         else if (len === 5) {
             pin = board._sendBuffer[7];
-            console.log(`handler : touch-${pin}`);
+            if (DEBUG_EN) console.log(`handler : touch-${pin}`);
 
             if (action === ACTION.GET) {
                 value = getSensorValue(board.buffer);
@@ -1305,8 +1335,10 @@ const SYSEX_RESPONSE = {
      * @param board
      */
     [MIKE_SENSOR] (board) {
-        console.log(`EVENT : External Mike sensor`);
-        // console.log(`send buffer= ${board._sendBuffer}`);
+        if (DEBUG_EN) {
+            console.log(`EVENT : External Mike sensor`);
+            // console.log(`send buffer= ${board._sendBuffer}`);
+        }
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
@@ -1314,7 +1346,7 @@ const SYSEX_RESPONSE = {
         const error = `Error: invalid response`;
         let value;
 
-        console.log(`handler : mike-${pin}`);
+        if (DEBUG_EN) console.log(`handler : mike-${pin}`);
 
         if (action === ACTION.GET) {
             value = getSensorValue(board.buffer);
@@ -1331,8 +1363,10 @@ const SYSEX_RESPONSE = {
      * @param board
      */
     [EXT_IR] (board) {
-        console.log(`EVENT : External IR sensor`);
-        // console.log(`send buffer= ${board._sendBuffer}`);
+        if (DEBUG_EN) {
+            console.log(`EVENT : External IR sensor`);
+            // console.log(`send buffer= ${board._sendBuffer}`);
+        }
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
@@ -1340,7 +1374,7 @@ const SYSEX_RESPONSE = {
         const error = `Error: invalid response`;
         let value;
 
-        console.log(`handler : extIR-${pin}`);
+        if (DEBUG_EN) console.log(`handler : extIR-${pin}`);
 
         if (action === ACTION.GET) {
             value = getSensorValue(board.buffer);
@@ -1357,8 +1391,10 @@ const SYSEX_RESPONSE = {
      * @param board
      */
     [EXT_CDS] (board) {
-        console.log(`EVENT : External CDS sensor`);
-        // console.log(`send buffer= ${board._sendBuffer}`);
+        if (DEBUG_EN) {
+            console.log(`EVENT : External CDS sensor`);
+            // console.log(`send buffer= ${board._sendBuffer}`);
+        }
 
         const action = board._sendBuffer[4];
         const pin = board._sendBuffer[6];
@@ -1366,7 +1402,7 @@ const SYSEX_RESPONSE = {
         const error = `Error: invalid response`;
         let value;
 
-        console.log(`handler : extCds-${pin}`);
+        if (DEBUG_EN) console.log(`handler : extCds-${pin}`);
 
         if (action === ACTION.GET) {
             value = getSensorValue(board.buffer);
@@ -1504,7 +1540,7 @@ const parseShort = (a, b) => (a << 8) | (b << 0);
 // const readShort = function (arr, position) {
 const readShort = (arr, position) => {
     const s = [arr[position + 1], arr[position]];
-    console.log(`${JSON.stringify(s)}`);
+    // console.log(`${JSON.stringify(s)}`);
     return parseShort(...s);
 }; // function
 
@@ -1529,8 +1565,8 @@ const parseFloat = function (data) {
     // Read the bits as a float; note that by doing this, we're implicitly
     // converting it from a 32-bit float into JavaScript's native 64-bit double
     const num = view.getFloat32(0);
-    // Done
-    console.log(`float = ${num}`);
+    //if (DEBUG_EN) console.log(`float = ${num}`);
+
     return num;
 };
 
@@ -1594,7 +1630,7 @@ const getSensorValue = data => {
         break;
     }
 
-    console.log(`getSensorValue: type= ${type} value=${value}`);
+    if (DEBUG_EN) console.log(`getSensorValue: type= ${type} value=${value}`);
 
     return value;
 };
@@ -1845,60 +1881,12 @@ class Firmata extends Emitter {
                 if (this._isParseStart && (start1 === 0xd) && (start2 === 0xa)) {
                     this._isParseStart = false;
 
-                    // console.log(`len= ${this.buffer.length} this.buffer= ${this.buffer}`);
-
                     // run type response [ff, 55, 0d, 0a]
                     if ((this.buffer.length === 4) && (this.buffer[0] === 0xff && this.buffer[1] === 0x55)) {
-                        // console.log(`RUN type..`);
-                        console.log(`send buffer= ${this._sendBuffer}`);
-
-                        // const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
-                        // if (handler) handler(this);
-                        // console.log(`handler = ${handler}`);
-
-                        // this.buffer.length = 0;
-                    }
-                    // get type response
-                    else {
-                        // console.log(`GET type...`);
-
-                        // let position = this._isParseStartIndex + 2;
-                        // const extId = this.buffer[position];
-                        // position++;
-                        // const type = this.buffer[position];
-                        // position++;
-
-                        // data type check
-                        // let value;
-                        // switch (type) {
-                        // case 1:
-                        //     value = this.buffer[position];
-                        //     position++;
-                        //     break;
-                        // case 2:
-                        //     value = this._readFloat(this.buffer, position);
-                        //     position += 4;
-                        //     if ((value < -255) || (value > 1023)) value = 0;
-                        //     break;
-                        // case 3:
-                        //     value = this._readShort(this.buffer, position);
-                        //     position += 2;
-                        //     break;
-                        // case 4:
-                        //     const lv = this.buffer[position];
-                        //     position++;
-                        //     value = this._readString(this.buffer, position, lv);
-                        //     break;
-                        // case 5:
-                        //     value = this._readDouble(this.buffer, position);
-                        //     position += 4;
-                        //     break;
-                        // }
-                        //
-                        // console.log(`type= ${type} value=${value}`);
-
-                        // const handler = SYSEX_RESPONSE[this._sendBuffer[5]];
-                        // if (handler) handler(this);
+                        if (DEBUG_EN) {
+                            // console.log(`RUN type..`);
+                            console.log(`send buffer= [${this._sendBuffer}]`);
+                        }
                     }
 
                     let handler;
@@ -1911,13 +1899,7 @@ class Firmata extends Emitter {
 
                     if (handler) handler(this);
 
-                    console.log(`this.buffer= ${this.buffer}`);
-
-                    // if (type <= 5) {
-                    //     if (values[extId] != undefined) {
-                    //
-                    //     }
-                    // }
+                    if (DEBUG_EN) console.log(`recv buffer= [${this.buffer}]`);
 
                     // 보드에 다음 중 하나가 활성화된 이전 실행의 기존 활동이 있을 수 있습니다.
                     //
@@ -3829,7 +3811,7 @@ class Firmata extends Emitter {
         // Convert the Int16Array to a regular byte array (Uint8Array)
         const byteView = new Uint8Array(byteArray.buffer);
 
-        console.log(`short ${short} => bytes ${JSON.stringify(byteView)}`);
+        if (DEBUG_EN) console.log(`short ${short} => bytes ${JSON.stringify(byteView)}`);
 
         return Array.from(byteView);
     }
@@ -4501,6 +4483,23 @@ class Firmata extends Emitter {
     }
 
     /**
+     * led matrix free mode
+     * @param sensor
+     * @param cmd
+     * @param matrixStatus 1~8 rows on/off value (hex string, 1=on, 0=off)
+     * @param callback
+     */
+    showCharacterDraw (sensor, cmd, matrixStatus, callback) {
+        const datas = this._runPackage(sensor, cmd, ...matrixStatus);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-free-${matrixStatus[0]}`);
+        this.once(`matrix-free-${matrixStatus[0]}`, callback);
+    }
+
+    /**
      * Move External motor
      * @param sensor
      * @param cmd
@@ -4510,15 +4509,30 @@ class Firmata extends Emitter {
      */
     moveExtMotors (sensor, cmd, direction, speed, callback) {
         const datas = this._runPackage(sensor, cmd, direction, speed);
-        // const datas = this._runPackage(sensor, cmd, direction, this._short2array(speed));
         this._sendBuffer = datas.slice();
 
         writeToTransport(this, datas);
 
-        // this.removeAllListeners(`ext-motor-set-${direction}`);
-        this.removeAllListeners(`ext-motor-${direction}`);
-        this.once(`ext-motor-${direction}`, callback);
-        // this.once(`ext-motor-set-${direction}`, callback);
+        this.removeAllListeners(`ext-motor-${direction}-${speed}`);
+        this.once(`ext-motor-${direction}-${speed}`, callback);
+    }
+
+    /**
+     * stop external DC motors
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param callback
+     */
+    stopDCMotors (sensor, cmd, direction, speed, callback) {
+        const datas = this._runPackage(sensor, cmd, direction, speed);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`ext-motor-${direction}-${speed}`);
+        this.once(`ext-motor-${direction}-${speed}`, callback);
     }
 
     /**
@@ -4536,8 +4550,46 @@ class Firmata extends Emitter {
 
         writeToTransport(this, datas);
 
-        this.removeAllListeners(`ext-motor-set-${direction}`);
-        this.once(`ext-motor-set-${direction}`, callback);
+        this.removeAllListeners(`ext-motor-set-${direction}-${datas[8]}${datas[9]}`);
+        this.once(`ext-motor-set-${direction}-${datas[8]}${datas[9]}`, callback);
+    }
+
+    /**
+     * stop DC motor
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param speed
+     * @param callback
+     */
+    stopDCMotor (sensor, cmd, direction, speed, callback) {
+        const datas = this._runPackage(
+            sensor, cmd, direction, this._short2array(speed));
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`ext-motor-set-${direction}-${datas[8]}${datas[9]}`);
+        this.once(`ext-motor-set-${direction}-${datas[8]}${datas[9]}`, callback);
+    }
+
+    /**
+     * set direction and left and right DC Motor speed
+     * @param sensor
+     * @param cmd
+     * @param direction
+     * @param leftSpeed
+     * @param rightSpeed
+     * @param callback
+     */
+    moveDCMotorLR (sensor, cmd, direction, leftSpeed, rightSpeed, callback) {
+        const datas = this._runPackage(sensor, cmd, direction, leftSpeed, rightSpeed);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`ext-motor-set-l${leftSpeed}-r${rightSpeed}`);
+        this.once(`ext-motor-set-l${leftSpeed}-r${rightSpeed}`, callback);
     }
 
     /**

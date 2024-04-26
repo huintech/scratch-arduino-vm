@@ -91,6 +91,13 @@ const ArgumentTypeMap = (() => {
             fieldName: 'MATRIX'
         }
     };
+    // TODO: matrix8
+    map[ArgumentType.MATRIX8] = {
+        shadow: {
+            type: 'matrix8',
+            fieldName: 'MATRIX8',
+        }
+    };
     map[ArgumentType.NOTE] = {
         shadow: {
             type: 'note',
