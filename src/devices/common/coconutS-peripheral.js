@@ -1867,6 +1867,27 @@ class CoconutSPeripheral {
     }
 
     /**
+     * Led Matrix free mode
+     * @param matrixStatus
+     * @returns {Promise<unknown>}
+     */
+    showCharacterDraw (matrixStatus) {
+        // cmd = 7 (freemode)
+        const options = [Sensors.LedMatrix, 7];
+
+        // console.log('args', matrixStatus);
+        // console.log('options', options);
+
+        return new Promise(resolve => {
+            this._firmata.showCharacterDraw(...options, matrixStatus ,value => {
+                if (value === true) resolve();
+                else resolve(value);
+                console.log(`resolve= ${value}`);
+            });
+        });
+    }
+
+    /**
      * Move external motor
      * @param direction
      * @param speed

@@ -2935,22 +2935,7 @@ class CoconutDevice {
                         arguments: {
                             MATRIX8: {
                                 type: ArgumentType.MATRIX8,
-                                defaultValue: '0000000000000000000000000000000000000000000000000000000000000000'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'showImage',
-                        text: formatMessage({
-                            id: 'microbit.display.showImage',
-                            default: 'show image [VALUE]',
-                            description: 'microbit show image'
-                        }),
-                        blockType: BlockType.COMMAND,
-                        arguments: {
-                            VALUE: {
-                                type: ArgumentType.MATRIX,
-                                defaultValue: '0101010101100010101000100'
+                                defaultValue: '0110011010011001100000011000000110000001010000100010010000011000'
                             }
                         }
                     }
@@ -3826,31 +3811,39 @@ class CoconutDevice {
     }
 
     /**
-     * Display a predefined symbol on the 5x5 LED matrix.
-     * TODO: ui 구현
+     * Display a predefined symbol on the 8x8 LED matrix.
      * @param args
      */
     showCharacterDraw (args) {
-        const symbol = Cast.toString(args.MATRIX8).replace(/\s/g, '');
-        const reducer = (accumulator, c, index) => {
-            const value = (c === '0') ? accumulator : accumulator + Math.pow(2, index);
-            return value;
+        const symbol = Cast.toString(args.MATRIX8).replace(/\s/g, ''); // remove space
+        let ConvertBase = function (num) {
+            return {
+                from : function (baseFrom) {
+                    return {
+                        to : function (baseTo) {
+                            return parseInt(num, baseFrom).toString(baseTo);
+                        }
+                    };
+                }
+            };
         };
-        // const hex = symbol.split('').reduce(reducer, 0);
-        // if (hex !== null) {
-        //     this._peripheral.ledMatrixState[0] = hex & 0x1F;
-        //     this._peripheral.ledMatrixState[1] = (hex >> 5) & 0x1F;
-        //     this._peripheral.ledMatrixState[2] = (hex >> 10) & 0x1F;
-        //     this._peripheral.ledMatrixState[3] = (hex >> 15) & 0x1F;
-        //     this._peripheral.ledMatrixState[4] = (hex >> 20) & 0x1F;
-        //     this._peripheral.displayMatrix(this._peripheral.ledMatrixState);
-        // }
-        //
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve();
-            }, 2000);
-        });
+        // binary to decimal
+        ConvertBase.bin2dec = function (num) {
+            return ConvertBase(num).from(2).to(10);
+        };
+        // binary to hexadecimal
+        // ConvertBase.bin2hex = function (num) {
+        //     return ConvertBase(num).from(2).to(16);
+        // };
+
+        // 8자리씩 분리 --> bin to dec
+        let matches = symbol.match(/([0-1]{8})/g);
+        let matrixState = [0,0,0,0,0,0,0,0];
+        for (let s in matches) {
+            // matrixState[s] = ConvertBase.bin2hex(matches[s]);
+            matrixState[s] = Cast.toNumber(ConvertBase.bin2dec(matches[s]));
+        }
+        return this._peripheral.showCharacterDraw(matrixState);
     }
 
     /**
@@ -4125,34 +4118,6 @@ class CoconutDevice {
         return this._peripheral.detectRemoteControl(
             Cast.toNumber(args.REMOTE_BUTTON),
             Cast.toNumber(args.REMOTE_CHANNEL));
-    }
-
-    /**
-     * Display a predefined symbol on the 5x5 LED matrix.
-     * @param {object} args - the block's arguments.
-     * @return {Promise} - a Promise that resolves after a tick.
-     */
-    showImage (args) {
-        const symbol = cast.toString(args.VALUE).replace(/\s/g, '');
-        const reducer = (accumulator, c, index) => {
-            const value = (c === '0') ? accumulator : accumulator + Math.pow(2, index);
-            return value;
-        };
-        const hex = symbol.split('').reduce(reducer, 0);
-        if (hex !== null) {
-            this._peripheral.ledMatrixState[0] = hex & 0x1F;
-            this._peripheral.ledMatrixState[1] = (hex >> 5) & 0x1F;
-            this._peripheral.ledMatrixState[2] = (hex >> 10) & 0x1F;
-            this._peripheral.ledMatrixState[3] = (hex >> 15) & 0x1F;
-            this._peripheral.ledMatrixState[4] = (hex >> 20) & 0x1F;
-            this._peripheral.displayMatrix(this._peripheral.ledMatrixState);
-        }
-
-        return new Promise(resolve => {
-            setTimeout(() => {
-                resolve();
-            }, BLESendInterval);
-        });
     }
 }
 

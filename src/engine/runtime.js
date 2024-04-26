@@ -96,7 +96,6 @@ const ArgumentTypeMap = (() => {
         shadow: {
             type: 'matrix8',
             fieldName: 'MATRIX8',
-            fieldType: 'MATRIX8'
         }
     };
     map[ArgumentType.NOTE] = {

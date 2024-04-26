@@ -1074,6 +1074,14 @@ const SYSEX_RESPONSE = {
             board.emit(`matrix-kr-${letter}`, value);
             break;
         }
+        case MATRIX_CMD.FREE: {
+            const letter = board._sendBuffer[7];
+            console.log(`handler : matrix-free-${letter}`);
+
+            value = (action === ACTION.RUN) ? true : error;
+            board.emit(`matrix-free-${letter}`, value);
+            break;
+        }
         }
     },
     /**
@@ -4472,6 +4480,23 @@ class Firmata extends Emitter {
 
         this.removeAllListeners(`avoid-mode`);
         this.once(`avoid-mode`, callback);
+    }
+
+    /**
+     * led matrix free mode
+     * @param sensor
+     * @param cmd
+     * @param matrixStatus 1~8 rows on/off value (hex string, 1=on, 0=off)
+     * @param callback
+     */
+    showCharacterDraw (sensor, cmd, matrixStatus, callback) {
+        const datas = this._runPackage(sensor, cmd, ...matrixStatus);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        this.removeAllListeners(`matrix-free-${matrixStatus[0]}`);
+        this.once(`matrix-free-${matrixStatus[0]}`, callback);
     }
 
     /**
