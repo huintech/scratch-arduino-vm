@@ -1,6 +1,6 @@
 {
   "name": "@huintech/scratch-arduino-vm",
-  "version": "0.8.7",
+  "version": "0.8.8",
   "description": "Virtual Machine for Scratch",
   "author": "Massachusetts Institute of Technology",
   "license": "BSD-3-Clause",
