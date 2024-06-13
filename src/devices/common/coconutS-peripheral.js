@@ -1165,12 +1165,6 @@ class CoconutSPeripheral {
      * buzzer on
      */
     beep () {
-        // const datas = this._buzzerControl(0, 262, 50);
-
-        // if (this.isConnected()) {
-        //     this.send(datas);
-        // }
-
         // sensor, cmd, tone, beat
         const options = [Sensors.Buzzer, 0, 262, 50];
 
@@ -1971,25 +1965,7 @@ class CoconutSPeripheral {
      * @returns {Promise<unknown>}
      */
     moveDCMotorLR (leftSpeed, rightSpeed) {
-        // set direction and speed
-        let direction = Directions.Forward;
-
-        // set direction
-        if (leftSpeed < 0 && rightSpeed < 0) {
-            direction = Directions.Backward;
-            leftSpeed *= (-1);
-            rightSpeed *= (-1);
-        }
-        else if (rightSpeed < 0) {
-            direction = Directions.Right;
-            rightSpeed *= (-1);
-        }
-        else if (leftSpeed < 0) {
-            direction = Directions.Left;
-            leftSpeed *= (-1);
-        }
-
-        const options = [Sensors.ExtMotor, 3, direction, leftSpeed, rightSpeed];
+        const options = [Sensors.ExtMotor, 4, leftSpeed, rightSpeed];
 
         return new Promise(resolve => {
             this._firmata.moveDCMotorLR(...options, value => {
@@ -2028,6 +2004,26 @@ class CoconutSPeripheral {
         if (sec < 0) sec = -sec;
         const ms = 1000 * sec; // ms 변환
 
+        const options = [Sensors.ExtLed, pin, ms];
+
+        return new Promise(resolve => {
+            this._firmata.extLedOn(...options, value => {
+                if (value === true) resolve();
+                else resolve(value);
+
+                if (DEBUG_EN) console.log(`resolve= ${value}`);
+            });
+        });
+    }
+
+    /**
+     * external LED off
+     * @date 240613
+     * @param pin
+     * @param sec
+     */
+    extLedOff (pin) {
+        const ms = 0; // ms 변환
         const options = [Sensors.ExtLed, pin, ms];
 
         return new Promise(resolve => {

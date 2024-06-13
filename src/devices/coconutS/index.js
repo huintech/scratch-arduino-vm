@@ -2886,9 +2886,9 @@ class CoconutDevice {
                     default: 'Hidden',
                     description: 'The name of the Coconut-S device Hidden category'
                 }),
-                color1: '#9966FF',
-                color2: '#774DCB',
-                color3: '#774DCB',
+                color1: '#b57250',
+                color2: '#d5865e', //parameter
+                color3: '#5a3a28', //outline
                 blocks: [
                     {
                         opcode: 'playMelody',
@@ -2953,9 +2953,9 @@ class CoconutDevice {
                     default: 'Sensor',
                     description: 'The name of the Coconut-S device Extended sensor category'
                 }),
-                color1: '#c041c0',
-                color2: '#861b86',
-                color3: '#861b86',
+                color1: '#24a75d', // block
+                color2: '#1d4d29', //'#62bc85', // parameter
+                color3: '#1d4d29', //outline
                 blocks: [
                     {
                         opcode: 'moveExtMotors',
@@ -3068,6 +3068,7 @@ class CoconutDevice {
                             }
                         }
                     },
+                    '---',
                     {
                         opcode: 'extLedOn',
                         text: formatMessage({
@@ -3085,6 +3086,22 @@ class CoconutDevice {
                             TIME_SEC: {
                                 type: ArgumentType.NUMBER,
                                 defaultValue: 1
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'extLedOff',
+                        text: formatMessage({
+                            id: 'coconut.sensor.extLedOff',
+                            default: 'turn off external LED pin [PINS]',
+                            description: 'turn off the external LED'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            PINS: {
+                                type: ArgumentType.STRING,
+                                menu: 'PinMenu',
+                                defaultValue: Pins.D4
                             }
                         }
                     },
@@ -3941,6 +3958,21 @@ class CoconutDevice {
 
         return this._peripheral.extLedOn(
             Cast.toNumber(args.PINS), Cast.toNumber(args.TIME_SEC));
+    }
+
+    /**
+     * external LED off
+     * @param args
+     * @returns {*}
+     */
+    extLedOff (args) {
+        if (DEBUG_EN) {
+            console.log(`extLedOff :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
+
+        return this._peripheral.extLedOff(
+            Cast.toNumber(args.PINS));
     }
 
     /**

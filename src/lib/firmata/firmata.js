@@ -188,7 +188,8 @@ const MATRIX_CMD = {
 const EXT_MOTOR_CMD = {
     SET_SPEED: 0x01,
     MOVE: 0x02,
-    SET_SPEED_LR: 0x03
+    SET_SPEED_LR: 0x03,
+    SET_SPEED_LR2: 0x04
 };
 
 const symbolSendOneWireSearch = Symbol('sendOneWireSearch');
@@ -1210,9 +1211,10 @@ const SYSEX_RESPONSE = {
                 board.emit(`ext-motor-set-${direction}-${speed}`, value);
                 break;
             }
-            case EXT_MOTOR_CMD.SET_SPEED_LR: {
-                const leftSpeed = board._sendBuffer[8];
-                const rightSpeed = board._sendBuffer[9];
+            case EXT_MOTOR_CMD.SET_SPEED_LR:
+            case EXT_MOTOR_CMD.SET_SPEED_LR2: {
+                const leftSpeed = `${board._sendBuffer[7]}${board._sendBuffer[8]}`;
+                const rightSpeed = `${board._sendBuffer[9]}${board._sendBuffer[10]}`;
 
                 if (DEBUG_EN) console.log(`handler : ext-motor-set-l${leftSpeed}-r${rightSpeed}`);
 
@@ -4582,14 +4584,16 @@ class Firmata extends Emitter {
      * @param rightSpeed
      * @param callback
      */
-    moveDCMotorLR (sensor, cmd, direction, leftSpeed, rightSpeed, callback) {
-        const datas = this._runPackage(sensor, cmd, direction, leftSpeed, rightSpeed);
+    moveDCMotorLR (sensor, cmd, leftSpeed, rightSpeed, callback) {
+        const datas = this._runPackage(sensor, cmd,
+            this._short2array(leftSpeed), this._short2array(rightSpeed));
         this._sendBuffer = datas.slice();
 
         writeToTransport(this, datas);
+        let lisName = `ext-motor-set-l${this._sendBuffer[7]}${this._sendBuffer[8]}-r${this._sendBuffer[9]}${this._sendBuffer[10]}`;
 
-        this.removeAllListeners(`ext-motor-set-l${leftSpeed}-r${rightSpeed}`);
-        this.once(`ext-motor-set-l${leftSpeed}-r${rightSpeed}`, callback);
+        this.removeAllListeners(lisName);
+        this.once(lisName, callback);
     }
 
     /**
