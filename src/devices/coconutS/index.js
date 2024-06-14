@@ -74,10 +74,13 @@ const Pins = {
     A5: '19'
 };
 
-
+/**
+ * Digital Ouput Level
+ * @type {{HIGH: string, LOW: string}}
+ */
 const Level = {
-    High: 'HIGH',
-    Low: 'LOW'
+    HIGH: '1',
+    LOW: '0'
 };
 
 const Buadrate = {
@@ -1956,24 +1959,142 @@ class CoconutDevice {
     //     ];
     // }
 
+    /**
+     * Digital Level menu
+     * @returns {[{text: (*|string), value: string},{text: (*|string), value: string}]}
+     * @constructor
+     */
     get LEVEL_MENU () {
         return [
             {
                 text: formatMessage({
                     id: 'arduino.levelMenu.high',
-                    default: 'high',
+                    default: 'HIGH',
                     description: 'label for high level'
                 }),
-                value: Level.High
+                value: Level.HIGH
             },
             {
                 text: formatMessage({
                     id: 'arduino.levelMenu.low',
-                    default: 'low',
+                    default: 'LOW',
                     description: 'label for low level'
                 }),
-                value: Level.Low
+                value: Level.LOW
             }
+        ];
+    }
+
+    /**
+     * PWM duty menu
+     * @returns {string[]}
+     * @constructor
+     */
+    get PWM_DUTY_MENU () {
+        return ['0', '50', '100', '150', '200', '255'];
+    }
+
+    /**
+     * note menu for arduino block
+     * @returns {[{text: string, value: string},{text: string, value: string},{text: string, value: string},{text: string, value: string},{text: string, value: string},null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]}
+     * @constructor
+     */
+    get ARDUINO_NOTE_MENU() {
+        return [
+            {text: "C2", value: '65'},
+            {text:"D2", value:'73'},
+            {text:"E2", value:'82'},
+            {text:"F2",value:'87'},
+            {text:"G2",value:'98'},
+            {text:"A2",value:'110'},
+            {text:"B2",value:'123'},
+            {text:"C3",value:'131'},
+            {text:"D3",value:'147'},
+            {text:"E3",value:'165'},
+            {text:"F3",value:'175'},
+            {text:"G3",value:'196'},
+            {text:"A3",value:'220'},
+            {text:"B3",value:'247'},
+            {text:"C4",value:'262'},
+            {text:"D4",value:'294'},
+            {text:"E4",value:'330'},
+            {text:"F4",value:'349'},
+            {text:"G4",value:'392'},
+            {text:"A4",value:'440'},
+            {text:"B4",value:'494'},
+            {text:"C5",value:'523'},
+            {text:"D5",value:'587'},
+            {text:"E5",value:'659'},
+            {text:"F5",value:'698'},
+            {text:"G5",value:'784'},
+            {text:"A5",value:'880'},
+            {text:"B5",value:'988'},
+            {text:"C6",value:'1047'},
+            {text:"D6",value:'1175'},
+            {text:"E6",value:'1319'},
+            {text:"F6",value:'1397'},
+            {text:"G6",value:'1568'},
+            {text:"A6",value:'1760'},
+            {text:"B6",value:'1976'},
+            {text:"C7",value:'2093'},
+            {text:"D7",value:'2349'},
+            {text:"E7",value:'2637'},
+            {text:"F7",value:'2794'},
+            {text:"G7",value:'3136'},
+            {text:"A7",value:'3520'},
+            {text:"B7",value:'3951'},
+            {text:"C8",value:'4186'},
+            {text:"D8",value:'4699'}
+        ];
+    }
+
+    /**
+     * Beat menu
+     * @returns {[{text: (*|string), value: number},{text: (*|string), value: number},{text: (*|string), value: number},{text: (*|string), value: number},{text: (*|string), value: number},null,null,null,null,null,null]}
+     * @constructor
+     */
+    get ARDUINO_BEAT_MENU () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'coconut.beatMenu.half',
+                    default: BeatValues.HALF,
+                    description: 'half beat'
+                }),
+                value: BeatValues.HALF.value
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beatMenu.quarter',
+                    default: BeatValues.QUARTER,
+                    description: 'quarter beat'
+                }),
+                value: BeatValues.QUARTER.value
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beatMenu.8th',
+                    default: BeatValues.EIGHTH,
+                    description: 'Eighth beat'
+                }),
+                value: BeatValues.EIGHTH.value
+            },
+            {
+                text: formatMessage({
+                    id: 'coconut.beatMenu.whole',
+                    default: BeatValues.WHOLE,
+                    description: 'Whole beat'
+                }),
+                value: BeatValues.WHOLE.value
+            },
+            // {
+            //     text: formatMessage({
+            //         id: 'coconut.beatMenu.zero',
+            //         default: 'Zero',
+            //         description: 'zero beat'
+            //     }),
+            //     value: BeatValues.ORIGINAL.value
+            // },
         ];
     }
 
@@ -3363,6 +3484,219 @@ class CoconutDevice {
                         items: this.REMOTE_BUTTON_MENU
                     }
                 }
+            },
+            {
+                id: 'arduinoUno',
+                name: formatMessage({
+                    id: 'coconut.category.arduinoUno',
+                    default: 'Arduino Uno',
+                    description: 'The name of the Arduino Uno category'
+                }),
+                color1: '#3469f1', // block
+                color2: '#628cff', //'#62bc85', // parameter
+                color3: '#2543a5', //outline
+                blocks: [
+                    {
+                        opcode: 'readDigitalPin',
+                        text: formatMessage({
+                            id: 'coconut.arduinoUno.readDigitalPin',
+                            default: 'read digital pin [DIGITAL_PIN]',
+                            description: 'read digital pin'
+                        }),
+                        blockType: BlockType.BOOLEAN,
+                        arguments: {
+                            DIGITAL_PIN: {
+                                type: ArgumentType.STRING,
+                                // menu: 'DigitalPinMenu',
+                                defaultValue: Pins.D11
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'getDigitalPullup',
+                        text: formatMessage({
+                            id: 'coconut.arduinoUno.getDigitalPullup',
+                            default: 'read digital pin [DIGITAL_PIN] (enable the internal pull-up resistors)',
+                            description: 'read digital pin (enable internal pull-up resistors)'
+                        }),
+                        blockType: BlockType.BOOLEAN,
+                        arguments: {
+                            DIGITAL_PIN: {
+                                type: ArgumentType.STRING,
+                                // menu: 'DigitalPinMenu',
+                                defaultValue: Pins.D11
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'runDigital',
+                        text: formatMessage({
+                            id: 'coconut.arduinoUno.runDigital',
+                            default: 'set digital pin [DIGITAL_PIN] output as [DIGITAL_OUPUT]',
+                            description: 'set digital pin output'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            DIGITAL_PIN: {
+                                type: ArgumentType.STRING,
+                                // menu: 'DigitalPinMenu',
+                                defaultValue: Pins.D11
+                            },
+                            DIGITAL_OUPUT: {
+                                type: ArgumentType.STRING,
+                                menu: 'LevelMenu',
+                                defaultValue: Level.HIGH
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'readAnalog',
+                        text: formatMessage({
+                            id: 'coconut.arduinoUno.getAnalog',
+                            default: 'read analog pin (A)[ANALOG_PIN]',
+                            description: 'read analog pin'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            ANALOG_PIN: {
+                                type: ArgumentType.STRING,
+                                // menu: 'AnalogPinMenu',
+                                defaultValue: '2'
+                            },
+                        }
+                    },
+                    {
+                        opcode: 'getAnalogPullup',
+                        text: formatMessage({
+                            id: 'coconut.arduinoUno.getAnalogPullup',
+                            default: 'read analog pin (A)[ANALOG_PIN] (enable the internal pull-up resistors)',
+                            description: 'read analog pin (enable the internal pull-up resistors)'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            ANALOG_PIN: {
+                                type: ArgumentType.STRING,
+                                // menu: 'AnalogPinMenu',
+                                defaultValue: '2'
+                            },
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'getPulse2',
+                        text: formatMessage({
+                            id: 'coconut.arduinoUno.getPulse2',
+                            default: 'read pulse pin [PULSE_PIN]',
+                            description: 'read pulse pin'
+                        }),
+                        blockType: BlockType.REPORTER,
+                        arguments: {
+                            PULSE_PIN: {
+                                type: ArgumentType.STRING,
+                                // menu: 'AnalogPinsMenu',
+                                defaultValue: Pins.D13
+                            },
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'runPwm',
+                        text: formatMessage({
+                            id: 'coconut.arduinoUno.runPwm',
+                            default: 'set pwm pin [PWM_PIN] output as [PWM_VALUE]',
+                            description: 'set pwm pin output as pwm value'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            PWM_PIN: {
+                                type: ArgumentType.STRING,
+                                // menu: 'PWMPinMenu',
+                                defaultValue: Pins.D5
+                            },
+                            PWM_VALUE: {
+                                type: ArgumentType.STRING,
+                                menu: 'PwmDutyMenu',
+                                defaultValue: '0'
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'runTone',
+                        text: formatMessage({
+                            id: 'coconut.arduinoUno.runTone',
+                            default: 'play tone pin [TONE_PIN] on note [NOTES] beat [BEATS]',
+                            description: 'play tone pin'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            TONE_PIN: {
+                                type: ArgumentType.STRING,
+                                // menu: 'PinMenu',
+                                defaultValue: Pins.D3
+                            },
+                            NOTES: {
+                                type: ArgumentType.STRING,
+                                menu: 'ArduinoNoteMenu',
+                                defaultValue: '262'
+                            },
+                            BEATS: {
+                                type: ArgumentType.STRING,
+                                menu: 'ArduinoBeatMenu',
+                                defaultValue: '500'
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'runServo',
+                        text: formatMessage({
+                            id: 'coconut.arduinoUno.runServo',
+                            default: 'set servo pin [PINS] angle as [SERVO_ANGLE]',
+                            description: 'set servo pin as angle'
+                        }),
+                        blockType: BlockType.COMMAND,
+                        arguments: {
+                            PINS: {
+                                type: ArgumentType.STRING,
+                                // menu: 'PWMPinMenu',
+                                defaultValue: Pins.D10
+                            },
+                            SERVO_ANGLE: {
+                                type: ArgumentType.STRING,
+                                menu: 'ServoAngleMenu',
+                                defaultValue: 90
+                            }
+                        }
+                    },
+                ],
+                menus: {
+                    LevelMenu: {
+                        items: this.LEVEL_MENU
+                    },
+                    PwmDutyMenu: {
+                        items: this.PWM_DUTY_MENU
+                    },
+                    ArduinoNoteMenu: {
+                        items: this.ARDUINO_NOTE_MENU
+                    },
+                    ArduinoBeatMenu: {
+                        items: this.ARDUINO_BEAT_MENU
+                    },
+                    // PinMenu: {
+                    //     items: this.PIN_MENU
+                    // },
+                    ServoAngleMenu: {
+                        items: this.SERVO_ANGLE_MENU
+                    },
+                    // PWMPinMenu: {
+                    //     items: this.PWM_PINS_MENU
+                    // },
+                    // AnalogPinsMenu: {
+                    //     items: this.ANALOG_PINS_MENU
+                    // },
+                }
             }
         ];
     }
@@ -4144,12 +4478,140 @@ class CoconutDevice {
      * @returns {Promise<*>}
      */
     detectRemoteControl (args) {
-        console.log(`detectRemoteControl :`);
-        console.log(`args= ${JSON.stringify(args)}`);
+        if (DEBUG_EN) {
+            console.log(`detectRemoteControl :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
 
         return this._peripheral.detectRemoteControl(
             Cast.toNumber(args.REMOTE_BUTTON),
             Cast.toNumber(args.REMOTE_CHANNEL));
+    }
+
+    /**
+     * read digital pin
+     * @param args
+     * @returns {Promise}
+     */
+    readDigitalPin (args) {
+        if (DEBUG_EN) {
+            console.log(`Read digital pin :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
+
+        return this._peripheral.readDigitalPin(Cast.toNumber(args.DIGITAL_PIN));
+    }
+
+    /**
+     * read digital pin (internal pull-up resistor)
+     * @param args
+     * @returns {Promise}
+     */
+    getDigitalPullup (args) {
+        if (DEBUG_EN) {
+            console.log(`Read digital pin (pull-up) :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
+
+        return this._peripheral.readDigitalPullup(Cast.toNumber(args.DIGITAL_PIN));
+    }
+
+    /**
+     * set digital pin as output
+     * @param args
+     */
+    runDigital (args) {
+        if (DEBUG_EN) {
+            console.log(`write digital output :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
+
+        return this._peripheral.setDigitalOutput(Cast.toNumber(args.DIGITAL_PIN), Cast.toNumber(args.DIGITAL_OUPUT));
+    }
+
+    /**
+     * Read analog pin
+     * @param args
+     * @returns {Promise}
+     */
+    readAnalog (args) {
+        if (DEBUG_EN) {
+            console.log(`Read analog pin :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
+
+        return this._peripheral.readAnalogPin(Cast.toNumber(args.ANALOG_PIN));
+    }
+
+    /**
+     * Read analog pin (pull-up)
+     * @param args
+     * @returns {*}
+     */
+    getAnalogPullup (args) {
+        if (DEBUG_EN) {
+            console.log(`Read analog pin (pull-up) :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
+
+        return this._peripheral.readAnalogPullup(Cast.toNumber(args.ANALOG_PIN));
+    }
+
+    /**
+     * read pulse pin
+     * @param args
+     * @returns {Promise<*>}
+     */
+    getPulse2 (args) {
+        if (DEBUG_EN) {
+            console.log(`Read pulse pin :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
+
+        return this._peripheral.readPulsePin(Cast.toNumber(args.PULSE_PIN));
+    }
+
+    /**
+     * set PWM output
+     * @param args
+     */
+    runPwm (args) {
+        if (DEBUG_EN) {
+            console.log(`set pwm output :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
+
+        return this._peripheral.setPwmOutput(Cast.toNumber(args.PWM_PIN), Cast.toNumber(args.PWM_VALUE));
+    }
+
+    /**
+     * play tone for arduino block
+     * @param args
+     * @returns {*}
+     */
+    runTone (args) {
+        if (DEBUG_EN) {
+            console.log(`play tone with note and beat :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
+
+        return this._peripheral.runTone(Cast.toNumber(args.TONE_PIN),
+            Cast.toNumber(args.NOTES), Cast.toNumber(args.BEATS));
+    }
+
+    /**
+     * set servo output for arduino block
+     * @param args
+     * @returns {Promise<unknown>}
+     */
+    runServo (args) {
+        if (DEBUG_EN) {
+            console.log(`run servo :`);
+            console.log(`args= ${JSON.stringify(args)}`);
+        }
+
+        return this._peripheral.setServoOutput(Cast.toNumber(args.PINS),
+            Cast.toNumber(args.SERVO_ANGLE));
     }
 }
 

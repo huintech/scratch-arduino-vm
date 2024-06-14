@@ -66,7 +66,13 @@ const Sensors = {
     Temperature: 21,
     RGBled: 25,
     Motor: 26,
-    LedMatrix: 27, // 0x1b
+    LedMatrix: 27,  // 0x1b
+    Digital: 30,    // Arduino uno
+    Analog: 31,     // Arduino uno
+    PWM: 32,        // Arduino uno
+    ArduinoServo: 33,        // Arduino uno
+    Tone: 34,       // Arduino uno
+    Pulse: 37,      // Arduino uno
     Speaker: 41,
     ExtIR: 42,
     ServoMotor: 43,
@@ -654,14 +660,29 @@ class CoconutSPeripheral {
     }
 
     /**
+     * set digital pin as output
      * @param {PIN} pin - the pin to set.
      * @param {LEVEL} level - the pin level to set.
      */
     setDigitalOutput (pin, level) {
         if (this.isReady()) {
-            pin = this.parsePin(pin);
-            level = this.parseLevel(level);
-            this._firmata.digitalWrite(pin, level);
+            // pin = this.parsePin(pin);
+            // level = this.parseLevel(level);
+            // this._firmata.digitalWrite(pin, level);
+
+            const options = [Sensors.Digital, pin, level];
+
+            return new Promise(resolve => {
+                this._firmata.setDigitalOutput(...options, value => {
+                    if (value === true) resolve();
+                    else resolve(value);
+
+                    if (DEBUG_EN) console.log(`resolve : ${value}`);
+                });
+                // window.setTimeout(() => {
+                //     resolve();
+                // }, FrimataReadTimeout);
+            });
         }
     }
 
@@ -671,15 +692,27 @@ class CoconutSPeripheral {
      */
     setPwmOutput (pin, value) {
         if (this.isReady()) {
-            pin = this.parsePin(pin);
+            // pin = this.parsePin(pin);
             if (value < 0) {
                 value = 0;
             }
             if (value > 255) {
                 value = 255;
             }
-            this._firmata.pinMode(pin, this._firmata.MODES.PWM);
-            this._firmata.pwmWrite(pin, value);
+
+            const options = [Sensors.PWM, pin, value];
+
+            return new Promise(resolve => {
+                this._firmata.setPwmOutput(...options, value => {
+                    if (value === true) resolve();
+                    else resolve(value);
+
+                    if (DEBUG_EN) console.log(`resolve : ${value}`);
+                });
+                // window.setTimeout(() => {
+                //     resolve();
+                // }, FrimataReadTimeout);
+            });
         }
     }
 
@@ -689,9 +722,36 @@ class CoconutSPeripheral {
      */
     readDigitalPin (pin) {
         if (this.isReady()) {
-            pin = this.parsePin(pin);
+            // pin = this.parsePin(pin);
+            if (typeof pin === 'string') pin = Cast.toNumber(pin);
+
+            const options = [Sensors.Digital, pin];
+
             return new Promise(resolve => {
-                this._firmata.digitalRead(pin, value => {
+                this._firmata.digitalRead(...options, value => {
+                    resolve(value);
+                });
+                window.setTimeout(() => {
+                    resolve();
+                }, FirmataReadTimeout);
+            });
+        }
+    }
+
+    /**
+     * Read digital pin (internal pull-up resistor)
+     * @param pin
+     * @returns {Promise<unknown>}
+     */
+    readDigitalPullup (pin) {
+        if (this.isReady()) {
+            // pin = this.parsePin(pin);
+            if (typeof pin === 'string') pin = Cast.toNumber(pin);
+
+            const options = [Sensors.Digital, pin, 1];
+
+            return new Promise(resolve => {
+                this._firmata.digitalReadPullup(...options, value => {
                     resolve(value);
                 });
                 window.setTimeout(() => {
@@ -707,12 +767,12 @@ class CoconutSPeripheral {
      */
     readAnalogPin (pin) {
         if (this.isReady()) {
-            pin = this.parsePin(pin);
-            // Shifting to analog pin number.
-            pin = pin - 14;
-            this._firmata.pinMode(pin, this._firmata.MODES.ANALOG);
+            if (typeof pin === 'string') pin = Cast.toNumber(pin);
+
+            const options = [Sensors.Analog, pin];
+
             return new Promise(resolve => {
-                this._firmata.analogRead(pin, value => {
+                this._firmata.analogRead(...options, value => {
                     resolve(value);
                 });
                 window.setTimeout(() => {
@@ -723,23 +783,106 @@ class CoconutSPeripheral {
     }
 
     /**
+     * Read analog pin (pull-up)
+     * @param pin
+     * @returns {Promise<unknown>}
+     */
+    readAnalogPullup (pin) {
+        if (this.isReady()) {
+            if (typeof pin === 'string') pin = Cast.toNumber(pin);
+
+            const options = [Sensors.Analog, pin, 1];
+
+            return new Promise(resolve => {
+                this._firmata.analogReadPullup(...options, value => {
+                    resolve(value);
+                });
+                window.setTimeout(() => {
+                    resolve();
+                }, FirmataReadTimeout);
+            });
+        }
+    }
+
+    /**
+     * read puluse pin
+     * @param pin
+     * @returns {Promise<unknown>}
+     */
+    readPulsePin (pin) {
+        if (this.isReady()) {
+            if (typeof pin === 'string') pin = Cast.toNumber(pin);
+
+            const options = [Sensors.Pulse, pin];
+
+            return new Promise(resolve => {
+                this._firmata.readPulsePin(...options, value => {
+                    resolve(value);
+                });
+                window.setTimeout(() => {
+                    resolve();
+                }, FirmataReadTimeout);
+            });
+        }
+    }
+
+    /**
+     * play tone for arduino block
+     * @param pin
+     * @param note
+     * @param beat
+     * @returns {Promise<unknown>}
+     */
+    runTone (pin, note, beat) {
+        if (this.isReady()) {
+            const options = [Sensors.Tone, pin, note, beat];
+
+            return new Promise(resolve => {
+                this._firmata.runTone(...options, value => {
+                    if (value === true) resolve();
+                    else resolve(value);
+
+                    if (DEBUG_EN) console.log(`resolve : ${value}`);
+                });
+                // window.setTimeout(() => {
+                //     resolve();
+                // }, FrimataReadTimeout);
+            });
+        }
+    }
+
+    /**
      * @param {PIN} pin - the pin to set.
      * @param {VALUE} value - the degree to set.
      */
-    setServoOutput (pin, value) {
+    setServoOutput (pin, angle) {
         if (this.isReady()) {
-            pin = this.parsePin(pin);
-            if (value < 0) {
-                value = 0;
-            }
-            if (value > 180) {
-                value = 180;
-            }
-            this._firmata.pinMode(pin, this._firmata.MODES.PWM);
-            this._firmata.pwmWrite(pin, value);
+            // pin = this.parsePin(pin);
+            // if (value < 0) {
+            //     value = 0;
+            // }
+            // if (value > 180) {
+            //     value = 180;
+            // }
+            // this._firmata.pinMode(pin, this._firmata.MODES.PWM);
+            // this._firmata.pwmWrite(pin, value);
+            //
+            // this._firmata.servoConfig(pin, 600, 2400);
+            // this._firmata.servoWrite(pin, value);
 
-            this._firmata.servoConfig(pin, 600, 2400);
-            this._firmata.servoWrite(pin, value);
+            const options = [Sensors.ArduinoServo, pin, angle];
+
+            return new Promise(resolve => {
+                this._firmata.setServoOutput(...options, value => {
+                    if (value === true) resolve();
+                    else resolve(value);
+
+                    if (DEBUG_EN) console.log(`resolve : ${value}`);
+                });
+                // window.setTimeout(() => {
+                //     resolve();
+                // }, FrimataReadTimeout);
+            });
         }
     }
 

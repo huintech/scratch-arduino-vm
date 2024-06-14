@@ -82,6 +82,12 @@ const TEMPERATURE = 0x15;
 const RGB_LED = 0x19;
 const MOTOR = 0x1A;
 const LED_MATRIX = 0x1B;
+const ARDUINO_DIGITAL = 0x1E; // 30, Arduino Uno
+const ARDUINO_ANALOG = 0x1F; // 31, Arduino Uno
+const ARDUINO_PWM = 0x20;   // 32, Arduino Uno
+const ARDUINO_SERVO = 0x21;         // 33, Arduino Uno
+const ARDUINO_TONE = 0x22;  // 34, Arduino Uno
+const ARDUINO_PULSE = 0x25; // 37, Arduino Uno
 const SPEAKER = 0x29;       // 41
 const EXT_IR = 0x2A;        // 42
 const SERVO_MOTOR = 0x2B;   // 43
@@ -1534,7 +1540,190 @@ const SYSEX_RESPONSE = {
                 break;
             }
         }
+    },
+    /**
+     * Handles a Arduino Uno Digital function(read/write) response and emits the 'digital-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [ARDUINO_DIGITAL] (board) {
+        if (DEBUG_EN) {
+            console.log(`EVENT : Arduino uno Digital`);
+        }
+
+        const action = board._sendBuffer[4];
+        const len = board._sendBuffer[2];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        switch (action) {
+            case ACTION.GET: {
+                value = getSensorValue(board.buffer);
+                value = (value === 1); // return boolean
+                // console.log(`value= ${value}`);
+                let handleName = `digital-read-p${pin}`
+                // if (len === 4) {
+                //     board.emit(`digital-read-p${pin}`, value);
+                // }
+                // else {
+                if (len == 5) {
+                    handleName += `-pullup`
+                    // board.emit(`digital-read-p${pin}-pullup`, value);
+                }
+
+                board.emit(handleName, value);
+                break;
+            }
+            case ACTION.RUN: {
+                const level = board._sendBuffer[7];
+                value = true;
+
+                board.emit(`digital-write-p${pin}-l${level}}`, value);
+                break;
+            }
+        }
+    },
+    /**
+     * Handles a Arduino Uno Analog function(read/write) response and emits the 'analog-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [ARDUINO_ANALOG] (board) {
+        if (DEBUG_EN) {
+            console.log(`EVENT : Arduino uno Analog`);
+        }
+
+        const action = board._sendBuffer[4];
+        const len = board._sendBuffer[2];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        switch (action) {
+            case ACTION.GET: {
+                value = getSensorValue(board.buffer);
+                // value = (value === 1); // return boolean
+                // console.log(`value= ${value}`);
+                let handlerName = `analog-read-p${pin}`
+                // if (len === 4) {
+                //     board.emit(`digital-read-p${pin}`, value);
+                // }
+                // else {
+                if (len == 5) {
+                    handlerName += `-pullup`
+                    // board.emit(`digital-read-p${pin}-pullup`, value);
+                }
+
+                board.emit(handlerName, value);
+                break;
+            }
+            case ACTION.RUN: {
+                const level = board._sendBuffer[7];
+                value = true;
+
+                board.emit(`analog-write-p${pin}-l${level}}`, value);
+                break;
+            }
+        }
+    },
+    /**
+     * Handles a Arduino Uno Pulse function response and emits the 'pulse-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [ARDUINO_PULSE] (board) {
+        if (DEBUG_EN) {
+            console.log(`EVENT : Arduino uno Pulse`);
+        }
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        if (action === ACTION.GET) {
+            value = getSensorValue(board.buffer);
+        } else {
+            value = error;
+        }
+    },
+    /**
+     * Handles a Arduino Uno PWM function response and emits the 'pwm-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [ARDUINO_PWM] (board) {
+        if (DEBUG_EN) {
+            console.log(`EVENT : Arduino uno PWM`);
+        }
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+        const duty = board._sendBuffer[7];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        if (action === ACTION.RUN) {
+            value = true;
+        } else {
+            value = error;
+        }
+        board.emit(`pwm-write-p${pin}-d${duty}}`, value);
+    },
+    /**
+     * Handles a Arduino Uno PWM function response and emits the 'pwm-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [ARDUINO_TONE] (board) {
+        if (DEBUG_EN) {
+            console.log(`EVENT : Arduino uno TONE`);
+        }
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+
+        const noteh = `${board._sendBuffer[7]}${board._sendBuffer[8]}`
+        const beath = `${board._sendBuffer[9]}${board._sendBuffer[10]}`
+
+        const error = `Error: invalid response`;
+        let value;
+
+        if (action === ACTION.RUN) {
+            value = true;
+        } else {
+            value = error;
+        }
+
+        // const handlerName = `tone-p${pin}-n${noteh}-b${beath}`;
+        board.emit(`tone-p${pin}-n${noteh}-b${beath}`, value);
+    },
+    /**
+     * Handles a Arduino Uno PWM function response and emits the 'pwm-' + n event where n is command of the block parameter
+     * @param board
+     */
+    [ARDUINO_SERVO] (board) {
+        if (DEBUG_EN) {
+            console.log(`EVENT : Arduino uno SERVO`);
+        }
+
+        const action = board._sendBuffer[4];
+        const pin = board._sendBuffer[6];
+        const angle = board._sendBuffer[7];
+
+        const error = `Error: invalid response`;
+        let value;
+
+        if (action === ACTION.RUN) {
+            value = true;
+        } else {
+            value = error;
+        }
+
+        // const handlerName = `servo-p${pin}-a${angle}`;
+        board.emit(`servo-p${pin}-a${angle}`, value);
     }
+
 };
 
 const parseShort = (a, b) => (a << 8) | (b << 0);
@@ -2141,11 +2330,96 @@ class Firmata extends Emitter {
      * @param {number} pin The pin to read analog data
      * @param {function} callback A function to call when we have the analag data.
      */
+    analogRead (sensor, pin, callback) {
+        // this.reportAnalogPin(pin, 1);
+        const datas = this._getPackage(sensor, pin);
 
-    analogRead (pin, callback) {
-        this.reportAnalogPin(pin, 1);
-        this.removeAllListeners(`analog-read-${pin}`);
-        this.once(`analog-read-${pin}`, callback);
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        const handlerName = `analog-read-p${pin}`;
+
+        this.removeAllListeners(handlerName);
+        this.once(handlerName, callback);
+    }
+
+    /**
+     * Ananlog read (pullup)
+     * @param sensor
+     * @param pin
+     * @param pullup
+     * @param callback
+     */
+    analogReadPullup (sensor, pin, pullup, callback) {
+        const datas = this._getPackage(sensor, pin, pullup);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        const handlerName = `analog-read-p${pin}-pullup`;
+
+        this.removeAllListeners(handlerName);
+        this.once(handlerName, callback);
+    }
+
+    /**
+     * Read pulse pin
+     * @param sensor
+     * @param pin
+     * @param callback
+     */
+    readPulsePin (sensor, pin, callback) {
+        const datas = this._getPackage(sensor, pin);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        const handlerName = `pulse-read-p${pin}`;
+
+        this.removeAllListeners(handlerName);
+        this.once(handlerName, callback);
+    }
+
+    /**
+     * set PWM output
+     * @param sensor
+     * @param pin
+     * @param value
+     * @param callback
+     */
+    setPwmOutput (sensor, pin, value, callback) {
+        const datas = this._runPackage(sensor, pin, value);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        const handlerName = `pwm-write-p${pin}-d${value}}`;
+
+        this.removeAllListeners(handlerName);
+        this.once(handlerName, callback);
+    }
+
+    /**
+     * play tone for arduino block
+     * @param sensor
+     * @param pin
+     * @param note
+     * @param beat
+     * @param callback
+     */
+    runTone (sensor, pin, note, beat, callback) {
+        const datas = this._runPackage(sensor, pin, this._short2array(note), this._short2array(beat));
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        const noteh = `${this._sendBuffer[7]}${this._sendBuffer[8]}`
+        const beath = `${this._sendBuffer[9]}${this._sendBuffer[10]}`
+
+        const handlerName = `tone-p${pin}-n${noteh}-b${beath}`;
+
+        this.removeAllListeners(handlerName);
+        this.once(handlerName, callback);
     }
 
     /**
@@ -2256,6 +2530,25 @@ class Firmata extends Emitter {
     }
 
     /**
+     * set servo output for arduino block
+     * @param sensor
+     * @param pin
+     * @param angle
+     * @param callback
+     */
+    setServoOutput (sensor, pin, angle, callback) {
+        const datas = this._runPackage(sensor, pin, angle);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        const handlerName = `servo-p${pin}-a${angle}`;
+
+        this.removeAllListeners(handlerName);
+        this.once(handlerName, callback);
+    }
+
+    /**
      * Asks the arduino to set the pin to a certain mode.
      * @param {number} pin The pin you want to change the mode of.
      * @param {number} mode The mode you want to set. Must be one of board.MODES
@@ -2353,10 +2646,61 @@ class Firmata extends Emitter {
      * @param {function} callback The function to call when data has been received
      */
 
-    digitalRead (pin, callback) {
-        this.reportDigitalPin(pin, 1);
-        this.removeAllListeners(`digital-read-${pin}`);
-        this.once(`digital-read-${pin}`, callback);
+    digitalRead (sensor, pin, callback) {
+        // this.reportDigitalPin(pin, 1);
+        const datas = this._getPackage(sensor, pin);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        const handleName = `digital-read-p${pin}`;
+
+        this.removeAllListeners(handleName);
+        this.once(handleName, callback);
+    }
+
+    /**
+     * Read digital pin (internal pull-up)
+     * @param sensor
+     * @param pin
+     * @param pullup internal=1
+     * @param callback
+     */
+    digitalReadPullup (sensor, pin, pullup, callback) {
+        const datas = this._getPackage(sensor, pin, pullup);
+
+        this._sendBuffer = datas.slice();
+        writeToTransport(this, datas);
+
+        const handleName = `digital-read-p${pin}-pullup`;
+
+        this.removeAllListeners(handleName);
+        this.once(handleName, callback);
+    }
+
+    /**
+     * Asks the arduino to write a value to a digital pin
+     * @param {number} pin The pin you want to write a value to.
+     * @param {number} value The value you want to write. Must be board.HIGH or board.LOW
+     * @param {boolean} enqueue When true, the local state is updated but the command is not sent to the Arduino
+     */
+    setDigitalOutput (sensor, pin, level, callback) {
+        // const port = this.updateDigitalPort(pin, value);
+        //
+        // if (enqueue) {
+        //     this.digitalPortQueue |= 1 << port;
+        // } else {
+        //     this.writeDigitalPort(port);
+        // }
+        const datas = this._runPackage(sensor, pin, level);
+        this._sendBuffer = datas.slice();
+
+        writeToTransport(this, datas);
+
+        const handleName = `digital-write-p${pin}-l${level}}`;
+
+        this.removeAllListeners(handleName);
+        this.once(handleName, callback);
     }
 
     /**
