@@ -1647,6 +1647,8 @@ const SYSEX_RESPONSE = {
         } else {
             value = error;
         }
+
+        board.emit(`pulse-read-p${pin}`, value);
     },
     /**
      * Handles a Arduino Uno PWM function response and emits the 'pwm-' + n event where n is command of the block parameter
