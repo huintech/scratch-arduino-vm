@@ -2108,7 +2108,8 @@ class CoconutSPeripheral {
      * @returns {Promise<unknown>}
      */
     moveDCMotorLR (leftSpeed, rightSpeed) {
-        const options = [Sensors.ExtMotor, 4, leftSpeed, rightSpeed];
+        const cmd = 3; // 3: 공개용, 4: 내부용
+        const options = [Sensors.ExtMotor, cmd, leftSpeed, rightSpeed];
 
         return new Promise(resolve => {
             this._firmata.moveDCMotorLR(...options, value => {
